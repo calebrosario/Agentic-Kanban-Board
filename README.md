@@ -43,8 +43,9 @@ cd frontend && npm install && npm run dev
 ## 📸 功能展示
 
 <div align="center">
-  <img src="assets/Demo1.png" alt="Session 管理介面" width="49%" />
-  <img src="assets/Demo2.png" alt="即時對話介面" width="49%" />
+  <img src="assets/Demo1.png" alt="Session 管理介面" width="100%" style="margin-bottom: 20px;" />
+  <img src="assets/Demo2.png" alt="即時對話介面" width="100%" style="margin-bottom: 20px;" />
+  <img src="assets/Demo3.png" alt="功能展示" width="100%" />
 </div>
 
 ## 🛠 技術架構
