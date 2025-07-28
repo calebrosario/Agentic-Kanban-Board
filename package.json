@@ -1,0 +1,35 @@
+{
+  "name": "claude-code-board",
+  "version": "1.0.0",
+  "description": "Claude Code Session Manager - 多開管理與監控系統",
+  "main": "backend/dist/server.js",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:watch": "cucumber-js --watch",
+    "test:backend": "cucumber-js features/backend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "claude",
+    "session-manager",
+    "bdd"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@types/chai": "^4.3.20",
+    "@types/node": "^24.0.7",
+    "chai": "^4.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "socket.io-client": "^4.8.1"
+  }
+}

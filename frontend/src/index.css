@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定義滾動條樣式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply btn bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+  }
+  
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm;
+  }
+  
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors;
+  }
+  
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-success {
+    @apply badge bg-green-100 text-green-800;
+  }
+  
+  .badge-warning {
+    @apply badge bg-yellow-100 text-yellow-800;
+  }
+  
+  .badge-error {
+    @apply badge bg-red-100 text-red-800;
+  }
+  
+  .badge-info {
+    @apply badge bg-blue-100 text-blue-800;
+  }
+}
+
+/* 動畫 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { 
+    transform: translateY(10px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* 自定義 prose 樣式 */
+.prose pre {
+  background-color: inherit;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.prose code {
+  background-color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-weight: inherit;
+  color: inherit;
+}
+
+/* Markdown 渲染樣式 */
+.markdown-body {
+  @apply text-gray-800 dark:text-gray-200 leading-relaxed;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
+.markdown-body > *:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 程式碼區塊樣式 */
+.markdown-body pre {
+  @apply bg-gray-900 dark:bg-gray-950 text-gray-100 p-4 rounded-xl overflow-x-auto my-4 shadow-lg;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  max-width: 100%;
+  overflow-wrap: normal; /* 程式碼保持原格式 */
+  white-space: pre;
+}
+
+.markdown-body pre code {
+  @apply bg-transparent p-0 text-sm;
+  line-height: 1.6;
+  word-break: normal;
+  white-space: pre;
+}
+
+/* 行內程式碼樣式 */
+.markdown-body :not(pre) > code {
+  @apply bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded-md text-sm font-mono;
+  font-size: 0.875em;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+/* 調整程式碼區塊中的高亮樣式 */
+.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* 連結樣式 */
+.markdown-body a {
+  @apply text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline transition-colors;
+}
+
+/* 引用樣式 */
+.markdown-body blockquote {
+  @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300;
+}
+
+/* 表格樣式 */
+.markdown-body table {
+  @apply w-full border-collapse my-4;
+}
+
+.markdown-body th {
+  @apply bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-4 py-2 text-left font-semibold;
+}
+
+.markdown-body td {
+  @apply border border-gray-300 dark:border-gray-600 px-4 py-2;
+}
+
+/* 列表樣式 */
+.markdown-body ul {
+  @apply list-disc list-inside space-y-1 my-2;
+}
+
+.markdown-body ol {
+  @apply list-decimal list-inside space-y-1 my-2;
+}
+
+/* 標題樣式 */
+.markdown-body h1 {
+  @apply text-2xl font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.markdown-body h2 {
+  @apply text-xl font-bold mt-5 mb-3 text-gray-900 dark:text-gray-100;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.markdown-body h3 {
+  @apply text-lg font-semibold mt-4 mb-2 text-gray-900 dark:text-gray-100;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* 段落樣式 */
+.markdown-body p {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* 使用者訊息內的 Markdown 樣式調整 */
+.bg-blue-600 .markdown-body {
+  @apply text-white;
+}
+
+.bg-blue-600 .markdown-body :not(pre) > code {
+  @apply bg-blue-500/30 text-blue-100 border border-blue-400/30;
+}
+
+.bg-blue-600 .markdown-body a {
+  @apply text-blue-200 hover:text-blue-100;
+}
