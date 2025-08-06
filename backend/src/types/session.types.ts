@@ -17,6 +17,19 @@ export interface Session {
   completedAt?: Date;
   deletedAt?: Date;
   error?: string | null;
+  // 分類相關
+  projects?: Array<{
+    project_id: string;
+    name: string;
+    color?: string;
+    icon?: string;
+  }>;
+  tags?: Array<{
+    tag_id: string;
+    name: string;
+    color?: string;
+    type: string;
+  }>;
 }
 
 export enum SessionStatus {

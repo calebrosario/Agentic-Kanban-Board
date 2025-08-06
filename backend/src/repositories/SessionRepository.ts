@@ -143,6 +143,10 @@ export class SessionRepository {
     return row ? this.mapRowToSession(row) : null;
   }
   
+  async getSessionById(sessionId: string): Promise<Session | null> {
+    return this.findById(sessionId);
+  }
+  
   async findAll(includeDeleted: boolean = false): Promise<Session[]> {
     const sql = includeDeleted 
       ? `SELECT * FROM sessions ORDER BY status, sort_order, created_at DESC`
@@ -338,5 +342,97 @@ export class SessionRepository {
     `;
     
     await this.db.run(sql, [sortOrder, sessionId]);
+  }
+
+  // 獲取 session 的專案資訊
+  async getSessionProjects(sessionId: string): Promise<any[]> {
+    const sql = `
+      SELECT p.project_id, p.name, p.color, p.icon
+      FROM projects p
+      INNER JOIN session_projects sp ON p.project_id = sp.project_id
+      WHERE sp.session_id = ?
+      ORDER BY p.name
+    `;
+    
+    return await this.db.all(sql, [sessionId]);
+  }
+
+  // 獲取 session 的標籤資訊
+  async getSessionTags(sessionId: string): Promise<any[]> {
+    const sql = `
+      SELECT t.tag_id, t.name, t.color, t.type
+      FROM tags t
+      INNER JOIN session_tags st ON t.tag_id = st.tag_id
+      WHERE st.session_id = ?
+      ORDER BY t.type, t.name
+    `;
+    
+    return await this.db.all(sql, [sessionId]);
+  }
+
+  // 批量獲取多個 sessions 的專案資訊
+  async getSessionsProjects(sessionIds: string[]): Promise<Map<string, any[]>> {
+    if (sessionIds.length === 0) return new Map();
+    
+    const placeholders = sessionIds.map(() => '?').join(',');
+    const sql = `
+      SELECT sp.session_id, p.project_id, p.name, p.color, p.icon
+      FROM projects p
+      INNER JOIN session_projects sp ON p.project_id = sp.project_id
+      WHERE sp.session_id IN (${placeholders})
+      ORDER BY sp.session_id, p.name
+    `;
+    
+    const rows = await this.db.all(sql, sessionIds);
+    
+    // 將結果按 session_id 分組
+    const result = new Map<string, any[]>();
+    for (const row of rows) {
+      const sessionId = row.session_id;
+      if (!result.has(sessionId)) {
+        result.set(sessionId, []);
+      }
+      result.get(sessionId)!.push({
+        project_id: row.project_id,
+        name: row.name,
+        color: row.color,
+        icon: row.icon
+      });
+    }
+    
+    return result;
+  }
+
+  // 批量獲取多個 sessions 的標籤資訊
+  async getSessionsTags(sessionIds: string[]): Promise<Map<string, any[]>> {
+    if (sessionIds.length === 0) return new Map();
+    
+    const placeholders = sessionIds.map(() => '?').join(',');
+    const sql = `
+      SELECT st.session_id, t.tag_id, t.name, t.color, t.type
+      FROM tags t
+      INNER JOIN session_tags st ON t.tag_id = st.tag_id
+      WHERE st.session_id IN (${placeholders})
+      ORDER BY st.session_id, t.type, t.name
+    `;
+    
+    const rows = await this.db.all(sql, sessionIds);
+    
+    // 將結果按 session_id 分組
+    const result = new Map<string, any[]>();
+    for (const row of rows) {
+      const sessionId = row.session_id;
+      if (!result.has(sessionId)) {
+        result.set(sessionId, []);
+      }
+      result.get(sessionId)!.push({
+        tag_id: row.tag_id,
+        name: row.name,
+        color: row.color,
+        type: row.type
+      });
+    }
+    
+    return result;
   }
 }

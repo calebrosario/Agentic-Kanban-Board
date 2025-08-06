@@ -6,10 +6,12 @@ import {
   Trash2, 
   Download,
   Folder,
-  CheckCircle
+  CheckCircle,
+  Settings
 } from 'lucide-react';
-import { sessionApi } from '../../services/api';
+import { sessionApi, projectApi, tagApi } from '../../services/api';
 import { Session, Message, SessionStatus } from '../../types/session.types';
+import { Project, Tag } from '../../types/classification.types';
 import { ChatInterface } from './ChatInterface';
 import { LoadingSpinner } from '../Common/LoadingSpinner';
 import { cn, getStatusColor, getStatusText } from '../../utils';
@@ -18,6 +20,8 @@ import { useWebSocket } from '../../hooks/useWebSocket';
 import { WebSocketError } from '../../services/websocket';
 import toast from 'react-hot-toast';
 import { Tooltip } from '../Common/Tooltip';
+import { ProjectSelector } from '../Classification/ProjectSelector';
+import { TagSelector } from '../Classification/TagSelector';
 
 const SessionDetailComponent: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
@@ -26,6 +30,11 @@ const SessionDetailComponent: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showClassification, setShowClassification] = useState(false);
+  const [sessionProjects, setSessionProjects] = useState<string[]>([]);
+  const [sessionTags, setSessionTags] = useState<string[]>([]);
+  const [topicTags, setTopicTags] = useState<string[]>([]);
+  const [activityTags, setActivityTags] = useState<string[]>([]);
   
   const { completeSession, interruptSession, resumeSession, deleteSession } = useSessions();
   const { addEventListener, removeEventListener } = useWebSocket();
@@ -174,13 +183,30 @@ const SessionDetailComponent: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      // 只獲取 session 資料，訊息由 ChatInterface 負責載入
-      const sessionData = await sessionApi.getSession(sessionId);
+      // 並行載入 session 資料、專案和標籤
+      const [sessionData, projects, tags] = await Promise.all([
+        sessionApi.getSession(sessionId),
+        projectApi.getProjectsBySessionId(sessionId).catch(() => []),
+        tagApi.getTagsBySessionId(sessionId).catch(() => [])
+      ]);
       
       console.log('=== SessionDetail API 回傳資料 ===');
       console.log('sessionData:', sessionData);
+      console.log('projects:', projects);
+      console.log('tags:', tags);
       
       setSession(sessionData);
+      setSessionProjects(projects.map((p: Project) => p.project_id));
+      
+      // 根據標籤類型分組
+      const allTagIds = tags.map((t: Tag) => t.tag_id);
+      const topicTagIds = tags.filter((t: Tag) => t.type === 'topic').map((t: Tag) => t.tag_id);
+      const activityTagIds = tags.filter((t: Tag) => t.type === 'activity').map((t: Tag) => t.tag_id);
+      
+      setSessionTags(allTagIds);
+      setTopicTags(topicTagIds);
+      setActivityTags(activityTagIds);
+      
       // 不再這裡載入訊息，交給 ChatInterface 的 messageStore 處理
       setMessages([]);
     } catch (err) {
@@ -331,6 +357,20 @@ const SessionDetailComponent: React.FC = () => {
             </div>
             {/* 操作按鈕 - 移到第二行 */}
             <div className="flex items-center gap-1 mt-1.5">
+              <Tooltip content="分類管理">
+                <button
+                  onClick={() => setShowClassification(!showClassification)}
+                  className={cn(
+                    "p-1.5 rounded transition-colors",
+                    showClassification 
+                      ? "bg-blue-100 text-blue-600" 
+                      : "text-gray-600 hover:bg-gray-100"
+                  )}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
+              </Tooltip>
+
               <Tooltip content="匯出對話">
                 <button
                   onClick={handleExportMessages}
@@ -397,6 +437,31 @@ const SessionDetailComponent: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* 分類管理面板 */}
+        {showClassification && (
+          <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+            <div className="space-y-4">
+              <ProjectSelector
+                sessionId={sessionId!}
+                selectedProjects={sessionProjects}
+                onProjectsChange={setSessionProjects}
+              />
+              <TagSelector
+                sessionId={sessionId!}
+                selectedTags={topicTags}
+                onTagsChange={setTopicTags}
+                tagType="topic"
+              />
+              <TagSelector
+                sessionId={sessionId!}
+                selectedTags={activityTags}
+                onTagsChange={setActivityTags}
+                tagType="activity"
+              />
+            </div>
+          </div>
+        )}
 
         {/* 錯誤訊息 */}
         {session.error && (

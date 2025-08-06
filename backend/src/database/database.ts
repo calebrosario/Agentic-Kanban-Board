@@ -239,6 +239,65 @@ export class Database {
           }
         });
 
+        // Create projects table for session organization
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS projects (
+            project_id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            description TEXT,
+            color TEXT DEFAULT '#4F46E5',
+            icon TEXT DEFAULT 'folder',
+            status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'archived')),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
+        // Create tags table for labeling sessions
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS tags (
+            tag_id TEXT PRIMARY KEY,
+            name TEXT NOT NULL UNIQUE,
+            color TEXT DEFAULT '#6B7280',
+            type TEXT DEFAULT 'general' CHECK (type IN ('general', 'activity', 'topic', 'department')),
+            usage_count INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
+        // Create session_projects junction table (many-to-many)
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS session_projects (
+            session_id TEXT NOT NULL,
+            project_id TEXT NOT NULL,
+            assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (session_id, project_id),
+            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE,
+            FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
+        // Create session_tags junction table (many-to-many)
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS session_tags (
+            session_id TEXT NOT NULL,
+            tag_id TEXT NOT NULL,
+            assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (session_id, tag_id),
+            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE,
+            FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON DELETE CASCADE
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
         // Create indexes for better performance
         this.db.run(`
           CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)
@@ -258,6 +317,35 @@ export class Database {
 
         this.db.run(`
           CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages(timestamp)
+        `);
+
+        // Create indexes for new tables
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_tags_type ON tags(type)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_session_projects_session_id ON session_projects(session_id)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_session_projects_project_id ON session_projects(project_id)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_session_tags_session_id ON session_tags(session_id)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_session_tags_tag_id ON session_tags(tag_id)
         `);
 
         resolve();

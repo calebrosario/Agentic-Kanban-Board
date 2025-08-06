@@ -108,6 +108,15 @@ export class SessionService {
       
       await this.sessionRepository.update(session);
       
+      // 獲取該 session 的專案和標籤資訊（新創建的通常為空，但保持 API 一致性）
+      const [projects, tags] = await Promise.all([
+        this.sessionRepository.getSessionProjects(session.sessionId),
+        this.sessionRepository.getSessionTags(session.sessionId)
+      ]);
+      
+      session.projects = projects;
+      session.tags = tags;
+      
       return session;
     } catch (error) {
       // 如果啟動失敗，更新狀態
@@ -122,11 +131,48 @@ export class SessionService {
   }
   
   async listSessions(): Promise<Session[]> {
-    return await this.sessionRepository.findAll();
+    const sessions = await this.sessionRepository.findAll();
+    
+    // 如果沒有 sessions，直接返回
+    if (sessions.length === 0) {
+      return sessions;
+    }
+    
+    // 獲取所有 session IDs
+    const sessionIds = sessions.map(s => s.sessionId);
+    
+    // 批量獲取專案和標籤資訊
+    const [projectsMap, tagsMap] = await Promise.all([
+      this.sessionRepository.getSessionsProjects(sessionIds),
+      this.sessionRepository.getSessionsTags(sessionIds)
+    ]);
+    
+    // 將專案和標籤資訊附加到每個 session
+    for (const session of sessions) {
+      session.projects = projectsMap.get(session.sessionId) || [];
+      session.tags = tagsMap.get(session.sessionId) || [];
+    }
+    
+    return sessions;
   }
   
   async getSession(sessionId: string): Promise<Session | null> {
-    return await this.sessionRepository.findById(sessionId);
+    const session = await this.sessionRepository.findById(sessionId);
+    
+    if (!session) {
+      return null;
+    }
+    
+    // 獲取該 session 的專案和標籤資訊
+    const [projects, tags] = await Promise.all([
+      this.sessionRepository.getSessionProjects(sessionId),
+      this.sessionRepository.getSessionTags(sessionId)
+    ]);
+    
+    session.projects = projects;
+    session.tags = tags;
+    
+    return session;
   }
   
   async completeSession(sessionId: string): Promise<Session | null> {
@@ -152,6 +198,16 @@ export class SessionService {
     session.error = null; // 清除錯誤訊息
     
     await this.sessionRepository.update(session);
+    
+    // 獲取該 session 的專案和標籤資訊
+    const [projects, tags] = await Promise.all([
+      this.sessionRepository.getSessionProjects(sessionId),
+      this.sessionRepository.getSessionTags(sessionId)
+    ]);
+    
+    session.projects = projects;
+    session.tags = tags;
+    
     return session;
   }
   
@@ -340,6 +396,16 @@ export class SessionService {
       session.updatedAt = new Date();
       
       await this.sessionRepository.update(session);
+      
+      // 獲取該 session 的專案和標籤資訊
+      const [projects, tags] = await Promise.all([
+        this.sessionRepository.getSessionProjects(sessionId),
+        this.sessionRepository.getSessionTags(sessionId)
+      ]);
+      
+      session.projects = projects;
+      session.tags = tags;
+      
       return session;
     } catch (error) {
       session.status = SessionStatus.ERROR;
@@ -372,6 +438,16 @@ export class SessionService {
     session.updatedAt = new Date();
     
     await this.sessionRepository.update(session);
+    
+    // 獲取該 session 的專案和標籤資訊
+    const [projects, tags] = await Promise.all([
+      this.sessionRepository.getSessionProjects(sessionId),
+      this.sessionRepository.getSessionTags(sessionId)
+    ]);
+    
+    session.projects = projects;
+    session.tags = tags;
+    
     return session;
   }
 

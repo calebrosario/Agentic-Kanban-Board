@@ -1,5 +1,14 @@
 import axiosInstance from '../utils/axiosInstance';
 import { Session, CreateSessionRequest, Message, SystemStats } from '../types/session.types';
+import { 
+  Project, 
+  Tag, 
+  CreateProjectRequest, 
+  CreateTagRequest, 
+  UpdateProjectRequest, 
+  UpdateTagRequest,
+  ProjectStats 
+} from '../types/classification.types';
 
 // 使用共用的 axiosInstance
 const api = axiosInstance;
@@ -193,6 +202,123 @@ export const commonPathApi = {
   async resetToDefault(): Promise<CommonPath[]> {
     const response = await api.post<{ success: boolean; data: CommonPath[] }>('/common-paths/reset');
     return response.data.data;
+  },
+};
+
+// Projects API
+export const projectApi = {
+  // 獲取所有專案
+  async getAllProjects(): Promise<Project[]> {
+    const response = await api.get<{ success: boolean; data: Project[] }>('/projects');
+    return response.data.data;
+  },
+
+  // 獲取活躍專案
+  async getActiveProjects(): Promise<Project[]> {
+    const response = await api.get<{ success: boolean; data: Project[] }>('/projects/active');
+    return response.data.data;
+  },
+
+  // 獲取單個專案
+  async getProject(projectId: string): Promise<Project> {
+    const response = await api.get<{ success: boolean; data: Project }>(`/projects/${projectId}`);
+    return response.data.data;
+  },
+
+  // 創建新專案
+  async createProject(project: CreateProjectRequest): Promise<Project> {
+    const response = await api.post<{ success: boolean; data: Project }>('/projects', project);
+    return response.data.data;
+  },
+
+  // 更新專案
+  async updateProject(projectId: string, updates: UpdateProjectRequest): Promise<Project> {
+    const response = await api.put<{ success: boolean; data: Project }>(`/projects/${projectId}`, updates);
+    return response.data.data;
+  },
+
+  // 刪除專案
+  async deleteProject(projectId: string): Promise<void> {
+    await api.delete(`/projects/${projectId}`);
+  },
+
+  // 獲取專案統計
+  async getProjectStats(projectId: string): Promise<ProjectStats> {
+    const response = await api.get<{ success: boolean; data: ProjectStats }>(`/projects/${projectId}/stats`);
+    return response.data.data;
+  },
+
+  // 獲取對話的專案列表
+  async getProjectsBySessionId(sessionId: string): Promise<Project[]> {
+    const response = await api.get<{ success: boolean; data: Project[] }>(`/projects/sessions/${sessionId}/projects`);
+    return response.data.data;
+  },
+
+  // 更新對話的專案（替換所有）
+  async updateSessionProjects(sessionId: string, projectIds: string[]): Promise<void> {
+    await api.put(`/projects/sessions/${sessionId}/projects`, { projectIds });
+  },
+};
+
+// Tags API
+export const tagApi = {
+  // 獲取所有標籤
+  async getAllTags(): Promise<Tag[]> {
+    const response = await api.get<{ success: boolean; data: Tag[] }>('/tags');
+    return response.data.data;
+  },
+
+  // 按類型獲取標籤
+  async getTagsByType(type: 'general' | 'activity' | 'topic' | 'department'): Promise<Tag[]> {
+    const response = await api.get<{ success: boolean; data: Tag[] }>(`/tags/type/${type}`);
+    return response.data.data;
+  },
+
+  // 獲取熱門標籤
+  async getPopularTags(limit: number = 10): Promise<Tag[]> {
+    const response = await api.get<{ success: boolean; data: Tag[] }>('/tags/popular', {
+      params: { limit }
+    });
+    return response.data.data;
+  },
+
+  // 獲取單個標籤
+  async getTag(tagId: string): Promise<Tag> {
+    const response = await api.get<{ success: boolean; data: Tag }>(`/tags/${tagId}`);
+    return response.data.data;
+  },
+
+  // 創建新標籤
+  async createTag(tag: CreateTagRequest): Promise<Tag> {
+    const response = await api.post<{ success: boolean; data: Tag }>('/tags', tag);
+    return response.data.data;
+  },
+
+  // 更新標籤
+  async updateTag(tagId: string, updates: UpdateTagRequest): Promise<Tag> {
+    const response = await api.put<{ success: boolean; data: Tag }>(`/tags/${tagId}`, updates);
+    return response.data.data;
+  },
+
+  // 刪除標籤
+  async deleteTag(tagId: string): Promise<void> {
+    await api.delete(`/tags/${tagId}`);
+  },
+
+  // 獲取對話的標籤列表
+  async getTagsBySessionId(sessionId: string): Promise<Tag[]> {
+    const response = await api.get<{ success: boolean; data: Tag[] }>(`/tags/sessions/${sessionId}/tags`);
+    return response.data.data;
+  },
+
+  // 更新對話的標籤（替換所有）
+  async updateSessionTags(sessionId: string, tagIds: string[]): Promise<void> {
+    await api.put(`/tags/sessions/${sessionId}/tags`, { tagIds });
+  },
+
+  // 按名稱分配標籤（會自動創建不存在的標籤）
+  async assignTagsByNames(sessionId: string, tagNames: string[], type?: 'general' | 'activity' | 'topic' | 'department'): Promise<void> {
+    await api.post(`/tags/sessions/${sessionId}/tags/by-names`, { tagNames, type });
   },
 };
 

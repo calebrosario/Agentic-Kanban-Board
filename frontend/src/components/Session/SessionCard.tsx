@@ -176,6 +176,39 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           )}
         </div>
 
+        {/* 分類標籤 */}
+        {(session.projects && session.projects.length > 0 || session.tags && session.tags.length > 0) && (
+          <div className="flex flex-wrap gap-1 mb-1.5">
+            {/* 專案標籤 */}
+            {session.projects?.map(project => (
+              <span
+                key={project.project_id}
+                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded-md"
+                style={{ 
+                  backgroundColor: project.color ? `${project.color}20` : '#E5E7EB',
+                  color: project.color || '#374151'
+                }}
+              >
+                {project.icon && <span className="text-[9px]">{project.icon}</span>}
+                {project.name}
+              </span>
+            ))}
+            {/* 標籤 */}
+            {session.tags?.map(tag => (
+              <span
+                key={tag.tag_id}
+                className="inline-flex items-center px-1.5 py-0.5 text-[10px] rounded-md"
+                style={{ 
+                  backgroundColor: tag.color ? `${tag.color}20` : '#E5E7EB',
+                  color: tag.color || '#374151'
+                }}
+              >
+                {tag.name}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* 元資訊行 */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[11px] text-gray-500 gap-1 sm:gap-0">
           <div className="flex items-center gap-3">
