@@ -155,9 +155,13 @@ async function startServer() {
     const authRouter = (await import('./routes/auth.routes')).default;
     app.use('/api/auth', authRouter);
     
+    // Common paths routes (需要認證)
+    const commonPathRouter = (await import('./routes/commonPath.routes')).default;
+    
     // Session routes (需要認證)
     const { authMiddleware } = await import('./middleware/auth.middleware');
     app.use('/api/sessions', authMiddleware, sessionRouter);
+    app.use('/api/common-paths', authMiddleware, commonPathRouter);
     
     logger.info('Routes initialized successfully');
 

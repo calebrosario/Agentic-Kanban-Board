@@ -4,6 +4,17 @@ import { Session, CreateSessionRequest, Message, SystemStats } from '../types/se
 // 使用共用的 axiosInstance
 const api = axiosInstance;
 
+// Common Path Types
+export interface CommonPath {
+  id: string;
+  label: string;
+  path: string;
+  icon: 'FolderOpen' | 'Code' | 'Home';
+  sort_order?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export const sessionApi = {
   // 獲取所有 Sessions
   async getAllSessions(): Promise<Session[]> {
@@ -139,6 +150,49 @@ export const sessionApi = {
   // 重新排序 Sessions
   async reorderSessions(status: string, sessionIds: string[]): Promise<void> {
     await api.put('/sessions/reorder', { status, sessionIds });
+  },
+};
+
+// Common Paths API
+export const commonPathApi = {
+  // 獲取所有常用路徑
+  async getAllPaths(): Promise<CommonPath[]> {
+    const response = await api.get<{ success: boolean; data: CommonPath[] }>('/common-paths');
+    return response.data.data;
+  },
+
+  // 獲取單個路徑
+  async getPath(id: string): Promise<CommonPath> {
+    const response = await api.get<{ success: boolean; data: CommonPath }>(`/common-paths/${id}`);
+    return response.data.data;
+  },
+
+  // 創建新路徑
+  async createPath(path: Omit<CommonPath, 'id' | 'created_at' | 'updated_at'>): Promise<CommonPath> {
+    const response = await api.post<{ success: boolean; data: CommonPath }>('/common-paths', path);
+    return response.data.data;
+  },
+
+  // 更新路徑
+  async updatePath(id: string, updates: Partial<Omit<CommonPath, 'id' | 'created_at'>>): Promise<CommonPath> {
+    const response = await api.put<{ success: boolean; data: CommonPath }>(`/common-paths/${id}`, updates);
+    return response.data.data;
+  },
+
+  // 刪除路徑
+  async deletePath(id: string): Promise<void> {
+    await api.delete(`/common-paths/${id}`);
+  },
+
+  // 重新排序路徑
+  async reorderPaths(paths: { id: string; sort_order: number }[]): Promise<void> {
+    await api.post('/common-paths/reorder', { paths });
+  },
+
+  // 重置為預設值
+  async resetToDefault(): Promise<CommonPath[]> {
+    const response = await api.post<{ success: boolean; data: CommonPath[] }>('/common-paths/reset');
+    return response.data.data;
   },
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, Save, Settings, FolderOpen, Code, Home } from 'lucide-react';
+import { X, Plus, Trash2, Settings, FolderOpen, Code, Home } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useSettings, CommonPath } from '../../hooks/useSettings';
 
@@ -37,65 +37,74 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   }, [isOpen, reloadSettings]);
 
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [newPathData, setNewPathData] = useState<Omit<CommonPath, 'id'>>({
+    label: '',
+    path: '',
+    icon: 'FolderOpen',
+  });
+
   const addNewPath = () => {
-    const newPath = {
-      label: '新路徑',
+    setIsAddingNew(true);
+    setEditingPath(null);
+    setNewPathData({
+      label: '',
       path: '',
-      icon: 'FolderOpen' as const,
-    };
-    const success = addCommonPath(newPath);
+      icon: 'FolderOpen',
+    });
+  };
+
+  const handleSaveNewPath = async () => {
+    if (!newPathData.label.trim() || !newPathData.path.trim()) {
+      toast.error('標籤和路徑不能為空');
+      return;
+    }
+    
+    const success = await addCommonPath(newPathData);
     if (success) {
-      // 需要等待 state 更新後再設定編輯模式
-      // 使用 setTimeout 確保 state 已更新
-      setTimeout(() => {
-        // 重新載入設定以獲取最新資料
-        reloadSettings();
-        // 獲取剛新增的項目（最後一個）
-        const latestPaths = JSON.parse(localStorage.getItem('claude-code-board-settings') || '{}');
-        const allPaths = latestPaths.commonPaths || [];
-        if (allPaths.length > 0) {
-          setEditingPath(allPaths[allPaths.length - 1]);
-        }
-      }, 100);
+      setIsAddingNew(false);
+      setNewPathData({
+        label: '',
+        path: '',
+        icon: 'FolderOpen',
+      });
     }
   };
 
-  const deletePath = (id: string) => {
-    deleteCommonPath(id);
+  const handleCancelNewPath = () => {
+    setIsAddingNew(false);
+    setNewPathData({
+      label: '',
+      path: '',
+      icon: 'FolderOpen',
+    });
+  };
+
+  const deletePath = async (id: string) => {
+    await deleteCommonPath(id);
     if (editingPath?.id === id) {
       setEditingPath(null);
     }
-    toast.success('路徑已刪除', { icon: '🗑️' });
   };
 
-  const updatePath = (updatedPath: CommonPath) => {
-    const success = updateCommonPath(updatedPath.id, {
+  const updatePath = async (updatedPath: CommonPath) => {
+    const success = await updateCommonPath(updatedPath.id, {
       label: updatedPath.label,
       path: updatedPath.path,
       icon: updatedPath.icon,
     });
     if (success) {
       setEditingPath(null);
-      toast.success('路徑已更新', { icon: '✅' });
-    } else {
-      toast.error('更新失敗');
     }
   };
 
-  const handleResetToDefault = () => {
-    const success = resetToDefault();
+  const handleResetToDefault = async () => {
+    const success = await resetToDefault();
     if (success) {
       setEditingPath(null);
-      toast.success('已重置為預設設定', { icon: '🔄' });
-    } else {
-      toast.error('重置失敗');
     }
   };
 
-  const handleSaveAndClose = () => {
-    toast.success('設定已儲存', { icon: '💾' });
-    onClose();
-  };
 
   if (!isOpen) return null;
 
@@ -132,7 +141,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </button>
                   <button
                     onClick={addNewPath}
-                    className="flex items-center space-x-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    disabled={isAddingNew}
+                    className="flex items-center space-x-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     <span>新增</span>
@@ -141,19 +151,86 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
 
               <div className="space-y-3">
+                {/* 新增路徑的編輯表單 */}
+                {isAddingNew && (
+                  <div className="border border-green-300 rounded-lg p-3 sm:p-4 bg-green-50">
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            標籤
+                          </label>
+                          <input
+                            type="text"
+                            value={newPathData.label}
+                            onChange={(e) => setNewPathData(prev => ({ ...prev, label: e.target.value }))}
+                            className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                            placeholder="路徑標籤"
+                            autoFocus
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            圖示
+                          </label>
+                          <select
+                            value={newPathData.icon}
+                            onChange={(e) => setNewPathData(prev => ({ ...prev, icon: e.target.value as any }))}
+                            className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                          >
+                            <option value="FolderOpen">📁 資料夾</option>
+                            <option value="Code">💻 程式碼</option>
+                            <option value="Home">🏠 家目錄</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          路徑
+                        </label>
+                        <input
+                          type="text"
+                          value={newPathData.path}
+                          onChange={(e) => setNewPathData(prev => ({ ...prev, path: e.target.value }))}
+                          className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-mono"
+                          placeholder="C:\Users\User"
+                        />
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={handleCancelNewPath}
+                          className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                        >
+                          取消
+                        </button>
+                        <button
+                          onClick={handleSaveNewPath}
+                          className="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                          新增
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* 現有路徑列表 */}
                 {commonPaths.map((path) => (
                   <PathEditor
                     key={path.id}
                     path={path}
                     isEditing={editingPath?.id === path.id}
-                    onEdit={setEditingPath}
+                    onEdit={(p) => {
+                      setEditingPath(p);
+                      setIsAddingNew(false); // 編輯現有路徑時關閉新增表單
+                    }}
                     onUpdate={updatePath}
                     onDelete={deletePath}
                   />
                 ))}
               </div>
 
-              {commonPaths.length === 0 && (
+              {commonPaths.length === 0 && !isAddingNew && (
                 <div className="text-center py-8 text-gray-500">
                   <FolderOpen className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p>尚無常用路徑</p>
@@ -170,25 +247,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* 底部按鈕 */}
-        <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gray-50 gap-3">
-          <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
-            設定會自動儲存到瀏覽器本地存儲
+        <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gray-50">
+          <div className="text-xs sm:text-sm text-gray-500">
+            設定會自動同步到資料庫
           </div>
-          <div className="flex space-x-3 w-full sm:w-auto">
-            <button
-              onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              取消
-            </button>
-            <button
-              onClick={handleSaveAndClose}
-              className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Save className="w-4 h-4" />
-              <span>儲存設定</span>
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            關閉
+          </button>
         </div>
       </div>
     </div>

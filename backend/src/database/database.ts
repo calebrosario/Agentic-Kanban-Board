@@ -200,6 +200,45 @@ export class Database {
           if (err) reject(err);
         });
 
+        // Create common_paths table for storing frequently used paths
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS common_paths (
+            id TEXT PRIMARY KEY,
+            label TEXT NOT NULL,
+            path TEXT NOT NULL,
+            icon TEXT NOT NULL CHECK (icon IN ('FolderOpen', 'Code', 'Home')),
+            sort_order INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, async (err) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          // Check if common_paths table is empty and insert default paths
+          const count = await this.get<{count: number}>('SELECT COUNT(*) as count FROM common_paths');
+          if (count && count.count === 0) {
+            // Insert default paths
+            const defaultPaths = [
+              { id: '1', icon: 'Code', label: 'Projects', path: 'C:\\Users\\Projects', sort_order: 1 },
+              { id: '2', icon: 'Code', label: 'Example', path: 'C:\\Users\\Example', sort_order: 2 },
+              { id: '3', icon: 'Home', label: 'Desktop', path: 'C:\\Users\\User\\Desktop', sort_order: 3 },
+              { id: '4', icon: 'Home', label: 'Documents', path: 'C:\\Users\\User\\Documents', sort_order: 4 },
+              { id: '5', icon: 'FolderOpen', label: '當前目錄', path: '.', sort_order: 5 },
+            ];
+            
+            for (const path of defaultPaths) {
+              await this.run(`
+                INSERT INTO common_paths (id, label, path, icon, sort_order)
+                VALUES (?, ?, ?, ?, ?)
+              `, [path.id, path.label, path.path, path.icon, path.sort_order]);
+            }
+            console.log('Default common paths inserted');
+          }
+        });
+
         // Create indexes for better performance
         this.db.run(`
           CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)
