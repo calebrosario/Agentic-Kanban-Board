@@ -38,6 +38,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   const [search, setSearch] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [newItemName, setNewItemName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // 點擊外部關閉下拉選單
@@ -79,14 +80,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     if (!newItemName.trim() || !onCreateNew) return;
 
     try {
-      setLoading(true);
+      setIsLoading(true);
       await onCreateNew(newItemName.trim());
       setNewItemName('');
       setIsCreating(false);
     } catch (error) {
       console.error('Failed to create new item:', error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -214,9 +215,9 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                       <button
                         className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
                         onClick={handleCreateNew}
-                        disabled={!newItemName.trim() || loading}
+                        disabled={!newItemName.trim() || loading || isLoading}
                       >
-                        建立
+                        {isLoading ? '建立中...' : '建立'}
                       </button>
                       <button
                         className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"

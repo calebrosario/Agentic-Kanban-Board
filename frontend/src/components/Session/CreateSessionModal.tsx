@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { X, MessageSquare, Home, Code, FolderOpen, ShieldOff } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, MessageSquare, Home, Code, FolderOpen, ShieldOff, Workflow } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';
 import { useSettings } from '../../hooks/useSettings';
 import { CreateSessionRequest } from '../../types/session.types';
+import { workflowStageService, WorkflowStage } from '../../services/workflowStageService';
 import toast from 'react-hot-toast';
 
 interface CreateSessionModalProps {
@@ -20,16 +21,42 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
     task: '',
     continueChat: false,
     dangerouslySkipPermissions: false,
+    workflow_stage_id: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [workflowStages, setWorkflowStages] = useState<WorkflowStage[]>([]);
+  const [selectedStage, setSelectedStage] = useState<WorkflowStage | null>(null);
   
   const { createSession } = useSessions();
   const { commonPaths } = useSettings();
   
   // 移除不再使用的 continuableSessions（現在使用 --continue 參數）
 
+  // 載入工作流程階段
+  useEffect(() => {
+    if (isOpen) {
+      loadWorkflowStages();
+    }
+  }, [isOpen]);
+
+  const loadWorkflowStages = async () => {
+    try {
+      const stages = await workflowStageService.getAllStages(true); // 只載入活躍的階段
+      setWorkflowStages(stages);
+    } catch (error) {
+      console.error('Failed to load workflow stages:', error);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    
+    // 處理工作流程階段選擇
+    if (name === 'workflow_stage_id') {
+      const stage = workflowStages.find(s => s.stage_id === value);
+      setSelectedStage(stage || null);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
@@ -63,6 +90,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         task: formData.task.trim(),
         continueChat: formData.continueChat,
         dangerouslySkipPermissions: formData.dangerouslySkipPermissions,
+        workflow_stage_id: formData.workflow_stage_id || undefined,
       };
 
       await createSession(request);
@@ -76,7 +104,9 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         task: '',
         continueChat: false,
         dangerouslySkipPermissions: false,
+        workflow_stage_id: '',
       });
+      setSelectedStage(null);
       
       onClose();
     } catch (error) {
@@ -195,6 +225,45 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
             {formData.workingDir && (
               <div className="mt-2 text-xs text-gray-500">
                 已選擇：<span className="font-mono bg-gray-100 px-2 py-1 rounded">{formData.workingDir}</span>
+              </div>
+            )}
+          </div>
+
+          {/* 工作流程階段選擇 */}
+          <div>
+            <label htmlFor="workflow_stage_id" className="block text-sm font-medium text-gray-700 mb-2">
+              工作流程階段 (選填)
+            </label>
+            <select
+              id="workflow_stage_id"
+              name="workflow_stage_id"
+              value={formData.workflow_stage_id}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">不使用工作流程階段</option>
+              {workflowStages.map(stage => (
+                <option key={stage.stage_id} value={stage.stage_id}>
+                  {stage.name} - {stage.description}
+                </option>
+              ))}
+            </select>
+            
+            {/* 顯示選中階段的建議任務 */}
+            {selectedStage && selectedStage.suggested_tasks && selectedStage.suggested_tasks.length > 0 && (
+              <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Workflow className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-900">建議的工作項目：</span>
+                </div>
+                <ul className="text-xs text-blue-700 space-y-1">
+                  {selectedStage.suggested_tasks.map((task, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="mr-2">•</span>
+                      <span>{task}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>

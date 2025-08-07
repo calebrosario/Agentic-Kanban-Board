@@ -76,6 +76,12 @@ async function startServer() {
     const db = Database.getInstance();
     await db.initialize();
     logger.info('Database initialized successfully');
+    
+    // Initialize default workflow stages
+    const { WorkflowStageService } = await import('./services/WorkflowStageService');
+    const workflowStageService = new WorkflowStageService();
+    await workflowStageService.initializeDefaultStages();
+    logger.info('Default workflow stages initialized');
 
     // Initialize process manager
     processManager = new ProcessManager();
@@ -164,12 +170,16 @@ async function startServer() {
     // Tag routes (需要認證)
     const tagRouter = (await import('./routes/tag.routes')).default;
     
+    // Workflow Stage routes (需要認證)
+    const workflowStageRouter = (await import('./routes/workflowStage.routes')).default;
+    
     // Session routes (需要認證)
     const { authMiddleware } = await import('./middleware/auth.middleware');
     app.use('/api/sessions', authMiddleware, sessionRouter);
     app.use('/api/common-paths', authMiddleware, commonPathRouter);
     app.use('/api/projects', authMiddleware, projectRouter);
     app.use('/api/tags', authMiddleware, tagRouter);
+    app.use('/api/workflow-stages', authMiddleware, workflowStageRouter);
     
     logger.info('Routes initialized successfully');
 

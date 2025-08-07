@@ -75,16 +75,39 @@ export class SessionService {
     // 驗證請求
     this.validateCreateRequest(request);
     
+    // 如果有 workflow_stage_id，增強任務內容
+    let enhancedTask = request.task;
+    if (request.workflow_stage_id) {
+      const { WorkflowStageService } = await import('./WorkflowStageService');
+      const workflowStageService = new WorkflowStageService();
+      try {
+        const stage = await workflowStageService.getStage(request.workflow_stage_id);
+        if (stage) {
+          // 將 system_prompt 和原始任務結合
+          enhancedTask = `${stage.system_prompt}\n\n用戶任務：${request.task}`;
+          
+          // 如果有建議任務，可以在任務中提示
+          if (stage.suggested_tasks && stage.suggested_tasks.length > 0) {
+            enhancedTask += `\n\n建議的工作項目：\n${stage.suggested_tasks.map(t => `- ${t}`).join('\n')}`;
+          }
+        }
+      } catch (error) {
+        logger.warn(`Failed to get workflow stage ${request.workflow_stage_id}:`, error);
+        // 如果獲取失敗，繼續使用原始任務
+      }
+    }
+    
     // 建立 Session
     const session: Session = {
       sessionId: uuidv4(),
       name: request.name,
       workingDir: request.workingDir,
-      task: request.task,
+      task: enhancedTask,
       status: SessionStatus.PROCESSING,
       continueChat: request.continueChat || false,
       previousSessionId: request.previousSessionId,
       dangerouslySkipPermissions: request.dangerouslySkipPermissions || false,
+      workflow_stage_id: request.workflow_stage_id,
       lastUserMessage: undefined, // 初始時沒有用戶對話訊息
       messageCount: 0, // 初始對話計數為 0
       createdAt: new Date(),
@@ -171,6 +194,28 @@ export class SessionService {
     
     session.projects = projects;
     session.tags = tags;
+    
+    // 獲取 workflow stage 資訊
+    if (session.workflow_stage_id) {
+      const { WorkflowStageService } = await import('./WorkflowStageService');
+      const workflowStageService = new WorkflowStageService();
+      try {
+        const stage = await workflowStageService.getStage(session.workflow_stage_id);
+        if (stage) {
+          session.workflow_stage = {
+            stage_id: stage.stage_id,
+            name: stage.name,
+            color: stage.color,
+            icon: stage.icon,
+            system_prompt: stage.system_prompt,
+            temperature: stage.temperature,
+            suggested_tasks: stage.suggested_tasks
+          };
+        }
+      } catch (error) {
+        logger.warn(`Failed to get workflow stage for session ${sessionId}:`, error);
+      }
+    }
     
     return session;
   }

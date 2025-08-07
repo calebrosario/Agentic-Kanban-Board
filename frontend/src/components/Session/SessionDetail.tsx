@@ -32,7 +32,7 @@ const SessionDetailComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showClassification, setShowClassification] = useState(false);
   const [sessionProjects, setSessionProjects] = useState<string[]>([]);
-  const [sessionTags, setSessionTags] = useState<string[]>([]);
+  const [_sessionTags, setSessionTags] = useState<string[]>([]);
   const [topicTags, setTopicTags] = useState<string[]>([]);
   const [activityTags, setActivityTags] = useState<string[]>([]);
   

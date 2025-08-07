@@ -108,6 +108,16 @@ export class Database {
           }
         });
 
+        // Add workflow_stage_id column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE sessions ADD COLUMN workflow_stage_id TEXT REFERENCES workflow_stages(stage_id)
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add workflow_stage_id column:', err.message);
+          }
+        });
+
         // Create messages table
         this.db.run(`
           CREATE TABLE IF NOT EXISTS messages (
@@ -237,6 +247,26 @@ export class Database {
             }
             console.log('Default common paths inserted');
           }
+        });
+
+        // Create workflow_stages table for AI agent configurations
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS workflow_stages (
+            stage_id TEXT PRIMARY KEY,
+            name TEXT NOT NULL UNIQUE,
+            description TEXT,
+            system_prompt TEXT NOT NULL,
+            temperature REAL DEFAULT 0.7,
+            suggested_tasks TEXT, -- JSON array
+            color TEXT DEFAULT '#4F46E5',
+            icon TEXT DEFAULT 'folder',
+            sort_order INTEGER DEFAULT 0,
+            is_active BOOLEAN DEFAULT TRUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, (err) => {
+          if (err) reject(err);
         });
 
         // Create projects table for session organization

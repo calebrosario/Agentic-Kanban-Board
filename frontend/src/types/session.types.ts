@@ -47,6 +47,7 @@ export interface CreateSessionRequest {
   continueChat?: boolean;
   previousSessionId?: string;
   dangerouslySkipPermissions?: boolean;
+  workflow_stage_id?: string;
 }
 
 export interface Message {
