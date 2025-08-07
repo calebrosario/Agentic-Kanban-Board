@@ -108,6 +108,7 @@ export class SessionService {
       previousSessionId: request.previousSessionId,
       dangerouslySkipPermissions: request.dangerouslySkipPermissions || false,
       workflow_stage_id: request.workflow_stage_id,
+      work_item_id: request.work_item_id,
       lastUserMessage: undefined, // 初始時沒有用戶對話訊息
       messageCount: 0, // 初始對話計數為 0
       createdAt: new Date(),
@@ -159,6 +160,28 @@ export class SessionService {
           }
         } catch (error) {
           logger.warn(`Failed to get workflow stage for new session ${session.sessionId}:`, error);
+        }
+      }
+      
+      // 如果有 work_item_id，自動更新 Work Item 狀態
+      if (request.work_item_id) {
+        try {
+          const { WorkItemService } = await import('./WorkItemService');
+          const workItemService = new WorkItemService();
+          
+          // 檢查 Work Item 是否存在
+          const workItem = await workItemService.getWorkItem(request.work_item_id);
+          if (workItem) {
+            // 如果 Work Item 狀態還在 planning，更新為 in_progress
+            if (workItem.status === 'planning') {
+              await workItemService.updateWorkItem(request.work_item_id, {
+                status: 'in_progress' as any
+              });
+            }
+          }
+        } catch (error) {
+          logger.warn(`Failed to update work item ${request.work_item_id} for new session:`, error);
+          // 不要因為 Work Item 更新失敗而阻止 Session 創建
         }
       }
       
@@ -590,6 +613,102 @@ export class SessionService {
     }
     
     logger.info(`Reordered ${sessionIds.length} sessions for status ${status}`);
+  }
+  
+  // Work Item 相關方法
+  async associateWithWorkItem(sessionId: string, workItemId: string): Promise<Session> {
+    const session = await this.sessionRepository.findById(sessionId);
+    if (!session) {
+      throw new ValidationError('Session not found', 'SESSION_NOT_FOUND');
+    }
+    
+    // 更新 session 的 work_item_id
+    session.work_item_id = workItemId;
+    session.updatedAt = new Date();
+    await this.sessionRepository.update(session);
+    
+    // 同時更新 Work Item 狀態
+    try {
+      const { WorkItemService } = await import('./WorkItemService');
+      const workItemService = new WorkItemService();
+      
+      const workItem = await workItemService.getWorkItem(workItemId);
+      if (workItem && workItem.status === 'planning') {
+        await workItemService.updateWorkItem(workItemId, {
+          status: 'in_progress' as any
+        });
+      }
+    } catch (error) {
+      logger.warn(`Failed to update work item ${workItemId}:`, error);
+    }
+    
+    return session;
+  }
+  
+  async disassociateFromWorkItem(sessionId: string): Promise<Session> {
+    const session = await this.sessionRepository.findById(sessionId);
+    if (!session) {
+      throw new ValidationError('Session not found', 'SESSION_NOT_FOUND');
+    }
+    
+    // 清除 session 的 work_item_id
+    session.work_item_id = undefined;
+    session.updatedAt = new Date();
+    await this.sessionRepository.update(session);
+    
+    return session;
+  }
+  
+  async getSessionsByWorkItem(workItemId: string): Promise<Session[]> {
+    const sessions = await this.sessionRepository.findAll();
+    
+    // 過濾出屬於該 Work Item 的 Sessions
+    const workItemSessions = sessions.filter(s => s.work_item_id === workItemId);
+    
+    if (workItemSessions.length === 0) {
+      return workItemSessions;
+    }
+    
+    // 獲取所有 session IDs
+    const sessionIds = workItemSessions.map(s => s.sessionId);
+    
+    // 批量獲取專案和標籤資訊
+    const [projectsMap, tagsMap] = await Promise.all([
+      this.sessionRepository.getSessionsProjects(sessionIds),
+      this.sessionRepository.getSessionsTags(sessionIds)
+    ]);
+    
+    // 獲取 WorkflowStageService 來載入階段資訊
+    const { WorkflowStageService } = await import('./WorkflowStageService');
+    const workflowStageService = new WorkflowStageService();
+    
+    // 將專案、標籤和工作流程階段資訊附加到每個 session
+    for (const session of workItemSessions) {
+      session.projects = projectsMap.get(session.sessionId) || [];
+      session.tags = tagsMap.get(session.sessionId) || [];
+      
+      // 獲取 workflow stage 資訊
+      if (session.workflow_stage_id) {
+        try {
+          const stage = await workflowStageService.getStage(session.workflow_stage_id);
+          if (stage) {
+            session.workflow_stage = {
+              stage_id: stage.stage_id,
+              name: stage.name,
+              color: stage.color,
+              icon: stage.icon,
+              system_prompt: stage.system_prompt,
+              temperature: stage.temperature,
+              suggested_tasks: stage.suggested_tasks
+            };
+          }
+        } catch (error) {
+          logger.warn(`Failed to get workflow stage for session ${session.sessionId}:`, error);
+        }
+      }
+    }
+    
+    return workItemSessions;
   }
 }
 

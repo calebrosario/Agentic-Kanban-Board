@@ -28,6 +28,8 @@ export interface Session {
     temperature?: number;
     suggested_tasks?: string[];
   };
+  // Work Item 關聯
+  work_item_id?: string;
   // 分類相關
   projects?: Array<{
     project_id: string;
@@ -60,6 +62,7 @@ export interface CreateSessionRequest {
   previousSessionId?: string;
   dangerouslySkipPermissions?: boolean;
   workflow_stage_id?: string;
+  work_item_id?: string;
 }
 
 export interface SessionResponse {

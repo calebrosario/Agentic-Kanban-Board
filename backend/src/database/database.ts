@@ -118,6 +118,16 @@ export class Database {
           }
         });
 
+        // Add work_item_id column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE sessions ADD COLUMN work_item_id TEXT REFERENCES work_items(work_item_id)
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add work_item_id column:', err.message);
+          }
+        });
+
         // Create messages table
         this.db.run(`
           CREATE TABLE IF NOT EXISTS messages (
@@ -269,6 +279,25 @@ export class Database {
           if (err) reject(err);
         });
 
+        // Create work_items table for organizing related sessions
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS work_items (
+            work_item_id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            description TEXT,
+            status TEXT DEFAULT 'planning' CHECK (status IN ('planning', 'in_progress', 'completed', 'cancelled')),
+            priority TEXT DEFAULT 'medium' CHECK (priority IN ('high', 'medium', 'low')),
+            planned_stages TEXT, -- JSON array of stage names
+            current_stage TEXT,
+            project_id TEXT REFERENCES projects(project_id),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            completed_at DATETIME
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
         // Create projects table for session organization
         this.db.run(`
           CREATE TABLE IF NOT EXISTS projects (
@@ -376,6 +405,19 @@ export class Database {
 
         this.db.run(`
           CREATE INDEX IF NOT EXISTS idx_session_tags_tag_id ON session_tags(tag_id)
+        `);
+
+        // Create indexes for work_items
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_work_items_status ON work_items(status)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_work_items_project_id ON work_items(project_id)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_sessions_work_item_id ON sessions(work_item_id)
         `);
 
         resolve();

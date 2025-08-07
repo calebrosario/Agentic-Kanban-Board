@@ -17,6 +17,8 @@ export interface Session {
   updatedAt: Date;
   completedAt?: Date;
   deletedAt?: Date;
+  // Work Item 關聯
+  work_item_id?: string;
   // 工作流程階段
   workflow_stage_id?: string;
   workflow_stage?: {
@@ -57,6 +59,7 @@ export interface CreateSessionRequest {
   previousSessionId?: string;
   dangerouslySkipPermissions?: boolean;
   workflow_stage_id?: string;
+  work_item_id?: string;
 }
 
 export interface Message {

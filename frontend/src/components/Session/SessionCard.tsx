@@ -7,7 +7,8 @@ import {
   AlertTriangle,
   MessageSquare,
   CheckCircle,
-  Workflow
+  Workflow,
+  Briefcase
 } from 'lucide-react';
 import { Session, SessionStatus } from '../../types/session.types';
 import { formatRelativeTime, truncateText, cn } from '../../utils';
@@ -152,6 +153,22 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             {session.status === SessionStatus.PROCESSING && (
               <Tooltip content="正在處理中">
                 <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-pulse"></div>
+              </Tooltip>
+            )}
+            {/* Work Item 標籤 */}
+            {session.work_item_id && (
+              <Tooltip content={`關聯到 Work Item`}>
+                <span
+                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded font-medium"
+                  style={{ 
+                    backgroundColor: '#9333EA20',
+                    color: '#9333EA',
+                    border: '1px solid #9333EA40'
+                  }}
+                >
+                  <Briefcase className="w-2.5 h-2.5" />
+                  WI
+                </span>
               </Tooltip>
             )}
             {/* 工作流程階段標籤 */}

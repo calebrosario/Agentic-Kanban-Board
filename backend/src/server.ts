@@ -173,6 +173,9 @@ async function startServer() {
     // Workflow Stage routes (需要認證)
     const workflowStageRouter = (await import('./routes/workflowStage.routes')).default;
     
+    // Work Item routes (需要認證)
+    const { workItemRouter } = await import('./routes/workitem.routes');
+    
     // Session routes (需要認證)
     const { authMiddleware } = await import('./middleware/auth.middleware');
     app.use('/api/sessions', authMiddleware, sessionRouter);
@@ -180,6 +183,7 @@ async function startServer() {
     app.use('/api/projects', authMiddleware, projectRouter);
     app.use('/api/tags', authMiddleware, tagRouter);
     app.use('/api/workflow-stages', authMiddleware, workflowStageRouter);
+    app.use('/api/work-items', authMiddleware, workItemRouter);
     
     logger.info('Routes initialized successfully');
 

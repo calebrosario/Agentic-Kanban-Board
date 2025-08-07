@@ -5,7 +5,8 @@ import {
   Plus,
   Settings,
   LogOut,
-  Workflow
+  Workflow,
+  Briefcase
 } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';
 import { cn } from '../../utils';
@@ -70,6 +71,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
               {totalSessions}
             </span>
           )}
+        </Link>
+
+        <Link
+          to="/work-items"
+          className={cn(
+            'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+            location.pathname === '/work-items'
+              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+          )}
+        >
+          <div className="flex items-center space-x-3">
+            <Briefcase className="w-5 h-5 text-current" />
+            <span>Work Items</span>
+          </div>
         </Link>
 
         <Link
