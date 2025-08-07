@@ -11,6 +11,7 @@ import { SessionsProvider } from './contexts/SessionsContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { LoginPage } from './components/Auth/LoginPage';
+import { WorkflowStages } from './pages/WorkflowStages';
 
 function App() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -53,6 +54,7 @@ function App() {
                           <Routes>
                             <Route path="/" element={<SplitView onCreateSession={() => setIsCreateModalOpen(true)} />} />
                             <Route path="/sessions/:sessionId" element={<SplitView onCreateSession={() => setIsCreateModalOpen(true)} />} />
+                            <Route path="/workflow-stages" element={<WorkflowStages />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                           </Routes>
                         </ErrorBoundary>

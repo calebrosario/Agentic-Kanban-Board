@@ -15,6 +15,7 @@ interface SessionRow {
   last_user_message?: string;
   message_count?: number;
   sort_order?: number;
+  workflow_stage_id?: string;
   error?: string;
   created_at: string;
   updated_at: string;
@@ -44,6 +45,7 @@ export class SessionRepository {
       lastUserMessage: row.last_user_message,
       messageCount: row.message_count || 0,
       sortOrder: row.sort_order,
+      workflow_stage_id: row.workflow_stage_id,
       error: row.error,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
@@ -66,6 +68,7 @@ export class SessionRepository {
       session.dangerouslySkipPermissions ? 1 : 0,
       session.lastUserMessage,
       session.messageCount || 0,
+      session.workflow_stage_id,
       session.error,
       session.createdAt.toISOString(),
       session.updatedAt.toISOString(),
@@ -79,9 +82,9 @@ export class SessionRepository {
       INSERT INTO sessions (
         session_id, name, working_dir, task, status, continue_chat,
         previous_session_id, claude_session_id, process_id, dangerously_skip_permissions,
-        last_user_message, message_count,
+        last_user_message, message_count, workflow_stage_id,
         error, created_at, updated_at, completed_at, deleted_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     await this.db.run(sql, this.mapSessionToRow(session));

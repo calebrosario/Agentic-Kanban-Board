@@ -140,6 +140,28 @@ export class SessionService {
       session.projects = projects;
       session.tags = tags;
       
+      // 如果有 workflow_stage_id，獲取完整的 stage 資訊
+      if (session.workflow_stage_id) {
+        const { WorkflowStageService } = await import('./WorkflowStageService');
+        const workflowStageService = new WorkflowStageService();
+        try {
+          const stage = await workflowStageService.getStage(session.workflow_stage_id);
+          if (stage) {
+            session.workflow_stage = {
+              stage_id: stage.stage_id,
+              name: stage.name,
+              color: stage.color,
+              icon: stage.icon,
+              system_prompt: stage.system_prompt,
+              temperature: stage.temperature,
+              suggested_tasks: stage.suggested_tasks
+            };
+          }
+        } catch (error) {
+          logger.warn(`Failed to get workflow stage for new session ${session.sessionId}:`, error);
+        }
+      }
+      
       return session;
     } catch (error) {
       // 如果啟動失敗，更新狀態
@@ -170,10 +192,34 @@ export class SessionService {
       this.sessionRepository.getSessionsTags(sessionIds)
     ]);
     
-    // 將專案和標籤資訊附加到每個 session
+    // 獲取 WorkflowStageService 來載入階段資訊
+    const { WorkflowStageService } = await import('./WorkflowStageService');
+    const workflowStageService = new WorkflowStageService();
+    
+    // 將專案、標籤和工作流程階段資訊附加到每個 session
     for (const session of sessions) {
       session.projects = projectsMap.get(session.sessionId) || [];
       session.tags = tagsMap.get(session.sessionId) || [];
+      
+      // 獲取 workflow stage 資訊
+      if (session.workflow_stage_id) {
+        try {
+          const stage = await workflowStageService.getStage(session.workflow_stage_id);
+          if (stage) {
+            session.workflow_stage = {
+              stage_id: stage.stage_id,
+              name: stage.name,
+              color: stage.color,
+              icon: stage.icon,
+              system_prompt: stage.system_prompt,
+              temperature: stage.temperature,
+              suggested_tasks: stage.suggested_tasks
+            };
+          }
+        } catch (error) {
+          logger.warn(`Failed to get workflow stage for session ${session.sessionId}:`, error);
+        }
+      }
     }
     
     return sessions;

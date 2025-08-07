@@ -6,7 +6,8 @@ import {
   Trash2, 
   AlertTriangle,
   MessageSquare,
-  CheckCircle
+  CheckCircle,
+  Workflow
 } from 'lucide-react';
 import { Session, SessionStatus } from '../../types/session.types';
 import { formatRelativeTime, truncateText, cn } from '../../utils';
@@ -142,7 +143,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           </Link>
           
           {/* 狀態指示器 */}
-          <div className="flex items-center flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             {session.status === SessionStatus.ERROR && (
               <Tooltip content="發生錯誤">
                 <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
@@ -153,9 +154,25 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-pulse"></div>
               </Tooltip>
             )}
+            {/* 工作流程階段標籤 */}
+            {session.workflow_stage && (
+              <Tooltip content={`工作流程階段: ${session.workflow_stage.name}`}>
+                <span
+                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded font-medium"
+                  style={{ 
+                    backgroundColor: session.workflow_stage.color ? `${session.workflow_stage.color}20` : '#8B5CF620',
+                    color: session.workflow_stage.color || '#8B5CF6',
+                    border: `1px solid ${session.workflow_stage.color || '#8B5CF6'}40`
+                  }}
+                >
+                  <Workflow className="w-2.5 h-2.5" />
+                  {session.workflow_stage.name}
+                </span>
+              </Tooltip>
+            )}
             {session.processId && (
               <Tooltip content={`Process ID: ${session.processId}`}>
-                <span className="text-[10px] bg-gray-100 px-1 py-0.5 rounded ml-1">
+                <span className="text-[10px] bg-gray-100 px-1 py-0.5 rounded">
                   PID
                 </span>
               </Tooltip>
