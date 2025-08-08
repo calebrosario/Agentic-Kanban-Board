@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Briefcase, 
@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 export const WorkItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { 
     currentWorkItem, 
     fetchWorkItem, 
@@ -35,6 +36,7 @@ export const WorkItemDetailPage: React.FC = () => {
   const [createSessionOpen, setCreateSessionOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -46,6 +48,16 @@ export const WorkItemDetailPage: React.FC = () => {
     // 每次 sessions 更新時重新載入
     loadSessions();
   }, []);
+
+  // 處理 session 查詢參數
+  useEffect(() => {
+    const sessionId = searchParams.get('session');
+    if (sessionId) {
+      setSelectedSessionId(sessionId);
+      // 導航到 Session 詳細頁面，但保持 Work Item 的返回連結
+      navigate(`/sessions/${sessionId}?from=work-item&workItemId=${id}`, { replace: true });
+    }
+  }, [searchParams, navigate, id]);
 
   const loadWorkItem = async () => {
     if (!id) return;
@@ -288,6 +300,8 @@ export const WorkItemDetailPage: React.FC = () => {
                   onInterrupt={() => {}}
                   onResume={() => {}}
                   onDelete={() => {}}
+                  preserveWorkItemContext={true}
+                  workItemId={id}
                 />
               ))}
             </div>

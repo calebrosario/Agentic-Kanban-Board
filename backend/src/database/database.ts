@@ -320,7 +320,7 @@ export class Database {
             tag_id TEXT PRIMARY KEY,
             name TEXT NOT NULL UNIQUE,
             color TEXT DEFAULT '#6B7280',
-            type TEXT DEFAULT 'general' CHECK (type IN ('general', 'activity', 'topic', 'department')),
+            type TEXT DEFAULT 'general' CHECK (type IN ('general', 'topic', 'department')),
             usage_count INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { SessionList } from '../Session/SessionList';
 import { SessionDetail } from '../Session/SessionDetail';
 import { X, Maximize2, Minimize2, ArrowLeft } from 'lucide-react';
@@ -15,6 +15,7 @@ interface SplitViewProps {
 export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [rightPanelWidth, setRightPanelWidth] = useState(50); // 百分比
   const [dragWidth, setDragWidth] = useState<number | null>(null); // 拖曳時的臨時寬度
@@ -44,7 +45,16 @@ export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
   }, [sessions, sessionId, navigate]);
 
   const handleClose = () => {
-    navigate('/');
+    const from = searchParams.get('from');
+    const workItemId = searchParams.get('workItemId');
+    
+    if (from === 'work-item' && workItemId) {
+      // 如果是從 Work Item 頁面來的，返回到 Work Item 頁面
+      navigate(`/work-items/${workItemId}`);
+    } else {
+      // 否則返回到主頁面
+      navigate('/');
+    }
   };
 
   const toggleFullScreen = () => {
@@ -165,7 +175,7 @@ export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
             {/* 面板控制按鈕 - 左上角 */}
             <div className="absolute top-4 left-4 z-10 flex items-center space-x-2">
               {isMobile ? (
-                <Tooltip content="返回列表">
+                <Tooltip content={searchParams.get('from') === 'work-item' ? "返回 Work Item" : "返回列表"}>
                   <button
                     onClick={handleClose}
                     className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
@@ -175,6 +185,16 @@ export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
                 </Tooltip>
               ) : (
                 <>
+                  {searchParams.get('from') === 'work-item' && (
+                    <Tooltip content="返回 Work Item">
+                      <button
+                        onClick={handleClose}
+                        className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                      >
+                        <ArrowLeft className="w-4 h-4 text-gray-600" />
+                      </button>
+                    </Tooltip>
+                  )}
                   <Tooltip content="全屏">
                     <button
                       onClick={toggleFullScreen}
@@ -185,7 +205,7 @@ export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
                   </Tooltip>
                   <Tooltip content="關閉">
                     <button
-                      onClick={handleClose}
+                      onClick={() => navigate('/')}
                       className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
                     >
                       <X className="w-4 h-4 text-gray-600" />
@@ -206,6 +226,16 @@ export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
         <div className="fixed inset-0 z-50 bg-white flex flex-col">
           {/* 面板控制按鈕 - 左上角 */}
           <div className="absolute top-4 left-4 z-10 flex items-center space-x-2">
+            {searchParams.get('from') === 'work-item' && (
+              <Tooltip content="返回 Work Item">
+                <button
+                  onClick={handleClose}
+                  className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                >
+                  <ArrowLeft className="w-4 h-4 text-gray-600" />
+                </button>
+              </Tooltip>
+            )}
             <Tooltip content="還原">
               <button
                 onClick={toggleFullScreen}
@@ -216,7 +246,7 @@ export const SplitView: React.FC<SplitViewProps> = ({ onCreateSession }) => {
             </Tooltip>
             <Tooltip content="關閉">
               <button
-                onClick={handleClose}
+                onClick={() => navigate('/')}
                 className="p-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
                 <X className="w-4 h-4 text-gray-600" />

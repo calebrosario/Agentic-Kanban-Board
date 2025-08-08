@@ -58,7 +58,7 @@ export class TagController {
     try {
       const { type } = req.params;
       
-      if (!['general', 'activity', 'topic', 'department'].includes(type)) {
+      if (!['general', 'topic', 'department'].includes(type)) {
         res.status(400).json({
           success: false,
           error: 'Invalid tag type'

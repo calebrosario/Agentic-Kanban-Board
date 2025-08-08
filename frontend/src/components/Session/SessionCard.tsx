@@ -25,6 +25,8 @@ interface SessionCardProps {
   onDragStart?: (index: number) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
+  preserveWorkItemContext?: boolean; // 新增：是否保持在 Work Item 上下文中
+  workItemId?: string; // 新增：當前 Work Item ID
 }
 
 export const SessionCard: React.FC<SessionCardProps> = ({
@@ -37,6 +39,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   onDragStart,
   onDragEnd,
   isDragging,
+  preserveWorkItemContext,
+  workItemId,
 }) => {
   const deviceType = useDeviceType();
   const getActionButtons = () => {
@@ -135,7 +139,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         {/* 標題行 - 包含標題和狀態 */}
         <div className="flex items-start justify-between gap-2 mb-1.5">
           <Link
-            to={`/sessions/${session.sessionId}`}
+            to={preserveWorkItemContext && workItemId 
+              ? `/work-items/${workItemId}?session=${session.sessionId}` 
+              : `/sessions/${session.sessionId}`}
             className="flex-1 min-w-0 group"
           >
             <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">

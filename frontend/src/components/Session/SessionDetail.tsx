@@ -34,7 +34,6 @@ const SessionDetailComponent: React.FC = () => {
   const [sessionProjects, setSessionProjects] = useState<string[]>([]);
   const [_sessionTags, setSessionTags] = useState<string[]>([]);
   const [topicTags, setTopicTags] = useState<string[]>([]);
-  const [activityTags, setActivityTags] = useState<string[]>([]);
   
   const { completeSession, interruptSession, resumeSession, deleteSession } = useSessions();
   const { addEventListener, removeEventListener } = useWebSocket();
@@ -201,11 +200,9 @@ const SessionDetailComponent: React.FC = () => {
       // 根據標籤類型分組
       const allTagIds = tags.map((t: Tag) => t.tag_id);
       const topicTagIds = tags.filter((t: Tag) => t.type === 'topic').map((t: Tag) => t.tag_id);
-      const activityTagIds = tags.filter((t: Tag) => t.type === 'activity').map((t: Tag) => t.tag_id);
       
       setSessionTags(allTagIds);
       setTopicTags(topicTagIds);
-      setActivityTags(activityTagIds);
       
       // 不再這裡載入訊息，交給 ChatInterface 的 messageStore 處理
       setMessages([]);
@@ -452,12 +449,6 @@ const SessionDetailComponent: React.FC = () => {
                 selectedTags={topicTags}
                 onTagsChange={setTopicTags}
                 tagType="topic"
-              />
-              <TagSelector
-                sessionId={sessionId!}
-                selectedTags={activityTags}
-                onTagsChange={setActivityTags}
-                tagType="activity"
               />
             </div>
           </div>

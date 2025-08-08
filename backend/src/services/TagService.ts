@@ -14,7 +14,7 @@ export class TagService {
   async createTag(data: {
     name: string;
     color?: string;
-    type?: 'general' | 'activity' | 'topic' | 'department';
+    type?: 'general' | 'topic' | 'department';
   }): Promise<Tag> {
     // Validate input
     if (!data.name || data.name.trim().length === 0) {
@@ -44,7 +44,7 @@ export class TagService {
     return await this.tagRepository.getAllTags();
   }
 
-  async getTagsByType(type: 'general' | 'activity' | 'topic' | 'department'): Promise<Tag[]> {
+  async getTagsByType(type: 'general' | 'topic' | 'department'): Promise<Tag[]> {
     return await this.tagRepository.getTagsByType(type);
   }
 
@@ -59,7 +59,7 @@ export class TagService {
   async updateTag(tag_id: string, data: {
     name?: string;
     color?: string;
-    type?: 'general' | 'activity' | 'topic' | 'department';
+    type?: 'general' | 'topic' | 'department';
   }): Promise<Tag> {
     // Validate input
     if (data.name !== undefined) {
@@ -149,7 +149,7 @@ export class TagService {
     return await this.tagRepository.getPopularTags(limit);
   }
 
-  async findOrCreateTag(name: string, type: 'general' | 'activity' | 'topic' | 'department' = 'general'): Promise<Tag> {
+  async findOrCreateTag(name: string, type: 'general' | 'topic' | 'department' = 'general'): Promise<Tag> {
     const normalizedName = name.trim().toLowerCase();
     
     if (normalizedName.length === 0) {
@@ -163,7 +163,7 @@ export class TagService {
     return await this.tagRepository.findOrCreateTag(normalizedName, type);
   }
 
-  async assignTagsByNames(session_id: string, tagNames: string[], type: 'general' | 'activity' | 'topic' | 'department' = 'general'): Promise<void> {
+  async assignTagsByNames(session_id: string, tagNames: string[], type: 'general' | 'topic' | 'department' = 'general'): Promise<void> {
     // Validate session exists
     const session = await this.sessionRepository.findById(session_id);
     if (!session) {

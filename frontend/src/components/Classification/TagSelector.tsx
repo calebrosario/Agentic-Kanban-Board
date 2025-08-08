@@ -8,7 +8,7 @@ interface TagSelectorProps {
   sessionId: string;
   selectedTags: string[];
   onTagsChange: (tagIds: string[]) => void;
-  tagType?: 'general' | 'activity' | 'topic' | 'department';
+  tagType?: 'general' | 'topic' | 'department';
   className?: string;
 }
 
@@ -90,8 +90,6 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   // 根據標籤類型顯示不同的標題
   const getLabel = () => {
     switch (tagType) {
-      case 'activity':
-        return '活動類型';
       case 'topic':
         return '主題';
       case 'department':
