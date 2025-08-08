@@ -31,6 +31,7 @@ import { WorkItemStatus } from '../types/workitem';
 import toast from 'react-hot-toast';
 import { workItemApi } from '../services/workItemApi';
 import { SessionDetail } from '../components/Session/SessionDetail';
+import ReactMarkdown from 'react-markdown';
 
 export const WorkItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -487,8 +488,8 @@ export const WorkItemDetailPage: React.FC = () => {
                 </div>
               ) : (
                 // dev.md 內容
-                <div className="flex-1 overflow-hidden">
-                  <div className="flex items-center justify-between p-4 border-b">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
                     <h2 className="text-sm font-semibold text-gray-900">開發日誌 (dev.md)</h2>
                     <button
                       onClick={downloadDevMd}
@@ -499,15 +500,64 @@ export const WorkItemDetailPage: React.FC = () => {
                     </button>
                   </div>
                   
-                  <div className="flex-1 overflow-auto p-4">
+                  <div className="flex-1 overflow-y-auto p-4 min-h-0">
                     {loadingDevMd ? (
                       <div className="flex items-center justify-center h-full">
                         <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                       </div>
                     ) : devMdContent ? (
-                      <pre className="text-xs font-mono whitespace-pre-wrap text-gray-700">
-                        {devMdContent}
-                      </pre>
+                      <div className="prose prose-sm max-w-none">
+                        <ReactMarkdown
+                          components={{
+                            // 自定義 Markdown 元件樣式
+                            h1: ({children}) => <h1 className="text-xl font-bold text-gray-900 mb-3 mt-4">{children}</h1>,
+                            h2: ({children}) => <h2 className="text-lg font-semibold text-gray-800 mb-2 mt-3">{children}</h2>,
+                            h3: ({children}) => <h3 className="text-base font-medium text-gray-700 mb-2 mt-2">{children}</h3>,
+                            p: ({children}) => <p className="text-sm text-gray-600 mb-2 leading-relaxed">{children}</p>,
+                            ul: ({children}) => <ul className="list-disc list-inside text-sm text-gray-600 mb-2 ml-2">{children}</ul>,
+                            ol: ({children}) => <ol className="list-decimal list-inside text-sm text-gray-600 mb-2 ml-2">{children}</ol>,
+                            li: ({children}) => <li className="mb-1">{children}</li>,
+                            code: ({inline, children}) => 
+                              inline ? (
+                                <code className="bg-gray-100 text-red-600 px-1 py-0.5 rounded text-xs font-mono">{children}</code>
+                              ) : (
+                                <code className="block bg-gray-900 text-gray-100 p-3 rounded text-xs font-mono overflow-x-auto">{children}</code>
+                              ),
+                            pre: ({children}) => <pre className="mb-2">{children}</pre>,
+                            blockquote: ({children}) => (
+                              <blockquote className="border-l-4 border-gray-300 pl-3 italic text-gray-600 text-sm mb-2">
+                                {children}
+                              </blockquote>
+                            ),
+                            a: ({href, children}) => (
+                              <a href={href} className="text-blue-600 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">
+                                {children}
+                              </a>
+                            ),
+                            hr: () => <hr className="my-3 border-gray-200" />,
+                            table: ({children}) => (
+                              <table className="min-w-full divide-y divide-gray-200 mb-2">
+                                {children}
+                              </table>
+                            ),
+                            thead: ({children}) => <thead className="bg-gray-50">{children}</thead>,
+                            tbody: ({children}) => <tbody className="bg-white divide-y divide-gray-200">{children}</tbody>,
+                            tr: ({children}) => <tr>{children}</tr>,
+                            th: ({children}) => (
+                              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {children}
+                              </th>
+                            ),
+                            td: ({children}) => (
+                              <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-600">
+                                {children}
+                              </td>
+                            ),
+                          }}
+                        >
+                          {devMdContent}
+                        </ReactMarkdown>
+                      </div>
                     ) : (
                       <div className="text-center text-gray-500 text-sm">
                         <FileText className="w-12 h-12 mx-auto mb-2 text-gray-300" />
