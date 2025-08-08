@@ -44,7 +44,7 @@ export const WorkItemDetailPage: React.FC = () => {
     updateWorkItem, 
     deleteWorkItem 
   } = useWorkItemStore();
-  const { sessions, loadSessions } = useSessions();
+  const { sessions, loadSessions, deleteSession } = useSessions();
   const [createSessionOpen, setCreateSessionOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -159,6 +159,31 @@ export const WorkItemDetailPage: React.FC = () => {
     setShowSessionDetail(true);
     setRightPanelView('session'); // 切換到顯示 Session
     setSidebarCollapsed(false); // 展開側邊欄以顯示 Session
+  };
+
+  // 處理 Session 刪除
+  const handleSessionDelete = async (sessionId: string) => {
+    if (window.confirm('確定要刪除這個 Session 嗎？這個動作無法復原。')) {
+      try {
+        await deleteSession(sessionId);
+        toast.success('Session 已刪除');
+        
+        // 如果刪除的是當前選中的 Session，清除選擇狀態
+        if (selectedSessionId === sessionId) {
+          setSelectedSessionId(null);
+          setShowSessionDetail(false);
+          setRightPanelView('devmd');
+        }
+        
+        // 重新載入相關資料
+        loadSessions();
+        loadWorkItem();
+        loadDevMd(); // 刪除後重新載入 dev.md
+      } catch (error) {
+        console.error('Failed to delete session:', error);
+        toast.error('刪除 Session 失敗');
+      }
+    }
   };
 
   // 關閉 SessionDetail
@@ -450,20 +475,31 @@ export const WorkItemDetailPage: React.FC = () => {
           ) : (
             <div className="space-y-2">
               {workItemSessions.map((session, index) => {
-                // 檢查此 Session 是否在 dev.md 中有記錄（優先檢查標準格式，其次檢查名稱匹配）
-                const hasDevMdEntry = sessionSections.some(
-                  section => 
-                    (section.isStandard && session.sessionId.startsWith(section.sessionId) && session.name === section.sessionName) ||
-                    (!section.isStandard && session.name === section.sessionName)
-                );
+                // 根據 Session 狀態決定色塊顏色
+                const getStatusColor = () => {
+                  switch (session.status) {
+                    case 'processing':
+                      return { bg: 'bg-yellow-500', title: '處理中' };
+                    case 'completed':
+                      return { bg: 'bg-green-500', title: '已完成' };
+                    case 'error':
+                      return { bg: 'bg-red-500', title: '發生錯誤' };
+                    case 'interrupted':
+                      return { bg: 'bg-orange-500', title: '已中斷' };
+                    case 'idle':
+                      return { bg: 'bg-blue-500', title: '閒置中' };
+                    default:
+                      return { bg: 'bg-gray-400', title: '未知狀態' };
+                  }
+                };
+                
+                const statusColor = getStatusColor();
                 
                 return (
                   <div key={session.sessionId} className="w-full relative">
-                    {hasDevMdEntry && (
-                      <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-10">
-                        <div className="bg-green-500 w-1.5 h-6 rounded-r" title="已記錄在 dev.md" />
-                      </div>
-                    )}
+                    <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-10">
+                      <div className={`${statusColor.bg} w-1.5 h-6 rounded-r`} title={statusColor.title} />
+                    </div>
                     <div 
                       onClick={(e) => {
                         e.preventDefault();
@@ -482,7 +518,7 @@ export const WorkItemDetailPage: React.FC = () => {
                         onComplete={() => {}}
                         onInterrupt={() => {}}
                         onResume={() => {}}
-                        onDelete={() => {}}
+                        onDelete={() => handleSessionDelete(session.sessionId)}
                         preserveWorkItemContext={false}
                         workItemId={id}
                         disableNavigation={true}
@@ -619,40 +655,26 @@ export const WorkItemDetailPage: React.FC = () => {
                             </span>
                           </div>
                           <div className="space-y-1 max-h-40 overflow-y-auto">
-                            {sessionSections.map((section, index) => {
-                              // 檢查是否為當前選中的 Session（只對標準格式進行匹配）
-                              const isCurrentSession = section.isStandard && workItemSessions.some(
-                                s => s.sessionId.startsWith(section.sessionId) && s.name === section.sessionName
-                              );
-                              
-                              return (
-                                <button
-                                  key={index}
-                                  onClick={() => {
-                                    scrollToSection(section.sessionName, section.isStandard);
-                                    setShowNavPanel(false);
-                                  }}
-                                  className={`w-full text-left px-2 py-1 text-xs rounded transition-colors flex items-center gap-2 ${
-                                    isCurrentSession 
-                                      ? 'bg-blue-100 text-blue-600 font-semibold' 
-                                      : 'hover:bg-blue-50 hover:text-blue-600'
-                                  }`}
-                                >
-                                  <span className="text-gray-400">#{index + 1}</span>
-                                  <span className={`truncate flex-1 ${isCurrentSession ? 'font-semibold' : 'font-medium'}`}>
-                                    {section.sessionName}
-                                  </span>
-                                  {section.isStandard ? (
-                                    <span className="text-gray-400 text-[10px]">{section.sessionId}</span>
-                                  ) : (
-                                    <span className="text-orange-400 text-[10px]" title="非標準格式">H2</span>
-                                  )}
-                                  {isCurrentSession && (
-                                    <span className="ml-auto text-[10px] bg-blue-200 px-1 rounded">當前</span>
-                                  )}
-                                </button>
-                              );
-                            })}
+                            {sessionSections.map((section, index) => (
+                              <button
+                                key={index}
+                                onClick={() => {
+                                  scrollToSection(section.sessionName, section.isStandard);
+                                  setShowNavPanel(false);
+                                }}
+                                className="w-full text-left px-2 py-1 text-xs rounded transition-colors flex items-center gap-2 hover:bg-blue-50 hover:text-blue-600"
+                              >
+                                <span className="text-gray-400">#{index + 1}</span>
+                                <span className="truncate flex-1 font-medium">
+                                  {section.sessionName}
+                                </span>
+                                {section.isStandard ? (
+                                  <span className="text-gray-400 text-[10px]">{section.sessionId}</span>
+                                ) : (
+                                  <span className="text-orange-400 text-[10px]" title="非標準格式">H2</span>
+                                )}
+                              </button>
+                            ))}
                           </div>
                         </>
                       ) : (

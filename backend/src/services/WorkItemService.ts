@@ -30,6 +30,7 @@ export class WorkItemService {
       const workItem = await this.workItemRepository.create({
         title: request.title,
         description: request.description,
+        workspace_path: request.workspace_path,
         project_id: request.project_id,
         status: WorkItemStatus.PLANNING
       });

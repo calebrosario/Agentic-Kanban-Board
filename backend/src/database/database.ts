@@ -285,6 +285,7 @@ export class Database {
             work_item_id TEXT PRIMARY KEY,
             title TEXT NOT NULL,
             description TEXT,
+            workspace_path TEXT,
             status TEXT DEFAULT 'planning' CHECK (status IN ('planning', 'in_progress', 'completed', 'cancelled')),
             priority TEXT DEFAULT 'medium' CHECK (priority IN ('high', 'medium', 'low')),
             planned_stages TEXT, -- JSON array of stage names
@@ -296,6 +297,16 @@ export class Database {
           )
         `, (err) => {
           if (err) reject(err);
+        });
+
+        // Add workspace_path column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE work_items ADD COLUMN workspace_path TEXT
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add workspace_path column to work_items:', err.message);
+          }
         });
 
         // Create projects table for session organization

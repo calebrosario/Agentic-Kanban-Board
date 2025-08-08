@@ -124,7 +124,7 @@ export class SessionService {
 3. **不要只在對話中展示**：重要內容必須持久化保存，避免知識流失
 
 範例：如果你分析了需求並產生需求文件，應該：
-- 保存為 \`xxxfolderxxxpath/requirements-${sessionId.substring(0, 8)}.md\`
+- 保存為 \`${request.workingDir}/docs/requirements-${sessionId.substring(0, 8)}.md\`
 - 在 dev.md 中記錄這個文件路徑
 
 **執行流程**：
@@ -143,7 +143,7 @@ export class SessionService {
 - 產生的分析或設計
 **產出檔案**：（必須記錄所有產生的文件）
 - 絕對路徑/檔案名稱
-- 例如：xxxfolderxxxpath/requirements-${sessionId.substring(0, 8)}.md
+- 例如：${request.workingDir}/docs/requirements-${sessionId.substring(0, 8)}.md
 **關鍵內容摘要**：（如果有重要分析，簡述要點）
 - 主要結論或決策
 - 重要發現

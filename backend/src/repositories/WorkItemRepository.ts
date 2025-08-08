@@ -6,6 +6,7 @@ interface WorkItemRow {
   work_item_id: string;
   title: string;
   description?: string;
+  workspace_path?: string;
   status: string;
   project_id?: string;
   created_at: string;
@@ -25,6 +26,7 @@ export class WorkItemRepository {
       work_item_id: row.work_item_id,
       title: row.title,
       description: row.description,
+      workspace_path: row.workspace_path,
       status: row.status as WorkItemStatus,
       project_id: row.project_id,
       created_at: new Date(row.created_at),
@@ -38,6 +40,7 @@ export class WorkItemRepository {
       workItem.work_item_id || uuidv4(),
       workItem.title,
       workItem.description,
+      workItem.workspace_path,
       workItem.status || WorkItemStatus.PLANNING,
       workItem.project_id,
       workItem.created_at ? workItem.created_at.toISOString() : new Date().toISOString(),
@@ -54,6 +57,7 @@ export class WorkItemRepository {
       work_item_id: id,
       title: workItem.title!,
       description: workItem.description,
+      workspace_path: workItem.workspace_path,
       status: workItem.status || WorkItemStatus.PLANNING,
       project_id: workItem.project_id,
       created_at: now,
@@ -62,9 +66,9 @@ export class WorkItemRepository {
 
     const sql = `
       INSERT INTO work_items (
-        work_item_id, title, description, status,
+        work_item_id, title, description, workspace_path, status,
         project_id, created_at, updated_at, completed_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     await this.db.run(sql, this.mapWorkItemToRow(newWorkItem));
@@ -130,7 +134,7 @@ export class WorkItemRepository {
 
     const sql = `
       UPDATE work_items SET
-        title = ?, description = ?, status = ?,
+        title = ?, description = ?, workspace_path = ?, status = ?,
         project_id = ?, updated_at = ?, completed_at = ?
       WHERE work_item_id = ?
     `;
@@ -138,6 +142,7 @@ export class WorkItemRepository {
     const params = [
       updatedWorkItem.title,
       updatedWorkItem.description,
+      updatedWorkItem.workspace_path,
       updatedWorkItem.status,
       updatedWorkItem.project_id,
       updatedWorkItem.updated_at.toISOString(),
