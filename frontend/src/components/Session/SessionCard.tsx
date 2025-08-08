@@ -135,9 +135,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       } : undefined}
       onDragEnd={onDragEnd ? () => onDragEnd() : undefined}>
       {/* 卡片內容 */}
-      <div className="p-2.5">
+      <div className="p-2">
         {/* 標題行 - 包含標題和狀態 */}
-        <div className="flex items-start justify-between gap-2 mb-1.5">
+        <div className="flex items-start justify-between gap-2 mb-1">
           <Link
             to={preserveWorkItemContext && workItemId 
               ? `/work-items/${workItemId}?session=${session.sessionId}` 
@@ -204,13 +204,13 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         </div>
 
         {/* 描述內容 */}
-        <div className="text-xs text-gray-600 mb-1.5">
+        <div className="text-xs text-gray-600 mb-1">
           {session.messageCount && session.messageCount > 0 && session.lastUserMessage ? (
-            <p className="line-clamp-2">
+            <p className="line-clamp-1">
               {session.lastUserMessage}
             </p>
           ) : (
-            <p className="line-clamp-2">
+            <p className="line-clamp-1">
               {session.task}
             </p>
           )}
@@ -218,7 +218,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
         {/* 分類標籤 */}
         {(session.projects && session.projects.length > 0 || session.tags && session.tags.length > 0) && (
-          <div className="flex flex-wrap gap-1 mb-1.5">
+          <div className="flex flex-wrap gap-1 mb-1">
             {/* 專案標籤 */}
             {session.projects?.map(project => (
               <span
@@ -270,7 +270,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
         {/* 錯誤訊息 */}
         {session.error && (
-          <div className="mt-1.5 p-1.5 bg-red-50 border border-red-200 rounded text-[11px] text-red-700">
+          <div className="mt-1 p-1 bg-red-50 border border-red-200 rounded text-[10px] text-red-700">
             {(() => {
               try {
                 const errorObj = JSON.parse(session.error);

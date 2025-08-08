@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Plus, AlertCircle } from 'lucide-react';
+import { X, Plus, AlertCircle, FolderOpen } from 'lucide-react';
 import { useWorkItemStore } from '../../stores/workItemStore';
 import { CreateWorkItemRequest } from '../../types/workitem';
 
@@ -21,6 +21,7 @@ export const CreateWorkItemDialog: React.FC<CreateWorkItemDialogProps> = ({
   const [formData, setFormData] = useState<CreateWorkItemRequest>({
     title: '',
     description: '',
+    workspace_path: '',
     project_id: projectId
   });
   
@@ -46,6 +47,7 @@ export const CreateWorkItemDialog: React.FC<CreateWorkItemDialogProps> = ({
       setFormData({
         title: '',
         description: '',
+        workspace_path: '',
         project_id: projectId
       });
     } catch (err) {
@@ -141,6 +143,28 @@ export const CreateWorkItemDialog: React.FC<CreateWorkItemDialogProps> = ({
                     disabled={loading}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 resize-none"
                   />
+                </div>
+
+                {/* Workspace Path */}
+                <div>
+                  <label htmlFor="workspace_path" className="block text-sm font-medium text-gray-700 mb-1">
+                    工作區路徑 (選填)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="workspace_path"
+                      value={formData.workspace_path}
+                      onChange={(e) => setFormData({ ...formData, workspace_path: e.target.value })}
+                      disabled={loading}
+                      placeholder="例如：C:\\Users\\YourName\\Projects\\MyProject"
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
+                    />
+                    <FolderOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    設定此 Work Item 的預設工作目錄，創建 Session 時會自動填入
+                  </p>
                 </div>
 
 

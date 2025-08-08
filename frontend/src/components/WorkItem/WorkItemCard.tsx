@@ -187,6 +187,13 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
             {workItem.description}
           </p>
         )}
+        
+        {/* Workspace Path */}
+        {workItem.workspace_path && (
+          <p className="text-xs text-gray-500 mb-3 truncate">
+            📁 {workItem.workspace_path}
+          </p>
+        )}
 
 
         {/* Progress */}

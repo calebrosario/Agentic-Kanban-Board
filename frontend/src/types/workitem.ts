@@ -4,6 +4,7 @@ export interface WorkItem {
   work_item_id: string;
   title: string;
   description?: string;
+  workspace_path?: string;
   status: WorkItemStatus;
   project_id?: string;
   created_at: string;
@@ -23,12 +24,14 @@ export interface WorkItem {
 export interface CreateWorkItemRequest {
   title: string;
   description?: string;
+  workspace_path?: string;
   project_id?: string;
 }
 
 export interface UpdateWorkItemRequest {
   title?: string;
   description?: string;
+  workspace_path?: string;
   status?: WorkItemStatus;
   completed_at?: string;
 }

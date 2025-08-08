@@ -43,12 +43,18 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
       loadWorkflowStages();
       fetchWorkItems(); // 載入所有 Work Items
       
-      // 如果有預設的 Work Item ID，確保它被設置
-      if (defaultWorkItemId && formData.work_item_id !== defaultWorkItemId) {
-        setFormData(prev => ({ ...prev, work_item_id: defaultWorkItemId }));
+      // 如果有預設的 Work Item ID，確保它被設置並使用其 workspace_path
+      if (defaultWorkItemId) {
+        const workItem = workItems.find(w => w.work_item_id === defaultWorkItemId);
+        setFormData(prev => ({ 
+          ...prev, 
+          work_item_id: defaultWorkItemId,
+          // 使用 Work Item 的 workspace_path，如果沒有則使用預設路徑
+          workingDir: prev.workingDir || workItem?.workspace_path || ''
+        }));
       }
     }
-  }, [isOpen, defaultWorkItemId]);
+  }, [isOpen, defaultWorkItemId, workItems]);
 
   const loadWorkflowStages = async () => {
     try {
@@ -66,6 +72,19 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
     if (name === 'workflow_stage_id') {
       const stage = workflowStages.find(s => s.stage_id === value);
       setSelectedStage(stage || null);
+    }
+    
+    // 處理 Work Item 選擇 - 自動更新工作目錄
+    if (name === 'work_item_id' && value) {
+      const selectedWorkItem = workItems.find(w => w.work_item_id === value);
+      if (selectedWorkItem?.workspace_path) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+          workingDir: selectedWorkItem.workspace_path // 自動填入 Work Item 的工作區路徑
+        }));
+        return;
+      }
     }
     
     setFormData(prev => ({
@@ -109,10 +128,11 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
       
       toast.success('Session 建立成功！');
       
-      // 重置表單
+      // 重置表單，但保留 Work Item ID 和預設路徑如果有的話
+      const workItem = defaultWorkItemId ? workItems.find(w => w.work_item_id === defaultWorkItemId) : null;
       setFormData({
         name: '',
-        workingDir: '',
+        workingDir: workItem?.workspace_path || '',
         task: '',
         continueChat: false,
         dangerouslySkipPermissions: false,

@@ -14,7 +14,9 @@ import {
   FileText,
   Download,
   Eye,
-  EyeOff
+  EyeOff,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
@@ -42,13 +44,28 @@ export const WorkItemDetailPage: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
-  const [showDevMd, setShowDevMd] = useState(false);
+  const [showDevMd, setShowDevMd] = useState(true); // 預設顯示
   const [devMdContent, setDevMdContent] = useState<string>('');
   const [loadingDevMd, setLoadingDevMd] = useState(false);
+  
+  // 從 localStorage 讀取 dev.md 側邊欄狀態
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('devMdSidebarCollapsed');
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  // 切換側邊欄狀態並保存到 localStorage
+  const toggleDevMdSidebar = () => {
+    const newState = !sidebarCollapsed;
+    setSidebarCollapsed(newState);
+    localStorage.setItem('devMdSidebarCollapsed', JSON.stringify(newState));
+  };
 
   useEffect(() => {
     if (id) {
       loadWorkItem();
+      // 自動載入 dev.md
+      loadDevMd();
     }
   }, [id]);
 
@@ -187,51 +204,69 @@ export const WorkItemDetailPage: React.FC = () => {
 
   return (
     <div className="flex-1 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex h-full">
+        {/* 主內容區 */}
+        <div className={`flex-1 px-2 sm:px-3 lg:px-4 py-2 transition-all duration-300 ${sidebarCollapsed ? 'mr-12' : 'mr-96'}`}>
         {/* Header */}
-        <div className="mb-6">
-          <button
-            onClick={() => navigate('/work-items')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            返回列表
-          </button>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex justify-between items-start mb-4">
+        <div className="mb-3">
+          <div className="bg-white rounded-lg shadow p-3">
+            <div className="flex justify-between items-start">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <Briefcase className="w-6 h-6 text-gray-400" />
-                  <h1 className="text-2xl font-bold text-gray-900">{currentWorkItem.title}</h1>
+                <div className="flex items-center gap-2 mb-1">
+                  <button
+                    onClick={() => navigate('/work-items')}
+                    className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span className="text-xs">返回</span>
+                  </button>
+                  <span className="text-gray-300">|</span>
+                  <Briefcase className="w-4 h-4 text-gray-400" />
+                  <h1 className="text-lg font-bold text-gray-900">{currentWorkItem.title}</h1>
                 </div>
                 
                 {currentWorkItem.description && (
-                  <p className="text-gray-600 mb-4">{currentWorkItem.description}</p>
+                  <p className="text-xs text-gray-600 mb-1 line-clamp-1 ml-20">{currentWorkItem.description}</p>
+                )}
+                
+                {currentWorkItem.workspace_path && (
+                  <p className="text-xs text-gray-500 mb-1 ml-20">
+                    📁 {currentWorkItem.workspace_path}
+                  </p>
                 )}
 
-                {/* Badges */}
-                <div className="flex flex-wrap gap-2">
+                {/* Badges and Meta Info in one line */}
+                <div className="flex flex-wrap items-center gap-2 text-sm ml-20">
                   {/* Status */}
-                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${status.bg} ${status.color}`}>
-                    <StatusIcon className="w-4 h-4" />
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
+                    <StatusIcon className="w-3 h-3" />
                     {status.label}
                   </span>
 
-
                   {/* Progress */}
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-50 text-purple-600">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">
                     進度 {progress}%
                   </span>
+                  
+                  {/* Meta Info inline */}
+                  <span className="text-gray-500 flex items-center gap-1 text-xs">
+                    <Calendar className="w-3 h-3" />
+                    創建於 {formatDistanceToNow(new Date(currentWorkItem.created_at), { locale: zhTW, addSuffix: true })}
+                  </span>
+                  {currentWorkItem.completed_at && (
+                    <span className="text-green-600 text-xs">
+                      完成於 {formatDistanceToNow(new Date(currentWorkItem.completed_at), { locale: zhTW, addSuffix: true })}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2">
+              <div className="flex gap-1 flex-shrink-0">
                 {currentWorkItem.status === 'planning' && (
                   <button
                     onClick={() => handleStatusChange('in_progress')}
-                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                    className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs"
                   >
                     開始執行
                   </button>
@@ -239,128 +274,57 @@ export const WorkItemDetailPage: React.FC = () => {
                 {currentWorkItem.status === 'in_progress' && (
                   <button
                     onClick={() => handleStatusChange('completed')}
-                    className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                    className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs"
                   >
                     標記完成
                   </button>
                 )}
                 <button
                   onClick={() => setEditDialogOpen(true)}
-                  className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  className="p-1 text-gray-600 hover:bg-gray-50 rounded transition-colors"
                   title="編輯"
                 >
-                  <Edit2 className="w-4 h-4" />
+                  <Edit2 className="w-3.5 h-3.5" />
                 </button>
-                <button
-                  onClick={() => {
-                    if (showDevMd) {
-                      setShowDevMd(false);
-                    } else {
-                      loadDevMd();
-                    }
-                  }}
-                  className={`p-1.5 ${showDevMd ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'} rounded-lg transition-colors`}
-                  title={showDevMd ? "隱藏 dev.md" : "查看 dev.md"}
-                  disabled={loadingDevMd}
-                >
-                  {loadingDevMd ? (
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                  ) : showDevMd ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <FileText className="w-4 h-4" />
-                  )}
-                </button>
-                {showDevMd && devMdContent && (
-                  <button
-                    onClick={downloadDevMd}
-                    className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                    title="下載 dev.md"
-                  >
-                    <Download className="w-4 h-4" />
-                  </button>
-                )}
                 <button
                   onClick={handleDelete}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
                   title="刪除"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Meta Info */}
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                創建於 {formatDistanceToNow(new Date(currentWorkItem.created_at), { locale: zhTW, addSuffix: true })}
-              </div>
-              {currentWorkItem.completed_at && (
-                <div className="text-green-600">
-                  完成於 {formatDistanceToNow(new Date(currentWorkItem.completed_at), { locale: zhTW, addSuffix: true })}
-                </div>
-              )}
-            </div>
           </div>
         </div>
 
-        {/* Dev.md Preview */}
-        {showDevMd && devMdContent && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">開發日誌 (dev.md)</h2>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={downloadDevMd}
-                  className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1"
-                >
-                  <Download className="w-4 h-4" />
-                  下載
-                </button>
-                <button
-                  onClick={() => setShowDevMd(false)}
-                  className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1"
-                >
-                  <EyeOff className="w-4 h-4" />
-                  隱藏
-                </button>
-              </div>
-            </div>
-            <div className="prose prose-sm max-w-none">
-              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap font-mono text-xs">
-                {devMdContent}
-              </pre>
-            </div>
-          </div>
-        )}
-
         {/* Sessions */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                相關 Sessions ({workItemSessions.length})
+        <div className="bg-white rounded-lg shadow p-3">
+          <div className="flex justify-between items-center mb-3">
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-semibold text-gray-900">
+                Sessions ({workItemSessions.length})
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                {completedSessions} 個已完成
-              </p>
+              <span className="text-xs text-gray-500">
+                {completedSessions} 完成
+              </span>
             </div>
             <button
               onClick={() => setCreateSessionOpen(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-1 text-xs"
             >
-              <Plus className="w-4 h-4" />
-              新增 Session
+              <Plus className="w-3 h-3" />
+              新增
             </button>
           </div>
 
           {/* Progress Bar */}
           {workItemSessions.length > 0 && (
-            <div className="mb-6">
-              <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="mb-2">
+              <div className="w-full bg-gray-200 rounded-full h-1">
                 <div 
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                  className="bg-blue-500 h-1 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -369,23 +333,23 @@ export const WorkItemDetailPage: React.FC = () => {
 
           {/* Session List */}
           {workItemSessions.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-400 mb-4">
-                <Calendar className="w-12 h-12 mx-auto" />
+            <div className="text-center py-6">
+              <div className="text-gray-400 mb-2">
+                <Calendar className="w-8 h-8 mx-auto" />
               </div>
-              <p className="text-gray-500 mb-4">
-                這個 Work Item 還沒有相關的 Sessions
+              <p className="text-xs text-gray-500 mb-2">
+                還沒有 Sessions
               </p>
               <button
                 onClick={() => setCreateSessionOpen(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+                className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors inline-flex items-center gap-1 text-xs"
               >
-                <Plus className="w-4 h-4" />
-                創建第一個 Session
+                <Plus className="w-3 h-3" />
+                創建第一個
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {workItemSessions.map((session, index) => (
                 <div key={session.sessionId} className="w-full">
                   <SessionCard
@@ -428,6 +392,62 @@ export const WorkItemDetailPage: React.FC = () => {
             toast.success('Work Item 已更新');
           }}
         />
+        </div>
+
+        {/* 右側 dev.md 側邊欄 */}
+        <div className={`fixed right-0 top-0 h-full bg-white shadow-lg transition-all duration-300 z-10 ${sidebarCollapsed ? 'w-12' : 'w-96'}`}>
+          {/* 收合/展開按鈕 */}
+          <button
+            onClick={toggleDevMdSidebar}
+            className="absolute -left-3 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-1 hover:bg-gray-50 transition-colors"
+          >
+            {sidebarCollapsed ? (
+              <ChevronLeft className="w-4 h-4 text-gray-600" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-gray-600" />
+            )}
+          </button>
+
+          {/* dev.md 內容 */}
+          {!sidebarCollapsed && (
+            <div className="h-full flex flex-col">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-sm font-semibold text-gray-900">開發日誌 (dev.md)</h2>
+                <button
+                  onClick={downloadDevMd}
+                  className="p-1.5 text-gray-600 hover:bg-gray-50 rounded transition-colors"
+                  title="下載 dev.md"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-auto p-4">
+                {loadingDevMd ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : devMdContent ? (
+                  <pre className="text-xs font-mono whitespace-pre-wrap text-gray-700">
+                    {devMdContent}
+                  </pre>
+                ) : (
+                  <div className="text-center text-gray-500 text-sm">
+                    <FileText className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                    <p>dev.md 尚未建立</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 收合時的圖示 */}
+          {sidebarCollapsed && (
+            <div className="h-full flex items-center justify-center">
+              <FileText className="w-5 h-5 text-gray-400" />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
