@@ -8,6 +8,8 @@ import { EmptyState } from "../Common/EmptyState";
 import { LoadingSpinner } from "../Common/LoadingSpinner";
 import { SessionCard } from "./SessionCard";
 import { SearchBar } from "../Common/SearchBar";
+import { SortSelector } from "../Common/SortSelector";
+import { sortSessions, getSortOptions, SortType } from "../../utils/sessionSort";
 
 interface SessionListProps {
   onCreateSession: () => void;
@@ -26,16 +28,26 @@ interface KanbanColumnProps {
   disableDrag?: boolean;
 }
 
-const KanbanColumn: React.FC<KanbanColumnProps> = ({ title, color, sessions, searchTerm, onComplete, onInterrupt, onResume, onDelete, onReorder, disableDrag = false }) => {
+const KanbanColumn: React.FC<KanbanColumnProps & { sortType?: SortType }> = ({ title, color, sessions, searchTerm, onComplete, onInterrupt, onResume, onDelete, onReorder, disableDrag = false, sortType = 'updated_desc' }) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  // 過濾 sessions
+  // 過濾並排序 sessions
   const filteredSessions = useMemo(() => {
-    if (!searchTerm) return sessions;
-
-    const term = searchTerm.toLowerCase();
-    return sessions.filter((session) => session.name.toLowerCase().includes(term) || session.task.toLowerCase().includes(term) || session.workingDir.toLowerCase().includes(term));
-  }, [sessions, searchTerm]);
+    let filtered = sessions;
+    
+    // 先過濾
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = sessions.filter((session) => 
+        session.name.toLowerCase().includes(term) || 
+        session.task.toLowerCase().includes(term) || 
+        session.workingDir.toLowerCase().includes(term)
+      );
+    }
+    
+    // 再排序
+    return sortSessions(filtered, sortType);
+  }, [sessions, searchTerm, sortType]);
 
   const getColorClasses = () => {
     switch (color) {
@@ -146,6 +158,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ title, color, sessions, sea
 export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"processing" | "idle" | "completed">("idle");
+  const [sortType, setSortType] = useState<SortType>('updated_desc');
   const deviceType = useDeviceType();
 
   const { sessions, sessionsByStatus, loading, error, completeSession, interruptSession, resumeSession, deleteSession, reorderSessionsByStatus } = useSessions();
@@ -218,23 +231,43 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold text-gray-800">Sessions</h1>
 
-          {/* 搜尋框和建立按鈕 */}
-          <div className="flex items-center gap-3">
+          {/* 搜尋框、排序和建立按鈕 */}
+          <div className="flex items-center gap-2">
+            {/* 排序選擇器 */}
+            <SortSelector
+              options={getSortOptions()}
+              value={sortType}
+              onChange={(value) => setSortType(value as SortType)}
+              className="hidden sm:block"
+            />
+            
             {/* 搜尋框 */}
             <SearchBar
-              placeholder="搜尋 Sessions..."
+              placeholder="搜尋..."
               onSearch={setSearchTerm}
               defaultValue={searchTerm}
-              className="w-32 sm:w-48"
+              className="w-24 sm:w-32"
             />
 
             {/* 建立按鈕 */}
             <button onClick={onCreateSession} className="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
               <Plus className="w-4 h-4" />
-              <span>建立</span>
+              <span className="hidden sm:inline">建立</span>
             </button>
           </div>
         </div>
+        
+        {/* 手機版排序選擇器 */}
+        {deviceType === "mobile" && sessions.length > 0 && (
+          <div className="mt-3">
+            <SortSelector
+              options={getSortOptions()}
+              value={sortType}
+              onChange={(value) => setSortType(value as SortType)}
+              className="w-full"
+            />
+          </div>
+        )}
       </div>
 
       {/* 內容區域 */}
@@ -264,9 +297,9 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
                 {/* 行動版：根據選中的標籤顯示單一欄位 */}
                 {deviceType === "mobile" ? (
                   <>
-                    {activeTab === "processing" && <KanbanColumn title="正在處理" color="yellow" sessions={sessionsByStatus[SessionStatus.PROCESSING] || []} searchTerm={searchTerm} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} disableDrag={true} />}
+                    {activeTab === "processing" && <KanbanColumn title="正在處理" color="yellow" sessions={sessionsByStatus[SessionStatus.PROCESSING] || []} searchTerm={searchTerm} sortType={sortType} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} disableDrag={true} />}
 
-                    {activeTab === "idle" && <KanbanColumn title="閒置" color="green" sessions={sessionsByStatus[SessionStatus.IDLE] || []} searchTerm={searchTerm} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} onReorder={(reorderedSessions) => reorderSessionsByStatus(SessionStatus.IDLE, reorderedSessions)} />}
+                    {activeTab === "idle" && <KanbanColumn title="閒置" color="green" sessions={sessionsByStatus[SessionStatus.IDLE] || []} searchTerm={searchTerm} sortType={sortType} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} onReorder={(reorderedSessions) => reorderSessionsByStatus(SessionStatus.IDLE, reorderedSessions)} />}
 
                     {activeTab === "completed" && (
                       <KanbanColumn
@@ -274,6 +307,7 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
                         color="blue"
                         sessions={[...(sessionsByStatus[SessionStatus.COMPLETED] || []), ...(sessionsByStatus[SessionStatus.ERROR] || []), ...(sessionsByStatus[SessionStatus.INTERRUPTED] || [])]}
                         searchTerm={searchTerm}
+                        sortType={sortType}
                         onComplete={handleComplete}
                         onInterrupt={handleInterrupt}
                         onResume={handleResume}
@@ -299,15 +333,16 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
                 ) : (
                   <>
                     {/* 桌面版和平板版：顯示所有欄位 */}
-                    <KanbanColumn title="正在處理" color="yellow" sessions={sessionsByStatus[SessionStatus.PROCESSING] || []} searchTerm={searchTerm} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} disableDrag={true} />
+                    <KanbanColumn title="正在處理" color="yellow" sessions={sessionsByStatus[SessionStatus.PROCESSING] || []} searchTerm={searchTerm} sortType={sortType} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} disableDrag={true} />
 
-                    <KanbanColumn title="閒置" color="green" sessions={sessionsByStatus[SessionStatus.IDLE] || []} searchTerm={searchTerm} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} onReorder={(reorderedSessions) => reorderSessionsByStatus(SessionStatus.IDLE, reorderedSessions)} />
+                    <KanbanColumn title="閒置" color="green" sessions={sessionsByStatus[SessionStatus.IDLE] || []} searchTerm={searchTerm} sortType={sortType} onComplete={handleComplete} onInterrupt={handleInterrupt} onResume={handleResume} onDelete={handleDelete} onReorder={(reorderedSessions) => reorderSessionsByStatus(SessionStatus.IDLE, reorderedSessions)} />
 
                     <KanbanColumn
                       title="已完成"
                       color="blue"
                       sessions={[...(sessionsByStatus[SessionStatus.COMPLETED] || []), ...(sessionsByStatus[SessionStatus.ERROR] || []), ...(sessionsByStatus[SessionStatus.INTERRUPTED] || [])]}
                       searchTerm={searchTerm}
+                      sortType={sortType}
                       onComplete={handleComplete}
                       onInterrupt={handleInterrupt}
                       onResume={handleResume}

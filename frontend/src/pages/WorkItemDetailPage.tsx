@@ -13,11 +13,8 @@ import {
   Edit2,
   FileText,
   Download,
-  Eye,
-  EyeOff,
   ChevronLeft,
   ChevronRight,
-  FileCode,
   MessageSquare,
   List,
   Hash
@@ -50,10 +47,8 @@ export const WorkItemDetailPage: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
-  const [showDevMd, setShowDevMd] = useState(true); // 預設顯示
   const [devMdContent, setDevMdContent] = useState<string>('');
   const [loadingDevMd, setLoadingDevMd] = useState(false);
-  const [showSessionDetail, setShowSessionDetail] = useState(false);
   const [rightPanelView, setRightPanelView] = useState<'devmd' | 'session' | null>('devmd'); // 控制右側顯示內容
   const [showNavPanel, setShowNavPanel] = useState(false); // 顯示快速導覽面板
   const [sessionSearchQuery, setSessionSearchQuery] = useState(''); // Session 搜尋關鍵字
@@ -158,7 +153,6 @@ export const WorkItemDetailPage: React.FC = () => {
   // 處理 Session 選擇
   const handleSessionClick = (sessionId: string) => {
     setSelectedSessionId(sessionId);
-    setShowSessionDetail(true);
     setRightPanelView('session'); // 切換到顯示 Session
     setSidebarCollapsed(false); // 展開側邊欄以顯示 Session
   };
@@ -188,21 +182,6 @@ export const WorkItemDetailPage: React.FC = () => {
     }
   };
 
-  // 關閉 SessionDetail
-  const handleCloseSessionDetail = () => {
-    setSelectedSessionId(null);
-    setShowSessionDetail(false);
-    setRightPanelView('devmd'); // 切換回 dev.md
-  };
-
-  // 切換右側面板視圖
-  const toggleRightPanelView = () => {
-    if (rightPanelView === 'devmd' && selectedSessionId) {
-      setRightPanelView('session');
-    } else if (rightPanelView === 'session') {
-      setRightPanelView('devmd');
-    }
-  };
 
   const loadWorkItem = async () => {
     if (!id) return;
@@ -230,6 +209,19 @@ export const WorkItemDetailPage: React.FC = () => {
     
     return filtered;
   }, [sessions, id, sessionSearchQuery]);
+
+  // 解析 dev.md 中的 Sessions
+  const devMdSessions = useMemo(() => {
+    const sessionSet = new Set<string>();
+    if (devMdContent) {
+      // 匹配 dev.md 中的 session ID
+      const matches = devMdContent.matchAll(/\[([^\]]+)\]\s+-\s+([a-f0-9]{8})/gi);
+      for (const match of matches) {
+        sessionSet.add(match[2]);
+      }
+    }
+    return sessionSet;
+  }, [devMdContent]);
 
   const handleStatusChange = async (status: WorkItemStatus) => {
     if (!id) return;
@@ -274,7 +266,6 @@ export const WorkItemDetailPage: React.FC = () => {
     try {
       const content = await workItemApi.getDevMd(id);
       setDevMdContent(content);
-      setShowDevMd(true);
     } catch (err) {
       console.error('Failed to load dev.md:', err);
       toast.error('載入 dev.md 失敗');
@@ -735,12 +726,9 @@ export const WorkItemDetailPage: React.FC = () => {
                             ul: ({children}) => <ul className="list-disc list-inside text-sm text-gray-600 mb-2 ml-2">{children}</ul>,
                             ol: ({children}) => <ol className="list-decimal list-inside text-sm text-gray-600 mb-2 ml-2">{children}</ol>,
                             li: ({children}) => <li className="mb-1">{children}</li>,
-                            code: ({inline, children}) => 
-                              inline ? (
-                                <code className="bg-gray-100 text-red-600 px-1 py-0.5 rounded text-xs font-mono">{children}</code>
-                              ) : (
-                                <code className="block bg-gray-900 text-gray-100 p-3 rounded text-xs font-mono overflow-x-auto">{children}</code>
-                              ),
+                            code: ({children}) => (
+                              <code className="bg-gray-100 text-red-600 px-1 py-0.5 rounded text-xs font-mono">{children}</code>
+                            ),
                             pre: ({children}) => <pre className="mb-2">{children}</pre>,
                             blockquote: ({children}) => (
                               <blockquote className="border-l-4 border-gray-300 pl-3 italic text-gray-600 text-sm mb-2">
