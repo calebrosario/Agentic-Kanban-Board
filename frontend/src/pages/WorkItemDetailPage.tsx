@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -18,7 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   FileCode,
-  MessageSquare
+  MessageSquare,
+  List,
+  Hash
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
@@ -52,6 +54,8 @@ export const WorkItemDetailPage: React.FC = () => {
   const [loadingDevMd, setLoadingDevMd] = useState(false);
   const [showSessionDetail, setShowSessionDetail] = useState(false);
   const [rightPanelView, setRightPanelView] = useState<'devmd' | 'session' | null>('devmd'); // 控制右側顯示內容
+  const [showNavPanel, setShowNavPanel] = useState(false); // 顯示快速導覽面板
+  const devMdContentRef = useRef<HTMLDivElement>(null);
   
   // 從 localStorage 讀取 dev.md 側邊欄狀態
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -64,6 +68,76 @@ export const WorkItemDetailPage: React.FC = () => {
     const newState = !sidebarCollapsed;
     setSidebarCollapsed(newState);
     localStorage.setItem('devMdSidebarCollapsed', JSON.stringify(newState));
+  };
+
+  // 解析 dev.md 內容，提取 Session 段落資訊
+  const sessionSections = useMemo(() => {
+    if (!devMdContent) return [];
+    
+    const sections: Array<{ title: string; sessionName: string; sessionId: string; lineNumber: number; isStandard: boolean }> = [];
+    const lines = devMdContent.split('\n');
+    
+    lines.forEach((line, index) => {
+      // 優先匹配標準格式：## [Session名稱] - sessionId
+      const standardMatch = line.match(/^##\s+\[([^\]]+)\]\s+-\s+([a-f0-9]{8})/i);
+      if (standardMatch) {
+        sections.push({
+          title: line.replace(/^##\s+/, ''),
+          sessionName: standardMatch[1],
+          sessionId: standardMatch[2],
+          lineNumber: index,
+          isStandard: true
+        });
+        return;
+      }
+      
+      // 回退：匹配任何 ## 開頭的標題
+      const h2Match = line.match(/^##\s+(.+)/);
+      if (h2Match) {
+        const titleContent = h2Match[1].trim();
+        // 跳過一些可能的系統標題
+        if (!titleContent.match(/^(dev\.md|開發日誌|Work Item|任務|備註)/i)) {
+          sections.push({
+            title: titleContent,
+            sessionName: titleContent,
+            sessionId: '',
+            lineNumber: index,
+            isStandard: false
+          });
+        }
+      }
+    });
+    
+    return sections;
+  }, [devMdContent]);
+
+  // 滾動到指定的 Session 段落
+  const scrollToSection = (sessionName: string, isStandard: boolean = true) => {
+    if (!devMdContentRef.current) return;
+    
+    // 找到對應的標題元素
+    const headings = devMdContentRef.current.querySelectorAll('h2');
+    for (const heading of headings) {
+      const text = heading.textContent || '';
+      
+      // 根據是否為標準格式使用不同的匹配方式
+      const isMatch = isStandard 
+        ? text.includes(`[${sessionName}]`)
+        : text.trim() === sessionName;
+        
+      if (isMatch) {
+        // 滾動到該元素
+        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // 高亮效果
+        heading.classList.add('bg-yellow-200', 'transition-colors');
+        setTimeout(() => {
+          heading.classList.remove('bg-yellow-200');
+        }, 2000);
+        
+        break;
+      }
+    }
   };
 
   useEffect(() => {
@@ -375,34 +449,48 @@ export const WorkItemDetailPage: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-2">
-              {workItemSessions.map((session, index) => (
-                <div key={session.sessionId} className="w-full">
-                  <div 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleSessionClick(session.sessionId);
-                    }}
-                    className={`cursor-pointer transition-all ${
-                      selectedSessionId === session.sessionId 
-                        ? 'ring-2 ring-blue-500 rounded-lg' 
-                        : ''
-                    }`}
-                  >
-                    <SessionCard
-                      session={session}
-                      index={index}
-                      onComplete={() => {}}
-                      onInterrupt={() => {}}
-                      onResume={() => {}}
-                      onDelete={() => {}}
-                      preserveWorkItemContext={false}
-                      workItemId={id}
-                      disableNavigation={true}
-                    />
+              {workItemSessions.map((session, index) => {
+                // 檢查此 Session 是否在 dev.md 中有記錄（優先檢查標準格式，其次檢查名稱匹配）
+                const hasDevMdEntry = sessionSections.some(
+                  section => 
+                    (section.isStandard && session.sessionId.startsWith(section.sessionId) && session.name === section.sessionName) ||
+                    (!section.isStandard && session.name === section.sessionName)
+                );
+                
+                return (
+                  <div key={session.sessionId} className="w-full relative">
+                    {hasDevMdEntry && (
+                      <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-10">
+                        <div className="bg-green-500 w-1.5 h-6 rounded-r" title="已記錄在 dev.md" />
+                      </div>
+                    )}
+                    <div 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleSessionClick(session.sessionId);
+                      }}
+                      className={`cursor-pointer transition-all ${
+                        selectedSessionId === session.sessionId 
+                          ? 'ring-2 ring-blue-500 rounded-lg' 
+                          : ''
+                      }`}
+                    >
+                      <SessionCard
+                        session={session}
+                        index={index}
+                        onComplete={() => {}}
+                        onInterrupt={() => {}}
+                        onResume={() => {}}
+                        onDelete={() => {}}
+                        preserveWorkItemContext={false}
+                        workItemId={id}
+                        disableNavigation={true}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -491,14 +579,93 @@ export const WorkItemDetailPage: React.FC = () => {
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
                     <h2 className="text-sm font-semibold text-gray-900">開發日誌 (dev.md)</h2>
-                    <button
-                      onClick={downloadDevMd}
-                      className="p-1.5 text-gray-600 hover:bg-gray-50 rounded transition-colors"
-                      title="下載 dev.md"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setShowNavPanel(!showNavPanel)}
+                        className={`p-1.5 rounded transition-colors relative ${
+                          showNavPanel ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                        title="快速導覽"
+                      >
+                        <List className="w-4 h-4" />
+                        {sessionSections.length > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                            {sessionSections.length}
+                          </span>
+                        )}
+                      </button>
+                      <button
+                        onClick={downloadDevMd}
+                        className="p-1.5 text-gray-600 hover:bg-gray-50 rounded transition-colors"
+                        title="下載 dev.md"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
+                  
+                  {/* 快速導覽面板 */}
+                  {showNavPanel && (
+                    <div className="border-b bg-gray-50 p-3 flex-shrink-0">
+                      {sessionSections.length > 0 ? (
+                        <>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-xs font-medium text-gray-700 flex items-center gap-1">
+                              <Hash className="w-3 h-3" />
+                              快速跳轉到 Session 段落
+                            </div>
+                            <span className="text-[10px] text-gray-500">
+                              共 {sessionSections.length} 個段落
+                            </span>
+                          </div>
+                          <div className="space-y-1 max-h-40 overflow-y-auto">
+                            {sessionSections.map((section, index) => {
+                              // 檢查是否為當前選中的 Session（只對標準格式進行匹配）
+                              const isCurrentSession = section.isStandard && workItemSessions.some(
+                                s => s.sessionId.startsWith(section.sessionId) && s.name === section.sessionName
+                              );
+                              
+                              return (
+                                <button
+                                  key={index}
+                                  onClick={() => {
+                                    scrollToSection(section.sessionName, section.isStandard);
+                                    setShowNavPanel(false);
+                                  }}
+                                  className={`w-full text-left px-2 py-1 text-xs rounded transition-colors flex items-center gap-2 ${
+                                    isCurrentSession 
+                                      ? 'bg-blue-100 text-blue-600 font-semibold' 
+                                      : 'hover:bg-blue-50 hover:text-blue-600'
+                                  }`}
+                                >
+                                  <span className="text-gray-400">#{index + 1}</span>
+                                  <span className={`truncate flex-1 ${isCurrentSession ? 'font-semibold' : 'font-medium'}`}>
+                                    {section.sessionName}
+                                  </span>
+                                  {section.isStandard ? (
+                                    <span className="text-gray-400 text-[10px]">{section.sessionId}</span>
+                                  ) : (
+                                    <span className="text-orange-400 text-[10px]" title="非標準格式">H2</span>
+                                  )}
+                                  {isCurrentSession && (
+                                    <span className="ml-auto text-[10px] bg-blue-200 px-1 rounded">當前</span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center py-3">
+                          <Hash className="w-6 h-6 text-gray-300 mx-auto mb-2" />
+                          <p className="text-xs text-gray-500">尚無 Session 段落</p>
+                          <p className="text-[10px] text-gray-400 mt-1">
+                            Claude Code 執行後會自動建立段落
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   
                   <div className="flex-1 overflow-y-auto p-4 min-h-0">
                     {loadingDevMd ? (
@@ -506,7 +673,7 @@ export const WorkItemDetailPage: React.FC = () => {
                         <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                       </div>
                     ) : devMdContent ? (
-                      <div className="prose prose-sm max-w-none">
+                      <div className="prose prose-sm max-w-none" ref={devMdContentRef}>
                         <ReactMarkdown
                           components={{
                             // 自定義 Markdown 元件樣式

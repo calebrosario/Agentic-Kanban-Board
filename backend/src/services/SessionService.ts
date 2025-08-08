@@ -75,6 +75,9 @@ export class SessionService {
     // 驗證請求
     this.validateCreateRequest(request);
     
+    // 先生成 sessionId，這樣可以在提示詞中使用
+    const sessionId = uuidv4();
+    
     // 如果有 workflow_stage_id，增強任務內容
     let enhancedTask = request.task;
     if (request.workflow_stage_id) {
@@ -104,25 +107,53 @@ export class SessionService {
       try {
         const devMdPath = await workItemService.getDevMdPath(request.work_item_id);
         const devMdPrompt = `
-## Work Item 開發日誌
-此任務屬於一個 Work Item，其開發日誌位於：
-${devMdPath}
+## dev.md 管理（路徑：${devMdPath}）
 
-## 重要：請遵循以下工作流程
-1. 首先使用 cat 命令讀取上述路徑的 dev.md 了解當前 Work Item 的進度
+此任務屬於一個 Work Item，請遵循以下規則管理開發日誌：
+
+**🚨 重要：段落標題必須精確遵循以下格式**
+- 你的段落標題必須是：\`## [${request.name}] - ${sessionId.substring(0, 8)}\`
+- 注意：${sessionId.substring(0, 8)} 是實際的 ID，不是 "Session-001" 這種編號
+- **正確範例**：\`## [${request.name}] - ${sessionId.substring(0, 8)}\`
+- **錯誤範例**：\`## [${request.name}] - Session-001\` ❌ 不要使用這種格式
+
+**📝 重要產出保存規則**：
+如果你在對話中產生了重要內容（如需求分析、設計文件、架構說明等），必須：
+1. **保存為文件**：將內容保存到專案目錄下的 docs/ 或其他適當位置
+2. **記錄路徑**：在 dev.md 的「產出檔案」區塊中記錄文件的絕對路徑
+3. **不要只在對話中展示**：重要內容必須持久化保存，避免知識流失
+
+範例：如果你分析了需求並產生需求文件，應該：
+- 保存為 \`xxxfolderxxxpath/requirements-${sessionId.substring(0, 8)}.md\`
+- 在 dev.md 中記錄這個文件路徑
+
+**執行流程**：
+1. 開始工作前，先用 cat 讀取 dev.md 了解當前進度
 2. 執行本次任務
-3. 在工作結束前，更新 dev.md，記錄本次 Session 的重要決策、產出和進度
+3. **重要**：如果產生了詳細分析或文件內容，立即保存為檔案
+4. 工作結束前，更新自己的段落（標題必須是 \`## [${request.name}] - ${sessionId.substring(0, 8)}\`）
 
-## 段落管理規則（重要！）
-- 當前 Session 名稱：${request.name}
-- 每個 Session 在 dev.md 中只能有一個段落
-- 如果是首次執行：在檔案末尾新增標題為 "## Session: ${request.name}" 的段落
-- 如果是後續對話：找到標題為 "## Session: ${request.name}" 的段落，重新整理該段落內容內容
-- **絕對不要**為同一個 Session 建立多個段落或建立「補充」段落
-- 如果有過程有產出任何文件，需要紀錄絕對路徑在 dev.md 中
-
+**段落內容格式**：
+\`\`\`markdown
+## [${request.name}] - ${sessionId.substring(0, 8)}
+**任務**：簡述本 Session 的目標
+**完成項目**：
+- 完成的功能或修復
+- 重要的技術決策
+- 產生的分析或設計
+**產出檔案**：（必須記錄所有產生的文件）
+- 絕對路徑/檔案名稱
+- 例如：xxxfolderxxxpath/requirements-${sessionId.substring(0, 8)}.md
+**關鍵內容摘要**：（如果有重要分析，簡述要點）
+- 主要結論或決策
+- 重要發現
+**備註**：任何重要的說明或待辦事項
 ---
+\`\`\`
 
+記住：
+1. 標題中的 "${sessionId.substring(0, 8)}" 是實際的 Session ID，不要替換成其他格式！
+2. 重要內容必須保存為檔案，不能只在對話中展示！
 `;
         enhancedTask = devMdPrompt + enhancedTask;
       } catch (error) {
@@ -131,9 +162,9 @@ ${devMdPath}
       }
     }
     
-    // 建立 Session
+    // 建立 Session，使用預先生成的 sessionId
     const session: Session = {
-      sessionId: uuidv4(),
+      sessionId: sessionId,  // 使用預先生成的 sessionId
       name: request.name,
       workingDir: request.workingDir,
       task: enhancedTask,
