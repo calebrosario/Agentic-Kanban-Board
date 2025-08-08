@@ -23,8 +23,14 @@ import { Tooltip } from '../Common/Tooltip';
 import { ProjectSelector } from '../Classification/ProjectSelector';
 import { TagSelector } from '../Classification/TagSelector';
 
-const SessionDetailComponent: React.FC = () => {
-  const { sessionId } = useParams<{ sessionId: string }>();
+interface SessionDetailProps {
+  sessionId?: string;
+  embedded?: boolean;
+}
+
+const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propSessionId, embedded = false }) => {
+  const { sessionId: urlSessionId } = useParams<{ sessionId: string }>();
+  const sessionId = propSessionId || urlSessionId;
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -40,12 +46,14 @@ const SessionDetailComponent: React.FC = () => {
 
   useEffect(() => {
     if (!sessionId) {
-      navigate('/');
+      if (!embedded) {
+        navigate('/');
+      }
       return;
     }
 
     loadSessionDetails();
-  }, [sessionId, navigate]);
+  }, [sessionId, navigate, embedded]);
 
   // 監聽 WebSocket 狀態更新
   useEffect(() => {
@@ -262,7 +270,9 @@ const SessionDetailComponent: React.FC = () => {
     try {
       await deleteSession(sessionId);
       toast.success('Session 已刪除');
-      navigate('/');
+      if (!embedded) {
+        navigate('/');
+      }
     } catch (error) {
       toast.error('無法刪除 Session');
     }
@@ -316,12 +326,14 @@ const SessionDetailComponent: React.FC = () => {
     return (
       <div className="text-center py-12">
         <div className="text-red-600 mb-4">{error || 'Session 不存在'}</div>
-        <button 
-          onClick={() => navigate('/')}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          返回 Sessions 列表
-        </button>
+        {!embedded && (
+          <button 
+            onClick={() => navigate('/')}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            返回 Sessions 列表
+          </button>
+        )}
       </div>
     );
   }

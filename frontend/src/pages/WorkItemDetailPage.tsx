@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Briefcase, 
@@ -16,7 +16,9 @@ import {
   Eye,
   EyeOff,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileCode,
+  MessageSquare
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
@@ -28,11 +30,11 @@ import { EditWorkItemDialog } from '../components/WorkItem/EditWorkItemDialog';
 import { WorkItemStatus } from '../types/workitem';
 import toast from 'react-hot-toast';
 import { workItemApi } from '../services/workItemApi';
+import { SessionDetail } from '../components/Session/SessionDetail';
 
 export const WorkItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { 
     currentWorkItem, 
     fetchWorkItem, 
@@ -47,6 +49,8 @@ export const WorkItemDetailPage: React.FC = () => {
   const [showDevMd, setShowDevMd] = useState(true); // 預設顯示
   const [devMdContent, setDevMdContent] = useState<string>('');
   const [loadingDevMd, setLoadingDevMd] = useState(false);
+  const [showSessionDetail, setShowSessionDetail] = useState(false);
+  const [rightPanelView, setRightPanelView] = useState<'devmd' | 'session' | null>('devmd'); // 控制右側顯示內容
   
   // 從 localStorage 讀取 dev.md 側邊欄狀態
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -74,15 +78,29 @@ export const WorkItemDetailPage: React.FC = () => {
     loadSessions();
   }, []);
 
-  // 處理 session 查詢參數
-  useEffect(() => {
-    const sessionId = searchParams.get('session');
-    if (sessionId) {
-      setSelectedSessionId(sessionId);
-      // 導航到 Session 詳細頁面，但保持 Work Item 的返回連結
-      navigate(`/sessions/${sessionId}?from=work-item&workItemId=${id}`, { replace: true });
+  // 處理 Session 選擇
+  const handleSessionClick = (sessionId: string) => {
+    setSelectedSessionId(sessionId);
+    setShowSessionDetail(true);
+    setRightPanelView('session'); // 切換到顯示 Session
+    setSidebarCollapsed(false); // 展開側邊欄以顯示 Session
+  };
+
+  // 關閉 SessionDetail
+  const handleCloseSessionDetail = () => {
+    setSelectedSessionId(null);
+    setShowSessionDetail(false);
+    setRightPanelView('devmd'); // 切換回 dev.md
+  };
+
+  // 切換右側面板視圖
+  const toggleRightPanelView = () => {
+    if (rightPanelView === 'devmd' && selectedSessionId) {
+      setRightPanelView('session');
+    } else if (rightPanelView === 'session') {
+      setRightPanelView('devmd');
     }
-  }, [searchParams, navigate, id]);
+  };
 
   const loadWorkItem = async () => {
     if (!id) return;
@@ -206,7 +224,13 @@ export const WorkItemDetailPage: React.FC = () => {
     <div className="flex-1 bg-gray-50">
       <div className="flex h-full">
         {/* 主內容區 */}
-        <div className={`flex-1 px-2 sm:px-3 lg:px-4 py-2 transition-all duration-300 ${sidebarCollapsed ? 'mr-12' : 'mr-96'}`}>
+        <div className={`flex-1 px-2 sm:px-3 lg:px-4 py-2 transition-all duration-300 ${
+          sidebarCollapsed 
+            ? 'mr-12' 
+            : (rightPanelView === 'session' && selectedSessionId 
+                ? 'mr-[600px]' 
+                : 'mr-96')
+        }`}>
         {/* Header */}
         <div className="mb-3">
           <div className="bg-white rounded-lg shadow p-3">
@@ -352,16 +376,30 @@ export const WorkItemDetailPage: React.FC = () => {
             <div className="space-y-2">
               {workItemSessions.map((session, index) => (
                 <div key={session.sessionId} className="w-full">
-                  <SessionCard
-                    session={session}
-                    index={index}
-                    onComplete={() => {}}
-                    onInterrupt={() => {}}
-                    onResume={() => {}}
-                    onDelete={() => {}}
-                    preserveWorkItemContext={true}
-                    workItemId={id}
-                  />
+                  <div 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleSessionClick(session.sessionId);
+                    }}
+                    className={`cursor-pointer transition-all ${
+                      selectedSessionId === session.sessionId 
+                        ? 'ring-2 ring-blue-500 rounded-lg' 
+                        : ''
+                    }`}
+                  >
+                    <SessionCard
+                      session={session}
+                      index={index}
+                      onComplete={() => {}}
+                      onInterrupt={() => {}}
+                      onResume={() => {}}
+                      onDelete={() => {}}
+                      preserveWorkItemContext={false}
+                      workItemId={id}
+                      disableNavigation={true}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -394,12 +432,14 @@ export const WorkItemDetailPage: React.FC = () => {
         />
         </div>
 
-        {/* 右側 dev.md 側邊欄 */}
-        <div className={`fixed right-0 top-0 h-full bg-white shadow-lg transition-all duration-300 z-10 ${sidebarCollapsed ? 'w-12' : 'w-96'}`}>
+        {/* 右側側邊欄 - 統一容器 */}
+        <div className={`fixed right-0 top-0 h-full bg-white shadow-lg transition-all duration-300 z-10 ${
+          sidebarCollapsed ? 'w-12' : (rightPanelView === 'session' && selectedSessionId ? 'w-[600px]' : 'w-96')
+        }`}>
           {/* 收合/展開按鈕 */}
           <button
             onClick={toggleDevMdSidebar}
-            className="absolute -left-3 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-1 hover:bg-gray-50 transition-colors"
+            className="absolute -left-3 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-1 hover:bg-gray-50 transition-colors z-20"
           >
             {sidebarCollapsed ? (
               <ChevronLeft className="w-4 h-4 text-gray-600" />
@@ -408,43 +448,84 @@ export const WorkItemDetailPage: React.FC = () => {
             )}
           </button>
 
-          {/* dev.md 內容 */}
-          {!sidebarCollapsed && (
+          {/* 側邊欄內容 */}
+          {!sidebarCollapsed ? (
             <div className="h-full flex flex-col">
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-sm font-semibold text-gray-900">開發日誌 (dev.md)</h2>
-                <button
-                  onClick={downloadDevMd}
-                  className="p-1.5 text-gray-600 hover:bg-gray-50 rounded transition-colors"
-                  title="下載 dev.md"
-                >
-                  <Download className="w-4 h-4" />
-                </button>
-              </div>
-              
-              <div className="flex-1 overflow-auto p-4">
-                {loadingDevMd ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                  </div>
-                ) : devMdContent ? (
-                  <pre className="text-xs font-mono whitespace-pre-wrap text-gray-700">
-                    {devMdContent}
-                  </pre>
-                ) : (
-                  <div className="text-center text-gray-500 text-sm">
-                    <FileText className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                    <p>dev.md 尚未建立</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+              {/* 頂部切換標籤 - 只在有 Session 時顯示 */}
+              {selectedSessionId && (
+                <div className="flex border-b">
+                  <button
+                    onClick={() => setRightPanelView('devmd')}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                      rightPanelView === 'devmd' 
+                        ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <FileText className="w-4 h-4" />
+                    開發日誌
+                  </button>
+                  <button
+                    onClick={() => setRightPanelView('session')}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                      rightPanelView === 'session' 
+                        ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Session 詳情
+                  </button>
+                </div>
+              )}
 
-          {/* 收合時的圖示 */}
-          {sidebarCollapsed && (
+              {/* 內容區域 */}
+              {rightPanelView === 'session' && selectedSessionId ? (
+                // SessionDetail 內容
+                <div className="flex-1 overflow-hidden">
+                  <SessionDetail key={selectedSessionId} sessionId={selectedSessionId} embedded={true} />
+                </div>
+              ) : (
+                // dev.md 內容
+                <div className="flex-1 overflow-hidden">
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <h2 className="text-sm font-semibold text-gray-900">開發日誌 (dev.md)</h2>
+                    <button
+                      onClick={downloadDevMd}
+                      className="p-1.5 text-gray-600 hover:bg-gray-50 rounded transition-colors"
+                      title="下載 dev.md"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex-1 overflow-auto p-4">
+                    {loadingDevMd ? (
+                      <div className="flex items-center justify-center h-full">
+                        <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    ) : devMdContent ? (
+                      <pre className="text-xs font-mono whitespace-pre-wrap text-gray-700">
+                        {devMdContent}
+                      </pre>
+                    ) : (
+                      <div className="text-center text-gray-500 text-sm">
+                        <FileText className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                        <p>dev.md 尚未建立</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            // 收合時的圖示
             <div className="h-full flex items-center justify-center">
-              <FileText className="w-5 h-5 text-gray-400" />
+              {rightPanelView === 'session' && selectedSessionId ? (
+                <MessageSquare className="w-5 h-5 text-gray-400" />
+              ) : (
+                <FileText className="w-5 h-5 text-gray-400" />
+              )}
             </div>
           )}
         </div>

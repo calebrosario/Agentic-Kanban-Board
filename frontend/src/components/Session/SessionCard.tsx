@@ -27,6 +27,7 @@ interface SessionCardProps {
   isDragging?: boolean;
   preserveWorkItemContext?: boolean; // 新增：是否保持在 Work Item 上下文中
   workItemId?: string; // 新增：當前 Work Item ID
+  disableNavigation?: boolean; // 新增：禁用導航連結
 }
 
 export const SessionCard: React.FC<SessionCardProps> = ({
@@ -41,6 +42,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   isDragging,
   preserveWorkItemContext,
   workItemId,
+  disableNavigation,
 }) => {
   const deviceType = useDeviceType();
   const getActionButtons = () => {
@@ -138,16 +140,24 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       <div className="p-2">
         {/* 標題行 - 包含標題和狀態 */}
         <div className="flex items-start justify-between gap-2 mb-1">
-          <Link
-            to={preserveWorkItemContext && workItemId 
-              ? `/work-items/${workItemId}?session=${session.sessionId}` 
-              : `/sessions/${session.sessionId}`}
-            className="flex-1 min-w-0 group"
-          >
-            <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-              {session.name}
-            </h3>
-          </Link>
+          {disableNavigation ? (
+            <div className="flex-1 min-w-0 group">
+              <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                {session.name}
+              </h3>
+            </div>
+          ) : (
+            <Link
+              to={preserveWorkItemContext && workItemId 
+                ? `/work-items/${workItemId}?session=${session.sessionId}` 
+                : `/sessions/${session.sessionId}`}
+              className="flex-1 min-w-0 group"
+            >
+              <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                {session.name}
+              </h3>
+            </Link>
+          )}
           
           {/* 狀態指示器 */}
           <div className="flex items-center gap-1 flex-shrink-0">
