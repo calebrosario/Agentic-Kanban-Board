@@ -69,5 +69,11 @@ export const workItemApi = {
   async getStats(): Promise<WorkItemStats> {
     const response = await axiosInstance.get<WorkItemStats>('/work-items/stats');
     return response.data;
+  },
+
+  // Get dev.md content for a work item
+  async getDevMd(workItemId: string): Promise<string> {
+    const response = await axiosInstance.get<{ content: string }>(`/work-items/${workItemId}/devmd`);
+    return response.data.content;
   }
 };

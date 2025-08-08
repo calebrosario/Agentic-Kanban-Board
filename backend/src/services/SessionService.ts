@@ -97,6 +97,40 @@ export class SessionService {
       }
     }
     
+    // 如果有 work_item_id，整合 dev.md 指示
+    if (request.work_item_id) {
+      const { WorkItemService } = await import('./WorkItemService');
+      const workItemService = new WorkItemService();
+      try {
+        const devMdPath = await workItemService.getDevMdPath(request.work_item_id);
+        const devMdPrompt = `
+## Work Item 開發日誌
+此任務屬於一個 Work Item，其開發日誌位於：
+${devMdPath}
+
+## 重要：請遵循以下工作流程
+1. 首先使用 cat 命令讀取上述路徑的 dev.md 了解當前 Work Item 的進度
+2. 執行本次任務
+3. 在工作結束前，更新 dev.md，記錄本次 Session 的重要決策、產出和進度
+
+## 段落管理規則（重要！）
+- 當前 Session 名稱：${request.name}
+- 每個 Session 在 dev.md 中只能有一個段落
+- 如果是首次執行：在檔案末尾新增標題為 "## Session: ${request.name}" 的段落
+- 如果是後續對話：找到標題為 "## Session: ${request.name}" 的段落，重新整理該段落內容內容
+- **絕對不要**為同一個 Session 建立多個段落或建立「補充」段落
+- 如果有過程有產出任何文件，需要紀錄絕對路徑在 dev.md 中
+
+---
+
+`;
+        enhancedTask = devMdPrompt + enhancedTask;
+      } catch (error) {
+        logger.warn(`Failed to get dev.md path for work item ${request.work_item_id}:`, error);
+        // 如果獲取失敗，繼續不影響 Session 建立
+      }
+    }
+    
     // 建立 Session
     const session: Session = {
       sessionId: uuidv4(),

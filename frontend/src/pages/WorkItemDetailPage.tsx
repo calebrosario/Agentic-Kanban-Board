@@ -10,7 +10,11 @@ import {
   XCircle,
   Trash2,
   Calendar,
-  Edit2
+  Edit2,
+  FileText,
+  Download,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
@@ -21,6 +25,7 @@ import { CreateSessionModal } from '../components/Session/CreateSessionModal';
 import { EditWorkItemDialog } from '../components/WorkItem/EditWorkItemDialog';
 import { WorkItemStatus } from '../types/workitem';
 import toast from 'react-hot-toast';
+import { workItemApi } from '../services/workItemApi';
 
 export const WorkItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +42,9 @@ export const WorkItemDetailPage: React.FC = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [showDevMd, setShowDevMd] = useState(false);
+  const [devMdContent, setDevMdContent] = useState<string>('');
+  const [loadingDevMd, setLoadingDevMd] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -106,6 +114,35 @@ export const WorkItemDetailPage: React.FC = () => {
         toast.error('刪除 Work Item 失敗');
       }
     }
+  };
+
+  const loadDevMd = async () => {
+    if (!id) return;
+    
+    setLoadingDevMd(true);
+    try {
+      const content = await workItemApi.getDevMd(id);
+      setDevMdContent(content);
+      setShowDevMd(true);
+    } catch (err) {
+      console.error('Failed to load dev.md:', err);
+      toast.error('載入 dev.md 失敗');
+    } finally {
+      setLoadingDevMd(false);
+    }
+  };
+
+  const downloadDevMd = () => {
+    if (!devMdContent || !currentWorkItem) return;
+    
+    const blob = new Blob([devMdContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentWorkItem.title}-dev.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('dev.md 已下載');
   };
 
   if (loading) {
@@ -215,6 +252,35 @@ export const WorkItemDetailPage: React.FC = () => {
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
+                  onClick={() => {
+                    if (showDevMd) {
+                      setShowDevMd(false);
+                    } else {
+                      loadDevMd();
+                    }
+                  }}
+                  className={`p-1.5 ${showDevMd ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-50'} rounded-lg transition-colors`}
+                  title={showDevMd ? "隱藏 dev.md" : "查看 dev.md"}
+                  disabled={loadingDevMd}
+                >
+                  {loadingDevMd ? (
+                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  ) : showDevMd ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <FileText className="w-4 h-4" />
+                  )}
+                </button>
+                {showDevMd && devMdContent && (
+                  <button
+                    onClick={downloadDevMd}
+                    className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                    title="下載 dev.md"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
+                )}
+                <button
                   onClick={handleDelete}
                   className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="刪除"
@@ -239,6 +305,35 @@ export const WorkItemDetailPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Dev.md Preview */}
+        {showDevMd && devMdContent && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">開發日誌 (dev.md)</h2>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={downloadDevMd}
+                  className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1"
+                >
+                  <Download className="w-4 h-4" />
+                  下載
+                </button>
+                <button
+                  onClick={() => setShowDevMd(false)}
+                  className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1"
+                >
+                  <EyeOff className="w-4 h-4" />
+                  隱藏
+                </button>
+              </div>
+            </div>
+            <div className="prose prose-sm max-w-none">
+              <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap font-mono text-xs">
+                {devMdContent}
+              </pre>
+            </div>
+          </div>
+        )}
 
         {/* Sessions */}
         <div className="bg-white rounded-lg shadow p-6">
@@ -290,19 +385,20 @@ export const WorkItemDetailPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-3">
               {workItemSessions.map((session, index) => (
-                <SessionCard
-                  key={session.sessionId}
-                  session={session}
-                  index={index}
-                  onComplete={() => {}}
-                  onInterrupt={() => {}}
-                  onResume={() => {}}
-                  onDelete={() => {}}
-                  preserveWorkItemContext={true}
-                  workItemId={id}
-                />
+                <div key={session.sessionId} className="w-full">
+                  <SessionCard
+                    session={session}
+                    index={index}
+                    onComplete={() => {}}
+                    onInterrupt={() => {}}
+                    onResume={() => {}}
+                    onDelete={() => {}}
+                    preserveWorkItemContext={true}
+                    workItemId={id}
+                  />
+                </div>
               ))}
             </div>
           )}

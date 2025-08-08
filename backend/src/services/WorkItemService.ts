@@ -8,6 +8,8 @@ import {
   WorkItemWithSessions
 } from '../types/workitem.types';
 import { logger } from '../utils/logger';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class WorkItemService {
   private workItemRepository: WorkItemRepository;
@@ -31,6 +33,9 @@ export class WorkItemService {
         project_id: request.project_id,
         status: WorkItemStatus.PLANNING
       });
+
+      // Create dev.md file for this work item
+      await this.initializeDevMd(workItem);
 
       logger.info(`Work item created: ${workItem.work_item_id}`);
       return workItem;
@@ -187,6 +192,71 @@ export class WorkItemService {
     } catch (error) {
       logger.error('Failed to get work item stats:', error);
       throw error;
+    }
+  }
+
+  private getWorkItemDir(workItemId: string): string {
+    const dataDir = path.join(process.cwd(), 'data', 'work-items', workItemId);
+    return dataDir;
+  }
+
+  private async initializeDevMd(workItem: WorkItem): Promise<void> {
+    try {
+      const workItemDir = this.getWorkItemDir(workItem.work_item_id);
+      
+      // Create directory if it doesn't exist
+      if (!fs.existsSync(workItemDir)) {
+        fs.mkdirSync(workItemDir, { recursive: true });
+      }
+
+      // Create initial dev.md content
+      const devMdPath = path.join(workItemDir, 'dev.md');
+      const initialContent = `# ${workItem.title}
+
+## 概述
+- **建立時間**: ${new Date(workItem.created_at).toLocaleString('zh-TW')}
+- **狀態**: ${workItem.status}
+- **Work Item ID**: ${workItem.work_item_id}
+${workItem.description ? `- **描述**: ${workItem.description}` : ''}
+
+---
+
+## 開發日誌
+
+<!-- AI 將在此處追加每個 Session 的進度和產出 -->
+`;
+
+      fs.writeFileSync(devMdPath, initialContent, 'utf-8');
+      logger.info(`Initialized dev.md for work item ${workItem.work_item_id}`);
+    } catch (error) {
+      logger.error(`Failed to initialize dev.md for work item ${workItem.work_item_id}:`, error);
+      // Don't throw error - dev.md is not critical for work item creation
+    }
+  }
+
+  async getDevMdPath(workItemId: string): Promise<string> {
+    const workItemDir = this.getWorkItemDir(workItemId);
+    return path.join(workItemDir, 'dev.md');
+  }
+
+  async getDevMdContent(workItemId: string): Promise<string | null> {
+    try {
+      const devMdPath = await this.getDevMdPath(workItemId);
+      
+      if (!fs.existsSync(devMdPath)) {
+        // Try to recreate dev.md if work item exists
+        const workItem = await this.workItemRepository.findById(workItemId);
+        if (workItem) {
+          await this.initializeDevMd(workItem);
+        } else {
+          return null;
+        }
+      }
+
+      return fs.readFileSync(devMdPath, 'utf-8');
+    } catch (error) {
+      logger.error(`Failed to read dev.md for work item ${workItemId}:`, error);
+      return null;
     }
   }
 

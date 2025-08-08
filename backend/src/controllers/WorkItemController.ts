@@ -174,4 +174,25 @@ export class WorkItemController {
       });
     }
   }
+
+  // Get dev.md content for a work item
+  async getDevMd(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      
+      const content = await this.workItemService.getDevMdContent(id);
+      
+      if (content === null) {
+        res.status(404).json({ error: 'dev.md not found for this work item' });
+        return;
+      }
+      
+      res.json({ content });
+    } catch (error) {
+      logger.error('Failed to get dev.md content:', error);
+      res.status(500).json({
+        error: 'Failed to get dev.md content'
+      });
+    }
+  }
 }

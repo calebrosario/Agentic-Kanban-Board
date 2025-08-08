@@ -13,6 +13,7 @@ router.post('/', (req, res) => workItemController.create(req, res));
 router.get('/', (req, res) => workItemController.list(req, res));
 router.get('/stats', (req, res) => workItemController.getStats(req, res));
 router.get('/:id', (req, res) => workItemController.get(req, res));
+router.get('/:id/devmd', (req, res) => workItemController.getDevMd(req, res));
 router.put('/:id', (req, res) => workItemController.update(req, res));
 router.delete('/:id', (req, res) => workItemController.delete(req, res));
 
