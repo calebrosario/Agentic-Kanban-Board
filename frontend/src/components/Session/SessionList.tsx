@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useDeviceType } from "../../hooks/useMediaQuery";
@@ -7,6 +7,7 @@ import { Session, SessionStatus } from "../../types/session.types";
 import { EmptyState } from "../Common/EmptyState";
 import { LoadingSpinner } from "../Common/LoadingSpinner";
 import { SessionCard } from "./SessionCard";
+import { SearchBar } from "../Common/SearchBar";
 
 interface SessionListProps {
   onCreateSession: () => void;
@@ -220,10 +221,12 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
           {/* 搜尋框和建立按鈕 */}
           <div className="flex items-center gap-3">
             {/* 搜尋框 */}
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input type="text" className="w-32 sm:w-48 pl-8 pr-3 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="搜尋..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-            </div>
+            <SearchBar
+              placeholder="搜尋 Sessions..."
+              onSearch={setSearchTerm}
+              defaultValue={searchTerm}
+              className="w-32 sm:w-48"
+            />
 
             {/* 建立按鈕 */}
             <button onClick={onCreateSession} className="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">

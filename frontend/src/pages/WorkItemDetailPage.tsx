@@ -34,6 +34,7 @@ import toast from 'react-hot-toast';
 import { workItemApi } from '../services/workItemApi';
 import { SessionDetail } from '../components/Session/SessionDetail';
 import ReactMarkdown from 'react-markdown';
+import { SearchBar } from '../components/Common/SearchBar';
 
 export const WorkItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -55,6 +56,7 @@ export const WorkItemDetailPage: React.FC = () => {
   const [showSessionDetail, setShowSessionDetail] = useState(false);
   const [rightPanelView, setRightPanelView] = useState<'devmd' | 'session' | null>('devmd'); // 控制右側顯示內容
   const [showNavPanel, setShowNavPanel] = useState(false); // 顯示快速導覽面板
+  const [sessionSearchQuery, setSessionSearchQuery] = useState(''); // Session 搜尋關鍵字
   const devMdContentRef = useRef<HTMLDivElement>(null);
   
   // 從 localStorage 讀取 dev.md 側邊欄狀態
@@ -212,8 +214,22 @@ export const WorkItemDetailPage: React.FC = () => {
     }
   };
 
-  // 過濾出屬於這個 Work Item 的 Sessions
-  const workItemSessions = sessions.filter(s => s.work_item_id === id);
+  // 過濾出屬於這個 Work Item 的 Sessions，並根據搜尋關鍵字過濾
+  const workItemSessions = useMemo(() => {
+    let filtered = sessions.filter(s => s.work_item_id === id);
+    
+    // 如果有搜尋關鍵字，進一步過濾
+    if (sessionSearchQuery) {
+      const query = sessionSearchQuery.toLowerCase();
+      filtered = filtered.filter(s => 
+        s.name.toLowerCase().includes(query) ||
+        s.task.toLowerCase().includes(query) ||
+        (s.lastUserMessage && s.lastUserMessage.toLowerCase().includes(query))
+      );
+    }
+    
+    return filtered;
+  }, [sessions, id, sessionSearchQuery]);
 
   const handleStatusChange = async (status: WorkItemStatus) => {
     if (!id) return;
@@ -442,6 +458,19 @@ export const WorkItemDetailPage: React.FC = () => {
               新增
             </button>
           </div>
+
+          {/* 搜尋框 - 只在有 Sessions 時顯示 */}
+          {sessions.filter(s => s.work_item_id === id).length > 0 && (
+            <div className="mb-3">
+              <SearchBar
+                placeholder="搜尋 Sessions..."
+                onSearch={setSessionSearchQuery}
+                defaultValue={sessionSearchQuery}
+                className="w-full"
+                debounceDelay={200}
+              />
+            </div>
+          )}
 
           {/* Progress Bar */}
           {workItemSessions.length > 0 && (

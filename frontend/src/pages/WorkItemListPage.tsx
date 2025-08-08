@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Briefcase, RefreshCw, Search } from 'lucide-react';
+import { Plus, Briefcase, RefreshCw } from 'lucide-react';
 import { useWorkItemStore } from '../stores/workItemStore';
 import { useWorkflowStageStore } from '../stores/workflowStageStore';
 import toast from 'react-hot-toast';
@@ -7,6 +7,7 @@ import { WorkItemCard } from '../components/WorkItem/WorkItemCard';
 import { CreateWorkItemDialog } from '../components/WorkItem/CreateWorkItemDialog';
 import { EditWorkItemDialog } from '../components/WorkItem/EditWorkItemDialog';
 import { WorkItemStatus, WorkItem } from '../types/workitem';
+import { SearchBar } from '../components/Common/SearchBar';
 
 export const WorkItemListPage: React.FC = () => {
   const {
@@ -190,16 +191,12 @@ export const WorkItemListPage: React.FC = () => {
           </div>
           
           <div className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="搜尋 Work Items..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
+            <SearchBar
+              placeholder="搜尋 Work Items..."
+              onSearch={setSearchQuery}
+              defaultValue={searchQuery}
+              className="w-full"
+            />
           </div>
         </div>
 
