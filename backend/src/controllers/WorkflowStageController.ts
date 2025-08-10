@@ -83,11 +83,10 @@ export class WorkflowStageController {
     } catch (error: any) {
       logger.error(`Error deleting workflow stage ${req.params.id}:`, error);
       const statusCode = error.code === 'STAGE_NOT_FOUND' ? 404 :
-                        error.code === 'STAGE_IN_USE' ? 409 : 500;
+                        error.code === 'DELETE_ERROR' ? 500 : 500;
       res.status(statusCode).json({
         success: false,
-        message: error.message || 'Failed to delete workflow stage',
-        code: error.code
+        message: error.message || 'Failed to delete workflow stage'
       });
     }
   };

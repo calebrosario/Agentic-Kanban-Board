@@ -91,20 +91,33 @@ export class WorkflowStageService {
   }
 
   async deleteStage(stageId: string): Promise<void> {
+    // 檢查 stage 是否存在
+    const stage = await this.repository.findById(stageId);
+    if (!stage) {
+      throw new ValidationError('Workflow stage not found', 'STAGE_NOT_FOUND');
+    }
+
+    // 在刪除之前，先將所有使用此 stage 的 sessions 的 workflow_stage_id 設為 NULL
+    const { Database } = await import('../database/database');
+    const db = Database.getInstance();
+    
     try {
+      // 更新所有相關的 sessions
+      await db.run(
+        `UPDATE sessions SET workflow_stage_id = NULL WHERE workflow_stage_id = ?`,
+        [stageId]
+      );
+      
+      // 現在可以安全地刪除 workflow stage
       const deleted = await this.repository.delete(stageId);
       if (!deleted) {
-        throw new ValidationError('Workflow stage not found', 'STAGE_NOT_FOUND');
+        throw new ValidationError('Failed to delete workflow stage', 'DELETE_FAILED');
       }
     } catch (error: any) {
-      // 檢查是否是外鍵約束錯誤
-      if (error.code === 'SQLITE_CONSTRAINT' && error.message?.includes('FOREIGN KEY')) {
-        throw new ValidationError(
-          '無法刪除此工作流程階段，因為有 Session 正在使用它。請先刪除或更新相關的 Session。',
-          'STAGE_IN_USE'
-        );
-      }
-      throw error;
+      throw new ValidationError(
+        `刪除工作流程階段時發生錯誤: ${error.message}`,
+        'DELETE_ERROR'
+      );
     }
   }
 
