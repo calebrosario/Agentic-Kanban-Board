@@ -167,7 +167,6 @@ export const WorkItemDetailPage: React.FC = () => {
         // 如果刪除的是當前選中的 Session，清除選擇狀態
         if (selectedSessionId === sessionId) {
           setSelectedSessionId(null);
-          setShowSessionDetail(false);
           setRightPanelView('devmd');
         }
         
@@ -210,18 +209,6 @@ export const WorkItemDetailPage: React.FC = () => {
     return filtered;
   }, [sessions, id, sessionSearchQuery]);
 
-  // 解析 dev.md 中的 Sessions
-  const devMdSessions = useMemo(() => {
-    const sessionSet = new Set<string>();
-    if (devMdContent) {
-      // 匹配 dev.md 中的 session ID
-      const matches = devMdContent.matchAll(/\[([^\]]+)\]\s+-\s+([a-f0-9]{8})/gi);
-      for (const match of matches) {
-        sessionSet.add(match[2]);
-      }
-    }
-    return sessionSet;
-  }, [devMdContent]);
 
   const handleStatusChange = async (status: WorkItemStatus) => {
     if (!id) return;

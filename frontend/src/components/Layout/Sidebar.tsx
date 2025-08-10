@@ -9,7 +9,6 @@ import {
   Briefcase,
   ChevronLeft,
   ChevronRight,
-  Menu,
   FileText
 } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';

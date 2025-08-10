@@ -81,7 +81,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         setFormData(prev => ({
           ...prev,
           [name]: value,
-          workingDir: selectedWorkItem.workspace_path // 自動填入 Work Item 的工作區路徑
+          workingDir: selectedWorkItem.workspace_path || prev.workingDir // 自動填入 Work Item 的工作區路徑
         }));
         return;
       }
