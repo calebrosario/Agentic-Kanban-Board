@@ -82,10 +82,12 @@ export class WorkflowStageController {
       res.status(204).send();
     } catch (error: any) {
       logger.error(`Error deleting workflow stage ${req.params.id}:`, error);
-      const statusCode = error.code === 'STAGE_NOT_FOUND' ? 404 : 500;
+      const statusCode = error.code === 'STAGE_NOT_FOUND' ? 404 :
+                        error.code === 'STAGE_IN_USE' ? 409 : 500;
       res.status(statusCode).json({
         success: false,
-        message: error.message || 'Failed to delete workflow stage'
+        message: error.message || 'Failed to delete workflow stage',
+        code: error.code
       });
     }
   };
@@ -114,19 +116,6 @@ export class WorkflowStageController {
     }
   };
 
-  // POST /api/workflow-stages/initialize
-  initializeDefaults = async (req: Request, res: Response): Promise<void> => {
-    try {
-      await this.service.initializeDefaultStages();
-      res.json({ success: true, message: 'Default workflow stages initialized' });
-    } catch (error) {
-      logger.error('Error initializing default workflow stages:', error);
-      res.status(500).json({
-        success: false,
-        message: error instanceof Error ? error.message : 'Failed to initialize default stages'
-      });
-    }
-  };
 
   // GET /api/workflow-stages/:id/effective-prompt
   getEffectivePrompt = async (req: Request, res: Response): Promise<void> => {

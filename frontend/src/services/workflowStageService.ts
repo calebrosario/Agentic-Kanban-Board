@@ -74,11 +74,6 @@ export const workflowStageService = {
     await axiosInstance.post('/workflow-stages/reorder', { stages });
   },
 
-  // 初始化預設階段
-  async initializeDefaults(): Promise<void> {
-    await axiosInstance.post('/workflow-stages/initialize');
-  },
-
   // 檢查 Agent 是否存在
   async checkAgentExists(agentName: string): Promise<boolean> {
     const response = await axiosInstance.post<{ exists: boolean }>('/workflow-stages/check-agent', {

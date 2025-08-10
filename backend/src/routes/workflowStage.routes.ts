@@ -22,9 +22,6 @@ router.delete('/:id', controller.deleteStage);
 // POST /api/workflow-stages/reorder - Reorder stages
 router.post('/reorder', controller.reorderStages);
 
-// POST /api/workflow-stages/initialize - Initialize default stages
-router.post('/initialize', controller.initializeDefaults);
-
 // GET /api/workflow-stages/:id/effective-prompt - Get effective prompt
 router.get('/:id/effective-prompt', controller.getEffectivePrompt);
 

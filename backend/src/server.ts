@@ -76,12 +76,6 @@ async function startServer() {
     const db = Database.getInstance();
     await db.initialize();
     logger.info('Database initialized successfully');
-    
-    // Initialize default workflow stages
-    const { WorkflowStageService } = await import('./services/WorkflowStageService');
-    const workflowStageService = new WorkflowStageService();
-    await workflowStageService.initializeDefaultStages();
-    logger.info('Default workflow stages initialized');
 
     // Initialize Agent Prompt Service
     const { agentPromptService } = await import('./services/AgentPromptService');
