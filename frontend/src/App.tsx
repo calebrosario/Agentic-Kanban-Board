@@ -14,6 +14,8 @@ import { LoginPage } from './components/Auth/LoginPage';
 import { WorkflowStages } from './pages/WorkflowStages';
 import { WorkItemListPage } from './pages/WorkItemListPage';
 import { WorkItemDetailPage } from './pages/WorkItemDetailPage';
+import AgentPromptsPage from './pages/AgentPromptsPage';
+import AgentPromptDetailPage from './pages/AgentPromptDetailPage';
 
 function App() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -59,6 +61,8 @@ function App() {
                             <Route path="/workflow-stages" element={<WorkflowStages />} />
                             <Route path="/work-items" element={<WorkItemListPage />} />
                             <Route path="/work-items/:id" element={<WorkItemDetailPage />} />
+                            <Route path="/agent-prompts" element={<AgentPromptsPage />} />
+                            <Route path="/agent-prompts/:name" element={<AgentPromptDetailPage />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                           </Routes>
                         </ErrorBoundary>

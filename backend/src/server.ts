@@ -83,6 +83,11 @@ async function startServer() {
     await workflowStageService.initializeDefaultStages();
     logger.info('Default workflow stages initialized');
 
+    // Initialize Agent Prompt Service
+    const { agentPromptService } = await import('./services/AgentPromptService');
+    await agentPromptService.initialize();
+    logger.info('Agent Prompt Service initialized');
+
     // Initialize process manager
     processManager = new ProcessManager();
     
@@ -176,6 +181,9 @@ async function startServer() {
     // Work Item routes (需要認證)
     const { workItemRouter } = await import('./routes/workitem.routes');
     
+    // Agent Prompts routes (需要認證)
+    const agentPromptsRouter = (await import('./routes/agentPrompts')).default;
+    
     // Session routes (需要認證)
     const { authMiddleware } = await import('./middleware/auth.middleware');
     app.use('/api/sessions', authMiddleware, sessionRouter);
@@ -184,6 +192,7 @@ async function startServer() {
     app.use('/api/tags', authMiddleware, tagRouter);
     app.use('/api/workflow-stages', authMiddleware, workflowStageRouter);
     app.use('/api/work-items', authMiddleware, workItemRouter);
+    app.use('/api/agent-prompts', authMiddleware, agentPromptsRouter);
     
     logger.info('Routes initialized successfully');
 
