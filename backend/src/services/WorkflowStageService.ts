@@ -5,6 +5,7 @@ import {
   UpdateWorkflowStageRequest 
 } from '../repositories/WorkflowStageRepository';
 import { ValidationError } from './SessionService';
+import { agentPromptService } from './AgentPromptService';
 
 export class WorkflowStageService {
   private repository: WorkflowStageRepository;
@@ -34,9 +35,17 @@ export class WorkflowStageService {
   }
 
   async createStage(request: CreateWorkflowStageRequest): Promise<WorkflowStage> {
-    // Validate required fields
-    if (!request.name || !request.system_prompt) {
-      throw new ValidationError('Name and system prompt are required', 'INVALID_REQUEST');
+    // Validate required fields - either system_prompt or agent_ref must be provided
+    if (!request.name || (!request.system_prompt && !request.agent_ref)) {
+      throw new ValidationError('Name and either system prompt or agent reference are required', 'INVALID_REQUEST');
+    }
+
+    // Validate Agent reference if provided
+    if (request.agent_ref) {
+      const agentContent = await agentPromptService.getAgentContent(request.agent_ref);
+      if (!agentContent) {
+        throw new ValidationError(`Agent "${request.agent_ref}" 檔案不存在或無法讀取`, 'AGENT_NOT_FOUND');
+      }
     }
 
     // Check if name already exists
@@ -45,10 +54,6 @@ export class WorkflowStageService {
       throw new ValidationError('Stage name already exists', 'DUPLICATE_NAME');
     }
 
-    // Validate temperature range
-    if (request.temperature !== undefined && (request.temperature < 0 || request.temperature > 2)) {
-      throw new ValidationError('Temperature must be between 0 and 2', 'INVALID_TEMPERATURE');
-    }
 
     return await this.repository.create(request);
   }
@@ -60,6 +65,14 @@ export class WorkflowStageService {
       throw new ValidationError('Workflow stage not found', 'STAGE_NOT_FOUND');
     }
 
+    // Validate Agent reference if provided
+    if (request.agent_ref) {
+      const agentContent = await agentPromptService.getAgentContent(request.agent_ref);
+      if (!agentContent) {
+        throw new ValidationError(`Agent "${request.agent_ref}" 檔案不存在或無法讀取`, 'AGENT_NOT_FOUND');
+      }
+    }
+
     // If updating name, check for duplicates
     if (request.name && request.name !== existing.name) {
       const duplicate = await this.repository.findByName(request.name);
@@ -68,10 +81,6 @@ export class WorkflowStageService {
       }
     }
 
-    // Validate temperature range
-    if (request.temperature !== undefined && (request.temperature < 0 || request.temperature > 2)) {
-      throw new ValidationError('Temperature must be between 0 and 2', 'INVALID_TEMPERATURE');
-    }
 
     const updated = await this.repository.update(stageId, request);
     if (!updated) {
@@ -100,6 +109,52 @@ export class WorkflowStageService {
     await this.repository.reorder(stageOrders);
   }
 
+  /**
+   * 取得工作階段的有效提示詞
+   * 如果設定了 agent_ref，優先使用 Agent 提示詞；否則使用自訂提示詞
+   */
+  async getEffectivePrompt(stageId: string): Promise<{
+    content: string;
+    source: 'agent' | 'custom';
+    agentName?: string;
+  }> {
+    const stage = await this.getStage(stageId);
+    
+    if (stage.agent_ref) {
+      try {
+        const agentContent = await agentPromptService.getAgentContent(stage.agent_ref);
+        if (agentContent?.content) {
+          return {
+            content: agentContent.content,
+            source: 'agent',
+            agentName: stage.agent_ref
+          };
+        }
+      } catch (error) {
+        // Agent 讀取失敗，拋出錯誤（阻斷式處理）
+        throw new ValidationError(`Agent "${stage.agent_ref}" 檔案不存在或無法讀取`, 'AGENT_NOT_FOUND');
+      }
+    }
+    
+    // 使用自訂提示詞
+    return {
+      content: stage.system_prompt || '',
+      source: 'custom'
+    };
+  }
+
+  /**
+   * 檢查 Agent 是否存在（用於前端驗證）
+   */
+  async checkAgentExists(agentName: string): Promise<boolean> {
+    try {
+      const agentContent = await agentPromptService.getAgentContent(agentName);
+      return !!agentContent;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async initializeDefaultStages(): Promise<void> {
     // Check if any stages exist
     const existingStages = await this.repository.findAll();
@@ -122,7 +177,6 @@ export class WorkflowStageService {
 5. 產出清晰的需求規格文件
 
 請使用結構化的格式，包含背景、目標、範圍、功能需求、非功能需求、約束條件等章節。`,
-        temperature: 0.7,
         suggested_tasks: ['分析功能需求', '整理需求文件', '定義驗收標準'],
         color: '#3B82F6',
         icon: 'clipboard-list',
@@ -141,7 +195,6 @@ export class WorkflowStageService {
 5. 產出技術設計文件
 
 請提供架構圖、數據流程圖、API 規格等，並說明技術選型的理由。`,
-        temperature: 0.8,
         suggested_tasks: ['設計系統架構', '規劃資料庫結構', '定義 API 介面'],
         color: '#8B5CF6',
         icon: 'cube',
@@ -159,8 +212,7 @@ export class WorkflowStageService {
 4. 編寫適當的註解和文件
 5. 考慮程式碼的性能和安全性
 
-請遵循專案的程式碼規範，並確保程式碼的可讀性和可測試性。`,
-        temperature: 0.5,
+請遵循專案的程式碼規節，並確保程式碼的可讀性和可測試性。`,
         suggested_tasks: ['實作功能模組', '編寫 API 端點', '開發前端介面'],
         color: '#10B981',
         icon: 'code',
@@ -179,7 +231,6 @@ export class WorkflowStageService {
 5. 產出測試報告和改進建議
 
 請使用系統化的測試方法，確保功能的正確性和穩定性。`,
-        temperature: 0.6,
         suggested_tasks: ['編寫測試案例', '執行功能測試', '性能測試'],
         color: '#F59E0B',
         icon: 'check-circle',
@@ -198,7 +249,6 @@ export class WorkflowStageService {
 5. 維護變更日誌和版本說明
 
 請使用清晰、簡潔的語言，並提供充足的範例和圖示。`,
-        temperature: 0.7,
         suggested_tasks: ['撰寫 API 文件', '編寫使用指南', '整理 FAQ'],
         color: '#6B7280',
         icon: 'document-text',

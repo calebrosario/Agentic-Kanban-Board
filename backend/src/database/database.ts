@@ -266,7 +266,6 @@ export class Database {
             name TEXT NOT NULL UNIQUE,
             description TEXT,
             system_prompt TEXT NOT NULL,
-            temperature REAL DEFAULT 0.7,
             suggested_tasks TEXT, -- JSON array
             color TEXT DEFAULT '#4F46E5',
             icon TEXT DEFAULT 'folder',
@@ -277,6 +276,16 @@ export class Database {
           )
         `, (err) => {
           if (err) reject(err);
+        });
+
+        // Add agent_ref column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE workflow_stages ADD COLUMN agent_ref TEXT
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add agent_ref column:', err.message);
+          }
         });
 
         // Create work_items table for organizing related sessions

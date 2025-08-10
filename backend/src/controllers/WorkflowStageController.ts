@@ -127,4 +127,48 @@ export class WorkflowStageController {
       });
     }
   };
+
+  // GET /api/workflow-stages/:id/effective-prompt
+  getEffectivePrompt = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const result = await this.service.getEffectivePrompt(id);
+      res.json(result);
+    } catch (error: any) {
+      logger.error('Error getting effective prompt:', error);
+      const statusCode = error.code === 'STAGE_NOT_FOUND' ? 404 : 
+                        error.code === 'AGENT_NOT_FOUND' ? 400 : 500;
+      res.status(statusCode).json({
+        success: false,
+        message: error.message || 'Failed to get effective prompt'
+      });
+    }
+  };
+
+  // POST /api/workflow-stages/check-agent
+  checkAgentExists = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { agentName } = req.body;
+      
+      if (!agentName) {
+        res.status(400).json({
+          success: false,
+          message: 'Agent name is required'
+        });
+        return;
+      }
+
+      const exists = await this.service.checkAgentExists(agentName);
+      res.json({ 
+        exists,
+        agentName 
+      });
+    } catch (error) {
+      logger.error('Error checking agent exists:', error);
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to check agent'
+      });
+    }
+  };
 }

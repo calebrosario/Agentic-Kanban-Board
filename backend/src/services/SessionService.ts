@@ -86,8 +86,16 @@ export class SessionService {
       try {
         const stage = await workflowStageService.getStage(request.workflow_stage_id);
         if (stage) {
-          // 將 system_prompt 和原始任務結合
-          enhancedTask = `${stage.system_prompt}\n\n用戶任務：${request.task}`;
+          // 使用 getEffectivePrompt 來獲取實際的提示詞（可能來自 agent）
+          const effectivePrompt = await workflowStageService.getEffectivePrompt(request.workflow_stage_id);
+          
+          // 將有效提示詞和原始任務結合
+          enhancedTask = `${effectivePrompt.content}\n\n用戶任務：${request.task}`;
+          
+          // 如果是來自 Agent，添加說明
+          if (effectivePrompt.source === 'agent') {
+            enhancedTask = `[使用 Agent: ${effectivePrompt.agentName}]\n\n${enhancedTask}`;
+          }
           
           // 如果有建議任務，可以在任務中提示
           if (stage.suggested_tasks && stage.suggested_tasks.length > 0) {

@@ -6,7 +6,7 @@ export interface WorkflowStage {
   name: string;
   description?: string;
   system_prompt: string;
-  temperature: number;
+  agent_ref?: string; // 參照的 Agent 檔名
   suggested_tasks?: string[];
   color: string;
   icon: string;
@@ -20,7 +20,7 @@ export interface CreateWorkflowStageRequest {
   name: string;
   description?: string;
   system_prompt: string;
-  temperature?: number;
+  agent_ref?: string;
   suggested_tasks?: string[];
   color?: string;
   icon?: string;
@@ -31,7 +31,7 @@ export interface UpdateWorkflowStageRequest {
   name?: string;
   description?: string;
   system_prompt?: string;
-  temperature?: number;
+  agent_ref?: string;
   suggested_tasks?: string[];
   color?: string;
   icon?: string;
@@ -108,7 +108,7 @@ export class WorkflowStageRepository {
       name: request.name,
       description: request.description || null,
       system_prompt: request.system_prompt,
-      temperature: request.temperature || 0.7,
+      agent_ref: request.agent_ref || null,
       suggested_tasks: request.suggested_tasks || [],
       color: request.color || '#4F46E5',
       icon: request.icon || 'folder',
@@ -120,7 +120,7 @@ export class WorkflowStageRepository {
     
     await this.db.run(
       `INSERT INTO workflow_stages (
-        stage_id, name, description, system_prompt, temperature,
+        stage_id, name, description, system_prompt, agent_ref,
         suggested_tasks, color, icon, sort_order, is_active,
         created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -129,7 +129,7 @@ export class WorkflowStageRepository {
         stage.name,
         stage.description,
         stage.system_prompt,
-        stage.temperature,
+        stage.agent_ref,
         JSON.stringify(stage.suggested_tasks),
         stage.color,
         stage.icon,
@@ -167,9 +167,9 @@ export class WorkflowStageRepository {
       values.push(request.system_prompt);
     }
     
-    if (request.temperature !== undefined) {
-      updates.push('temperature = ?');
-      values.push(request.temperature);
+    if (request.agent_ref !== undefined) {
+      updates.push('agent_ref = ?');
+      values.push(request.agent_ref);
     }
     
     if (request.suggested_tasks !== undefined) {

@@ -25,4 +25,10 @@ router.post('/reorder', controller.reorderStages);
 // POST /api/workflow-stages/initialize - Initialize default stages
 router.post('/initialize', controller.initializeDefaults);
 
+// GET /api/workflow-stages/:id/effective-prompt - Get effective prompt
+router.get('/:id/effective-prompt', controller.getEffectivePrompt);
+
+// POST /api/workflow-stages/check-agent - Check if agent exists
+router.post('/check-agent', controller.checkAgentExists);
+
 export default router;

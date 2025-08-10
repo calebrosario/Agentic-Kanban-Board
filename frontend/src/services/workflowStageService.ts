@@ -5,7 +5,7 @@ export interface WorkflowStage {
   name: string;
   description?: string;
   system_prompt: string;
-  temperature: number;
+  agent_ref?: string; // 參照的 Agent 檔名
   suggested_tasks?: string[];
   color: string;
   icon: string;
@@ -19,7 +19,7 @@ export interface CreateWorkflowStageRequest {
   name: string;
   description?: string;
   system_prompt: string;
-  temperature?: number;
+  agent_ref?: string;
   suggested_tasks?: string[];
   color?: string;
   icon?: string;
@@ -30,7 +30,7 @@ export interface UpdateWorkflowStageRequest {
   name?: string;
   description?: string;
   system_prompt?: string;
-  temperature?: number;
+  agent_ref?: string;
   suggested_tasks?: string[];
   color?: string;
   icon?: string;
@@ -77,5 +77,23 @@ export const workflowStageService = {
   // 初始化預設階段
   async initializeDefaults(): Promise<void> {
     await axiosInstance.post('/workflow-stages/initialize');
+  },
+
+  // 檢查 Agent 是否存在
+  async checkAgentExists(agentName: string): Promise<boolean> {
+    const response = await axiosInstance.post<{ exists: boolean }>('/workflow-stages/check-agent', {
+      agentName
+    });
+    return response.data.exists;
+  },
+
+  // 取得有效提示詞
+  async getEffectivePrompt(stageId: string): Promise<{
+    content: string;
+    source: 'agent' | 'custom';
+    agentName?: string;
+  }> {
+    const response = await axiosInstance.get(`/workflow-stages/${stageId}/effective-prompt`);
+    return response.data;
   }
 };

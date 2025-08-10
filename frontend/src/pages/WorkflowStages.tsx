@@ -6,11 +6,13 @@ import {
   Save, 
   X, 
   Workflow,
-  Thermometer,
   ListTodo,
-  Palette
+  Palette,
+  FileText,
+  AlertTriangle
 } from 'lucide-react';
 import { workflowStageService, WorkflowStage } from '../services/workflowStageService';
+import { agentPromptService, AgentListItem } from '../services/agentPromptService';
 import toast from 'react-hot-toast';
 
 export const WorkflowStages: React.FC = () => {
@@ -19,10 +21,30 @@ export const WorkflowStages: React.FC = () => {
   const [editingStage, setEditingStage] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState<Partial<WorkflowStage>>({});
+  
+  // Agent 相關狀態
+  const [agents, setAgents] = useState<AgentListItem[]>([]);
+  const [promptSource, setPromptSource] = useState<'custom' | 'agent'>('custom');
+  const [agentError, setAgentError] = useState<string>('');
+  const [isAgentConfigured, setIsAgentConfigured] = useState(false);
 
   useEffect(() => {
     loadStages();
+    loadAgentConfig();
   }, []);
+
+  const loadAgentConfig = async () => {
+    try {
+      const config = await agentPromptService.getConfig();
+      setIsAgentConfigured(config.configured);
+      if (config.configured) {
+        const agentList = await agentPromptService.listAgents();
+        setAgents(agentList);
+      }
+    } catch (error) {
+      console.error('Failed to load agent config:', error);
+    }
+  };
 
   const loadStages = async () => {
     try {
@@ -39,11 +61,13 @@ export const WorkflowStages: React.FC = () => {
 
   const handleCreate = () => {
     setIsCreating(true);
+    setPromptSource('custom');
+    setAgentError('');
     setFormData({
       name: '',
       description: '',
       system_prompt: '',
-      temperature: 0.7,
+      agent_ref: '',
       suggested_tasks: [],
       color: '#8B5CF6',
       icon: 'workflow',
@@ -53,35 +77,138 @@ export const WorkflowStages: React.FC = () => {
 
   const handleEdit = (stage: WorkflowStage) => {
     setEditingStage(stage.stage_id);
+    setPromptSource(stage.agent_ref ? 'agent' : 'custom');
+    setAgentError('');
     setFormData({
       ...stage,
       suggested_tasks: stage.suggested_tasks || []
     });
   };
 
+  // Agent 驗證邏輯
+  const validateAgent = async (agentName: string): Promise<boolean> => {
+    if (!agentName) return true;
+    
+    try {
+      const exists = await workflowStageService.checkAgentExists(agentName);
+      if (!exists) {
+        setAgentError(`Agent "${agentName}" 檔案不存在！請檢查 .claude 路徑設定或選擇其他 Agent。`);
+        return false;
+      }
+      setAgentError('');
+      return true;
+    } catch (error) {
+      setAgentError('驗證 Agent 時發生錯誤');
+      return false;
+    }
+  };
+
+  const handlePromptSourceChange = (source: 'custom' | 'agent') => {
+    setPromptSource(source);
+    setAgentError('');
+    
+    if (source === 'agent') {
+      // 切換到 Agent 模式時，清空自訂提示詞，保留 agent_ref
+      setFormData(prev => ({ 
+        ...prev, 
+        system_prompt: '' 
+      }));
+    } else {
+      // 切換到自訂模式時，清空 agent_ref
+      setFormData(prev => ({ 
+        ...prev, 
+        agent_ref: '' 
+      }));
+    }
+  };
+
+  const handleAgentChange = async (agentName: string) => {
+    setFormData(prev => ({ ...prev, agent_ref: agentName }));
+    
+    if (agentName) {
+      await validateAgent(agentName);
+    } else {
+      setAgentError('');
+    }
+  };
+
   const handleSave = async () => {
     try {
       if (isCreating) {
-        if (!formData.name || !formData.system_prompt) {
-          toast.error('請填寫必要欄位');
+        // 驗證必要欄位
+        if (!formData.name) {
+          toast.error('請填寫階段名稱');
+          return;
+        }
+
+        // 根據提示詞來源驗證
+        if (promptSource === 'custom') {
+          if (!formData.system_prompt) {
+            toast.error('請填寫自訂提示詞');
+            return;
+          }
+        } else {
+          if (!formData.agent_ref) {
+            toast.error('請選擇 Agent');
+            return;
+          }
+          
+          // 驗證 Agent 存在性
+          const agentValid = await validateAgent(formData.agent_ref);
+          if (!agentValid) {
+            return;
+          }
+        }
+
+        // 如果有 Agent 錯誤，阻止儲存
+        if (agentError) {
+          toast.error('請先解決 Agent 設定問題');
           return;
         }
         await workflowStageService.createStage({
           name: formData.name!,
           description: formData.description,
-          system_prompt: formData.system_prompt!,
-          temperature: formData.temperature,
+          system_prompt: promptSource === 'custom' ? formData.system_prompt! : '',
+          agent_ref: promptSource === 'agent' ? formData.agent_ref : '',
           suggested_tasks: formData.suggested_tasks,
           color: formData.color,
           icon: formData.icon
         });
         toast.success('工作流程階段建立成功');
       } else if (editingStage) {
+        // 同樣的驗證邏輯
+        if (!formData.name) {
+          toast.error('請填寫階段名稱');
+          return;
+        }
+
+        if (promptSource === 'custom') {
+          if (!formData.system_prompt) {
+            toast.error('請填寫自訂提示詞');
+            return;
+          }
+        } else {
+          if (!formData.agent_ref) {
+            toast.error('請選擇 Agent');
+            return;
+          }
+          
+          const agentValid = await validateAgent(formData.agent_ref);
+          if (!agentValid) {
+            return;
+          }
+        }
+
+        if (agentError) {
+          toast.error('請先解決 Agent 設定問題');
+          return;
+        }
+
         await workflowStageService.updateStage(editingStage, {
           name: formData.name,
           description: formData.description,
-          system_prompt: formData.system_prompt,
-          temperature: formData.temperature,
+          system_prompt: promptSource === 'custom' ? formData.system_prompt! : '',
+          agent_ref: promptSource === 'agent' ? formData.agent_ref : '',
           suggested_tasks: formData.suggested_tasks,
           color: formData.color,
           icon: formData.icon,
@@ -92,10 +219,17 @@ export const WorkflowStages: React.FC = () => {
       setIsCreating(false);
       setEditingStage(null);
       setFormData({});
+      setAgentError('');
       loadStages();
-    } catch (error) {
-      toast.error('儲存失敗');
-      console.error('Failed to save workflow stage:', error);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || '操作失敗';
+      toast.error(errorMessage);
+      console.error('Failed to save stage:', error);
+      
+      // 如果是 Agent 相關錯誤，顯示在 agentError 中
+      if (errorMessage.includes('Agent') && errorMessage.includes('不存在')) {
+        setAgentError(errorMessage);
+      }
     }
   };
 
@@ -190,32 +324,124 @@ export const WorkflowStages: React.FC = () => {
                   placeholder="簡短描述這個階段的目的"
                 />
               </div>
+              {/* 提示詞來源選擇 */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  系統提示詞 (System Prompt) *
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  提示詞來源 *
                 </label>
-                <textarea
-                  value={formData.system_prompt || ''}
-                  onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="定義 AI Agent 在這個階段的行為和角色..."
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <Thermometer className="inline w-4 h-4 mr-1" />
-                  Temperature (0-2)
-                </label>
-                <input
-                  type="number"
-                  value={formData.temperature || 0.7}
-                  onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
-                  min="0"
-                  max="2"
-                  step="0.1"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="flex gap-4 mb-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="custom"
+                      checked={promptSource === 'custom'}
+                      onChange={(e) => handlePromptSourceChange('custom')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm">自訂提示詞</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="agent"
+                      checked={promptSource === 'agent'}
+                      onChange={(e) => handlePromptSourceChange('agent')}
+                      disabled={!isAgentConfigured}
+                      className="mr-2"
+                    />
+                    <span className={`text-sm ${!isAgentConfigured ? 'text-gray-400' : ''}`}>
+                      使用 Agent
+                    </span>
+                    {!isAgentConfigured && (
+                      <span className="ml-2 text-xs text-gray-500">
+                        (請先設定 Agent 路徑)
+                      </span>
+                    )}
+                  </label>
+                </div>
+
+                {/* 根據選擇顯示不同的輸入界面 */}
+                {promptSource === 'custom' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      系統提示詞 (System Prompt) *
+                    </label>
+                    <textarea
+                      value={formData.system_prompt || ''}
+                      onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="定義 AI Agent 在這個階段的行為和角色..."
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      選擇 Agent *
+                    </label>
+                    <select
+                      value={formData.agent_ref || ''}
+                      onChange={(e) => handleAgentChange(e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                        agentError ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    >
+                      <option value="">選擇一個 Agent...</option>
+                      {agents.map(agent => (
+                        <option key={agent.name} value={agent.name}>
+                          {agent.name} ({agent.fileName})
+                        </option>
+                      ))}
+                    </select>
+                    
+                    {/* Agent 錯誤提示 */}
+                    {agentError && (
+                      <div className="mt-3 p-4 bg-red-50 border-l-4 border-red-400 rounded">
+                        <div className="flex">
+                          <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0" />
+                          <div className="ml-3">
+                            <p className="text-sm text-red-700">{agentError}</p>
+                            <div className="mt-2 flex gap-2">
+                              <button
+                                type="button"
+                                onClick={() => window.location.href = '/agent-prompts'}
+                                className="text-sm bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200"
+                              >
+                                檢查 Agent 設定
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handlePromptSourceChange('custom')}
+                                className="text-sm bg-gray-100 text-gray-800 px-3 py-1 rounded hover:bg-gray-200"
+                              >
+                                改用自訂提示詞
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* 顯示當前 Agent */}
+                    {formData.agent_ref && !agentError && (
+                      <p className="mt-2 text-sm text-gray-600">
+                        <FileText className="inline w-4 h-4 mr-1" />
+                        將使用{' '}
+                        <a
+                          href={`/agent-prompts/${formData.agent_ref}`}
+                          className="bg-gray-100 px-1 py-0.5 rounded hover:bg-gray-200 text-blue-600 hover:underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/agent-prompts/${formData.agent_ref}`;
+                          }}
+                        >
+                          {formData.agent_ref}.md
+                        </a>
+                        {' '}的提示詞
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -295,23 +521,34 @@ export const WorkflowStages: React.FC = () => {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-semibold"
                   />
-                  <textarea
-                    value={formData.system_prompt || ''}
-                    onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  />
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={formData.temperature || 0.7}
-                      onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
-                      min="0"
-                      max="2"
-                      step="0.1"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Temperature"
+                  {/* 簡化的提示詞選擇 */}
+                  {promptSource === 'agent' ? (
+                    <div>
+                      <select
+                        value={formData.agent_ref || ''}
+                        onChange={(e) => handleAgentChange(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      >
+                        <option value="">選擇 Agent...</option>
+                        {agents.map(agent => (
+                          <option key={agent.name} value={agent.name}>
+                            {agent.name}
+                          </option>
+                        ))}
+                      </select>
+                      {agentError && (
+                        <p className="mt-1 text-xs text-red-600">{agentError}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <textarea
+                      value={formData.system_prompt || ''}
+                      onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                     />
+                  )}
+                  <div className="flex justify-end">
                     <input
                       type="color"
                       value={formData.color || '#8B5CF6'}
@@ -369,10 +606,28 @@ export const WorkflowStages: React.FC = () => {
                   
                   <div className="space-y-3">
                     <div>
-                      <span className="text-xs font-medium text-gray-500">系統提示詞</span>
-                      <p className="text-sm text-gray-700 mt-1 line-clamp-3">
-                        {stage.system_prompt}
-                      </p>
+                      <span className="text-xs font-medium text-gray-500">
+                        {stage.agent_ref ? '使用 Agent' : '系統提示詞'}
+                      </span>
+                      {stage.agent_ref ? (
+                        <div className="mt-1 flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-blue-500" />
+                          <a
+                            href={`/agent-prompts/${stage.agent_ref}`}
+                            className="text-sm bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 transition-colors cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.location.href = `/agent-prompts/${stage.agent_ref}`;
+                            }}
+                          >
+                            {stage.agent_ref}.md
+                          </a>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-700 mt-1 line-clamp-3">
+                          {stage.system_prompt}
+                        </p>
+                      )}
                     </div>
                     
                     {stage.suggested_tasks && stage.suggested_tasks.length > 0 && (
@@ -389,11 +644,7 @@ export const WorkflowStages: React.FC = () => {
                       </div>
                     )}
                     
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Thermometer className="w-3 h-3" />
-                        <span>Temperature: {stage.temperature}</span>
-                      </div>
+                    <div className="flex items-center justify-end text-xs text-gray-500">
                       <div
                         className={`px-2 py-0.5 rounded-full text-xs ${
                           stage.is_active
