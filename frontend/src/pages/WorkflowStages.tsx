@@ -335,7 +335,7 @@ export const WorkflowStages: React.FC = () => {
                       type="radio"
                       value="custom"
                       checked={promptSource === 'custom'}
-                      onChange={(e) => handlePromptSourceChange('custom')}
+                      onChange={() => handlePromptSourceChange('custom')}
                       className="mr-2"
                     />
                     <span className="text-sm">自訂提示詞</span>
@@ -345,7 +345,7 @@ export const WorkflowStages: React.FC = () => {
                       type="radio"
                       value="agent"
                       checked={promptSource === 'agent'}
-                      onChange={(e) => handlePromptSourceChange('agent')}
+                      onChange={() => handlePromptSourceChange('agent')}
                       disabled={!isAgentConfigured}
                       className="mr-2"
                     />

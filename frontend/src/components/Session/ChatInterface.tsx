@@ -8,6 +8,7 @@ import { useMessageStore } from "../../stores/messageStore";
 import { Message, Session } from "../../types/session.types";
 import MessageInput from "./MessageInput";
 import MessageItem from "./MessageItem";
+import { MessageFilter } from "./MessageFilter";
 
 interface ChatInterfaceProps {
   sessionId: string;
@@ -45,14 +46,41 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
   const addMessage = useMessageStore((state) => state.addMessage);
   const updateMessageStatus = useMessageStore((state) => state.updateMessageStatus);
 
-  // 將 Map 轉換為排序後的陣列
-  const sortedMessages = React.useMemo(() => {
-    return Array.from(messages.values()).sort((a, b) => {
+  // 訊息過濾狀態 - 從 localStorage 讀取或使用預設值
+  const [hiddenMessageTypes, setHiddenMessageTypes] = useState<Set<Message['type']>>(() => {
+    const saved = localStorage.getItem('messageFilterHiddenTypes');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return new Set(parsed as Message['type'][]);
+      } catch {
+        // 如果解析失敗，使用預設值
+      }
+    }
+    // 預設隱藏 tool_use 和 thinking
+    return new Set(['tool_use', 'thinking'] as Message['type'][]);
+  });
+
+  // 當過濾設置改變時，保存到 localStorage
+  const handleFilterChange = useCallback((types: Set<Message['type']>) => {
+    setHiddenMessageTypes(types);
+    localStorage.setItem('messageFilterHiddenTypes', JSON.stringify(Array.from(types)));
+  }, []);
+
+  // 將 Map 轉換為排序後的陣列，並應用過濾
+  const { sortedMessages, filteredCount } = React.useMemo(() => {
+    const allMessages = Array.from(messages.values());
+    const filtered = allMessages.filter((message) => !hiddenMessageTypes.has(message.type));
+    const sorted = filtered.sort((a, b) => {
       const timeA = a.timestamp instanceof Date ? a.timestamp.getTime() : new Date(a.timestamp).getTime();
       const timeB = b.timestamp instanceof Date ? b.timestamp.getTime() : new Date(b.timestamp).getTime();
       return timeA - timeB;
     });
-  }, [messages]);
+    return {
+      sortedMessages: sorted,
+      filteredCount: allMessages.length - filtered.length
+    };
+  }, [messages, hiddenMessageTypes]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesStartRef = useRef<HTMLDivElement>(null);
@@ -239,14 +267,23 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
 
   return (
     <div className="flex flex-col h-full">
-      {!isSessionActive && (
-        <div className="bg-gray-50 border-b border-gray-200 px-4 py-2">
-          <div className="flex items-center space-x-2 text-gray-600">
-            <AlertCircle className="w-4 h-4" />
-            <span className="text-sm">Session 已停止，無法發送新訊息</span>
-          </div>
+      {/* 頂部工具列 */}
+      <div className="bg-white border-b border-gray-200 px-4 py-2">
+        <div className="flex items-center justify-between">
+          {!isSessionActive ? (
+            <div className="flex items-center space-x-2 text-gray-600">
+              <AlertCircle className="w-4 h-4" />
+              <span className="text-sm">Session 已停止，無法發送新訊息</span>
+            </div>
+          ) : (
+            <div className="flex-1" /> // 佔位元素
+          )}
+          <MessageFilter 
+            hiddenTypes={hiddenMessageTypes}
+            onFilterChange={handleFilterChange}
+          />
         </div>
-      )}
+      </div>
 
       {/* 訊息列表 */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
@@ -270,14 +307,37 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
 
         {sortedMessages.length === 0 && !isLoading ? (
           <div className="text-center py-16">
-            <div className="bg-gradient-to-br from-green-400 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Bot className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">開始新的對話</h3>
-            <p className="text-gray-600 dark:text-gray-400">向 Claude Code 發送訊息開始互動</p>
+            {filteredCount > 0 ? (
+              <>
+                <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Bot className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">沒有可顯示的訊息</h3>
+                <p className="text-gray-600 dark:text-gray-400">有 {filteredCount} 則訊息被過濾隱藏</p>
+                <p className="text-sm text-gray-500 mt-2">點擊右上角的訊息過濾按鈕調整設定</p>
+              </>
+            ) : (
+              <>
+                <div className="bg-gradient-to-br from-green-400 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Bot className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">開始新的對話</h3>
+                <p className="text-gray-600 dark:text-gray-400">向 Claude Code 發送訊息開始互動</p>
+              </>
+            )}
           </div>
         ) : (
-          <MessageList messages={sortedMessages} />
+          <>
+            {/* 過濾提示 */}
+            {filteredCount > 0 && (
+              <div className="flex justify-center mb-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 text-yellow-700 text-sm rounded-full">
+                  <span>已隱藏 {filteredCount} 則訊息</span>
+                </div>
+              </div>
+            )}
+            <MessageList messages={sortedMessages} />
+          </>
         )}
 
         {/* 處理中的 loading 動畫 */}

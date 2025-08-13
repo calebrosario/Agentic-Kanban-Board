@@ -17,7 +17,8 @@ import {
   ChevronRight,
   MessageSquare,
   List,
-  Hash
+  Hash,
+  RefreshCw
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
@@ -623,6 +624,16 @@ export const WorkItemDetailPage: React.FC = () => {
                   <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
                     <h2 className="text-sm font-semibold text-gray-900">開發日誌 (dev.md)</h2>
                     <div className="flex items-center gap-1">
+                      <button
+                        onClick={loadDevMd}
+                        className={`p-1.5 text-gray-600 hover:bg-gray-50 rounded transition-colors ${
+                          loadingDevMd ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        title="重新載入 dev.md"
+                        disabled={loadingDevMd}
+                      >
+                        <RefreshCw className={`w-4 h-4 ${loadingDevMd ? 'animate-spin' : ''}`} />
+                      </button>
                       <button
                         onClick={() => setShowNavPanel(!showNavPanel)}
                         className={`p-1.5 rounded transition-colors relative ${

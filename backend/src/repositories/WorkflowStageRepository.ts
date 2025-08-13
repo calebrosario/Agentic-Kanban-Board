@@ -7,6 +7,7 @@ export interface WorkflowStage {
   description?: string;
   system_prompt: string;
   agent_ref?: string; // 參照的 Agent 檔名
+  temperature?: number; // 添加 temperature 屬性
   suggested_tasks?: string[];
   color: string;
   icon: string;
@@ -51,12 +52,12 @@ export class WorkflowStageRepository {
       ? `SELECT * FROM workflow_stages WHERE is_active = 1 ORDER BY sort_order ASC, name ASC`
       : `SELECT * FROM workflow_stages ORDER BY sort_order ASC, name ASC`;
     
-    const stages = await this.db.all<WorkflowStage[]>(query);
+    const stages = await this.db.all<WorkflowStage>(query);
     
     // Parse JSON fields
-    return stages.map(stage => ({
+    return stages.map((stage: any) => ({
       ...stage,
-      suggested_tasks: stage.suggested_tasks ? JSON.parse(stage.suggested_tasks as any) : []
+      suggested_tasks: stage.suggested_tasks ? JSON.parse(stage.suggested_tasks) : []
     }));
   }
 
@@ -106,9 +107,9 @@ export class WorkflowStageRepository {
     const stage: WorkflowStage = {
       stage_id: stageId,
       name: request.name,
-      description: request.description || null,
+      description: request.description || undefined,
       system_prompt: request.system_prompt,
-      agent_ref: request.agent_ref || null,
+      agent_ref: request.agent_ref || undefined,
       suggested_tasks: request.suggested_tasks || [],
       color: request.color || '#4F46E5',
       icon: request.icon || 'folder',
