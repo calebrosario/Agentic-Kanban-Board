@@ -108,6 +108,26 @@ export class Database {
           }
         });
 
+        // Add workflow_stage_id column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE sessions ADD COLUMN workflow_stage_id TEXT REFERENCES workflow_stages(stage_id)
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add workflow_stage_id column:', err.message);
+          }
+        });
+
+        // Add work_item_id column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE sessions ADD COLUMN work_item_id TEXT REFERENCES work_items(work_item_id)
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add work_item_id column:', err.message);
+          }
+        });
+
         // Create messages table
         this.db.run(`
           CREATE TABLE IF NOT EXISTS messages (
@@ -239,6 +259,65 @@ export class Database {
           }
         });
 
+        // Create workflow_stages table for AI agent configurations
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS workflow_stages (
+            stage_id TEXT PRIMARY KEY,
+            name TEXT NOT NULL UNIQUE,
+            description TEXT,
+            system_prompt TEXT NOT NULL,
+            suggested_tasks TEXT, -- JSON array
+            color TEXT DEFAULT '#4F46E5',
+            icon TEXT DEFAULT 'folder',
+            sort_order INTEGER DEFAULT 0,
+            is_active BOOLEAN DEFAULT TRUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
+        // Add agent_ref column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE workflow_stages ADD COLUMN agent_ref TEXT
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add agent_ref column:', err.message);
+          }
+        });
+
+        // Create work_items table for organizing related sessions
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS work_items (
+            work_item_id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            description TEXT,
+            workspace_path TEXT,
+            status TEXT DEFAULT 'planning' CHECK (status IN ('planning', 'in_progress', 'completed', 'cancelled')),
+            priority TEXT DEFAULT 'medium' CHECK (priority IN ('high', 'medium', 'low')),
+            planned_stages TEXT, -- JSON array of stage names
+            current_stage TEXT,
+            project_id TEXT REFERENCES projects(project_id),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            completed_at DATETIME
+          )
+        `, (err) => {
+          if (err) reject(err);
+        });
+
+        // Add workspace_path column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE work_items ADD COLUMN workspace_path TEXT
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add workspace_path column to work_items:', err.message);
+          }
+        });
+
         // Create projects table for session organization
         this.db.run(`
           CREATE TABLE IF NOT EXISTS projects (
@@ -261,7 +340,7 @@ export class Database {
             tag_id TEXT PRIMARY KEY,
             name TEXT NOT NULL UNIQUE,
             color TEXT DEFAULT '#6B7280',
-            type TEXT DEFAULT 'general' CHECK (type IN ('general', 'activity', 'topic', 'department')),
+            type TEXT DEFAULT 'general' CHECK (type IN ('general', 'topic', 'department')),
             usage_count INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -346,6 +425,19 @@ export class Database {
 
         this.db.run(`
           CREATE INDEX IF NOT EXISTS idx_session_tags_tag_id ON session_tags(tag_id)
+        `);
+
+        // Create indexes for work_items
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_work_items_status ON work_items(status)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_work_items_project_id ON work_items(project_id)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_sessions_work_item_id ON sessions(work_item_id)
         `);
 
         resolve();

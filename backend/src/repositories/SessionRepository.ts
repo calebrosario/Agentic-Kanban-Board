@@ -15,6 +15,8 @@ interface SessionRow {
   last_user_message?: string;
   message_count?: number;
   sort_order?: number;
+  workflow_stage_id?: string;
+  work_item_id?: string;
   error?: string;
   created_at: string;
   updated_at: string;
@@ -44,6 +46,8 @@ export class SessionRepository {
       lastUserMessage: row.last_user_message,
       messageCount: row.message_count || 0,
       sortOrder: row.sort_order,
+      workflow_stage_id: row.workflow_stage_id,
+      work_item_id: row.work_item_id,
       error: row.error,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
@@ -66,6 +70,8 @@ export class SessionRepository {
       session.dangerouslySkipPermissions ? 1 : 0,
       session.lastUserMessage,
       session.messageCount || 0,
+      session.workflow_stage_id,
+      session.work_item_id,
       session.error,
       session.createdAt.toISOString(),
       session.updatedAt.toISOString(),
@@ -79,9 +85,9 @@ export class SessionRepository {
       INSERT INTO sessions (
         session_id, name, working_dir, task, status, continue_chat,
         previous_session_id, claude_session_id, process_id, dangerously_skip_permissions,
-        last_user_message, message_count,
+        last_user_message, message_count, workflow_stage_id, work_item_id,
         error, created_at, updated_at, completed_at, deleted_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     await this.db.run(sql, this.mapSessionToRow(session));
@@ -101,7 +107,7 @@ export class SessionRepository {
       UPDATE sessions SET
         name = ?, working_dir = ?, task = ?, status = ?, continue_chat = ?,
         previous_session_id = ?, claude_session_id = ?, process_id = ?, dangerously_skip_permissions = ?,
-        last_user_message = ?, message_count = ?,
+        last_user_message = ?, message_count = ?, workflow_stage_id = ?, work_item_id = ?,
         error = ?, updated_at = ?, completed_at = ?, deleted_at = ?
       WHERE session_id = ?
     `;
@@ -118,6 +124,8 @@ export class SessionRepository {
       session.dangerouslySkipPermissions ? 1 : 0,
       session.lastUserMessage,
       session.messageCount || 0,
+      session.workflow_stage_id,
+      session.work_item_id,
       session.error,
       session.updatedAt.toISOString(),
       session.completedAt?.toISOString(),
@@ -216,6 +224,28 @@ export class SessionRepository {
     `;
     
     await this.db.run(sql, [now.toISOString(), sessionId]);
+  }
+  
+  async findByWorkItem(workItemId: string): Promise<Session[]> {
+    const sql = `
+      SELECT * FROM sessions 
+      WHERE work_item_id = ? AND deleted_at IS NULL
+      ORDER BY created_at DESC
+    `;
+    
+    const rows = await this.db.all<SessionRow>(sql, [workItemId]);
+    return rows.map(this.mapRowToSession.bind(this));
+  }
+  
+  async updateWorkItemId(sessionId: string, workItemId: string | null): Promise<void> {
+    const sql = `
+      UPDATE sessions SET 
+        work_item_id = ?, 
+        updated_at = ?
+      WHERE session_id = ?
+    `;
+    
+    await this.db.run(sql, [workItemId, new Date().toISOString(), sessionId]);
   }
   
   private async recordStatusHistory(

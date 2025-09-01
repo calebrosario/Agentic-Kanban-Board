@@ -6,7 +6,9 @@ import {
   Trash2, 
   AlertTriangle,
   MessageSquare,
-  CheckCircle
+  CheckCircle,
+  Workflow,
+  Briefcase
 } from 'lucide-react';
 import { Session, SessionStatus } from '../../types/session.types';
 import { formatRelativeTime, truncateText, cn } from '../../utils';
@@ -23,6 +25,9 @@ interface SessionCardProps {
   onDragStart?: (index: number) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
+  preserveWorkItemContext?: boolean; // 新增：是否保持在 Work Item 上下文中
+  workItemId?: string; // 新增：當前 Work Item ID
+  disableNavigation?: boolean; // 新增：禁用導航連結
 }
 
 export const SessionCard: React.FC<SessionCardProps> = ({
@@ -35,6 +40,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   onDragStart,
   onDragEnd,
   isDragging,
+  preserveWorkItemContext,
+  workItemId,
+  disableNavigation,
 }) => {
   const deviceType = useDeviceType();
   const getActionButtons = () => {
@@ -129,20 +137,30 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       } : undefined}
       onDragEnd={onDragEnd ? () => onDragEnd() : undefined}>
       {/* 卡片內容 */}
-      <div className="p-2.5">
+      <div className="p-2">
         {/* 標題行 - 包含標題和狀態 */}
-        <div className="flex items-start justify-between gap-2 mb-1.5">
-          <Link
-            to={`/sessions/${session.sessionId}`}
-            className="flex-1 min-w-0 group"
-          >
-            <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-              {session.name}
-            </h3>
-          </Link>
+        <div className="flex items-start justify-between gap-2 mb-1">
+          {disableNavigation ? (
+            <div className="flex-1 min-w-0 group">
+              <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                {session.name}
+              </h3>
+            </div>
+          ) : (
+            <Link
+              to={preserveWorkItemContext && workItemId 
+                ? `/work-items/${workItemId}?session=${session.sessionId}` 
+                : `/sessions/${session.sessionId}`}
+              className="flex-1 min-w-0 group"
+            >
+              <h3 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                {session.name}
+              </h3>
+            </Link>
+          )}
           
           {/* 狀態指示器 */}
-          <div className="flex items-center flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             {session.status === SessionStatus.ERROR && (
               <Tooltip content="發生錯誤">
                 <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
@@ -153,9 +171,41 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-pulse"></div>
               </Tooltip>
             )}
+            {/* Work Item 標籤 */}
+            {session.work_item_id && (
+              <Tooltip content={`關聯到 Work Item`}>
+                <span
+                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded font-medium"
+                  style={{ 
+                    backgroundColor: '#9333EA20',
+                    color: '#9333EA',
+                    border: '1px solid #9333EA40'
+                  }}
+                >
+                  <Briefcase className="w-2.5 h-2.5" />
+                  WI
+                </span>
+              </Tooltip>
+            )}
+            {/* 工作流程階段標籤 */}
+            {session.workflow_stage && (
+              <Tooltip content={`工作流程階段: ${session.workflow_stage.name}`}>
+                <span
+                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded font-medium"
+                  style={{ 
+                    backgroundColor: session.workflow_stage.color ? `${session.workflow_stage.color}20` : '#8B5CF620',
+                    color: session.workflow_stage.color || '#8B5CF6',
+                    border: `1px solid ${session.workflow_stage.color || '#8B5CF6'}40`
+                  }}
+                >
+                  <Workflow className="w-2.5 h-2.5" />
+                  {session.workflow_stage.name}
+                </span>
+              </Tooltip>
+            )}
             {session.processId && (
               <Tooltip content={`Process ID: ${session.processId}`}>
-                <span className="text-[10px] bg-gray-100 px-1 py-0.5 rounded ml-1">
+                <span className="text-[10px] bg-gray-100 px-1 py-0.5 rounded">
                   PID
                 </span>
               </Tooltip>
@@ -164,13 +214,13 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         </div>
 
         {/* 描述內容 */}
-        <div className="text-xs text-gray-600 mb-1.5">
+        <div className="text-xs text-gray-600 mb-1">
           {session.messageCount && session.messageCount > 0 && session.lastUserMessage ? (
-            <p className="line-clamp-2">
+            <p className="line-clamp-1">
               {session.lastUserMessage}
             </p>
           ) : (
-            <p className="line-clamp-2">
+            <p className="line-clamp-1">
               {session.task}
             </p>
           )}
@@ -178,7 +228,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
         {/* 分類標籤 */}
         {(session.projects && session.projects.length > 0 || session.tags && session.tags.length > 0) && (
-          <div className="flex flex-wrap gap-1 mb-1.5">
+          <div className="flex flex-wrap gap-1 mb-1">
             {/* 專案標籤 */}
             {session.projects?.map(project => (
               <span
@@ -230,7 +280,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
         {/* 錯誤訊息 */}
         {session.error && (
-          <div className="mt-1.5 p-1.5 bg-red-50 border border-red-200 rounded text-[11px] text-red-700">
+          <div className="mt-1 p-1 bg-red-50 border border-red-200 rounded text-[10px] text-red-700">
             {(() => {
               try {
                 const errorObj = JSON.parse(session.error);

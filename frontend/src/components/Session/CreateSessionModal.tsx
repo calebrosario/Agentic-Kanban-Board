@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import { X, MessageSquare, Home, Code, FolderOpen, ShieldOff } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, MessageSquare, Home, Code, FolderOpen, ShieldOff, Workflow, Briefcase } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';
 import { useSettings } from '../../hooks/useSettings';
 import { CreateSessionRequest } from '../../types/session.types';
+import { workflowStageService, WorkflowStage } from '../../services/workflowStageService';
+import { useWorkItemStore } from '../../stores/workItemStore';
 import toast from 'react-hot-toast';
 
 interface CreateSessionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultWorkItemId?: string;
 }
 
 export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   isOpen,
   onClose,
+  defaultWorkItemId,
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -20,16 +24,69 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
     task: '',
     continueChat: false,
     dangerouslySkipPermissions: false,
+    workflow_stage_id: '',
+    work_item_id: defaultWorkItemId || '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [workflowStages, setWorkflowStages] = useState<WorkflowStage[]>([]);
+  const [selectedStage, setSelectedStage] = useState<WorkflowStage | null>(null);
   
   const { createSession } = useSessions();
   const { commonPaths } = useSettings();
+  const { workItems, fetchWorkItems } = useWorkItemStore();
   
   // 移除不再使用的 continuableSessions（現在使用 --continue 參數）
 
+  // 載入工作流程階段和 Work Items
+  useEffect(() => {
+    if (isOpen) {
+      loadWorkflowStages();
+      fetchWorkItems(); // 載入所有 Work Items
+      
+      // 如果有預設的 Work Item ID，確保它被設置並使用其 workspace_path
+      if (defaultWorkItemId) {
+        const workItem = workItems.find(w => w.work_item_id === defaultWorkItemId);
+        setFormData(prev => ({ 
+          ...prev, 
+          work_item_id: defaultWorkItemId,
+          // 使用 Work Item 的 workspace_path，如果沒有則使用預設路徑
+          workingDir: prev.workingDir || workItem?.workspace_path || ''
+        }));
+      }
+    }
+  }, [isOpen, defaultWorkItemId, workItems]);
+
+  const loadWorkflowStages = async () => {
+    try {
+      const stages = await workflowStageService.getAllStages(true); // 只載入活躍的階段
+      setWorkflowStages(stages);
+    } catch (error) {
+      console.error('Failed to load workflow stages:', error);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    
+    // 處理工作流程階段選擇
+    if (name === 'workflow_stage_id') {
+      const stage = workflowStages.find(s => s.stage_id === value);
+      setSelectedStage(stage || null);
+    }
+    
+    // 處理 Work Item 選擇 - 自動更新工作目錄
+    if (name === 'work_item_id' && value) {
+      const selectedWorkItem = workItems.find(w => w.work_item_id === value);
+      if (selectedWorkItem?.workspace_path) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+          workingDir: selectedWorkItem.workspace_path || prev.workingDir // 自動填入 Work Item 的工作區路徑
+        }));
+        return;
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
@@ -63,20 +120,26 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         task: formData.task.trim(),
         continueChat: formData.continueChat,
         dangerouslySkipPermissions: formData.dangerouslySkipPermissions,
+        workflow_stage_id: formData.workflow_stage_id || undefined,
+        work_item_id: formData.work_item_id || undefined,
       };
 
       await createSession(request);
       
       toast.success('Session 建立成功！');
       
-      // 重置表單
+      // 重置表單，但保留 Work Item ID 和預設路徑如果有的話
+      const workItem = defaultWorkItemId ? workItems.find(w => w.work_item_id === defaultWorkItemId) : null;
       setFormData({
         name: '',
-        workingDir: '',
+        workingDir: workItem?.workspace_path || '',
         task: '',
         continueChat: false,
         dangerouslySkipPermissions: false,
+        workflow_stage_id: '',
+        work_item_id: defaultWorkItemId || '',
       });
+      setSelectedStage(null);
       
       onClose();
     } catch (error) {
@@ -195,6 +258,90 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
             {formData.workingDir && (
               <div className="mt-2 text-xs text-gray-500">
                 已選擇：<span className="font-mono bg-gray-100 px-2 py-1 rounded">{formData.workingDir}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Work Item 選擇 */}
+          <div>
+            <label htmlFor="work_item_id" className="block text-sm font-medium text-gray-700 mb-2">
+              關聯 Work Item {defaultWorkItemId ? '(已自動關聯)' : '(選填)'}
+            </label>
+            <select
+              id="work_item_id"
+              name="work_item_id"
+              value={formData.work_item_id}
+              onChange={handleInputChange}
+              disabled={!!defaultWorkItemId} // 如果有預設值就禁用選擇
+              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                defaultWorkItemId ? 'bg-gray-100 cursor-not-allowed' : ''
+              }`}
+            >
+              <option value="">不關聯到 Work Item</option>
+              {workItems
+                .filter(item => item.status === 'planning' || item.status === 'in_progress' || item.work_item_id === defaultWorkItemId)
+                .map(item => (
+                  <option key={item.work_item_id} value={item.work_item_id}>
+                    {item.title}
+                  </option>
+                ))
+              }
+            </select>
+            
+            {formData.work_item_id && (
+              <div className="mt-2 p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Briefcase className="w-4 h-4 text-purple-600" />
+                  <span className="text-sm font-medium text-purple-900">Work Item 資訊：</span>
+                </div>
+                {(() => {
+                  const selectedWorkItem = workItems.find(w => w.work_item_id === formData.work_item_id);
+                  if (!selectedWorkItem) return null;
+                  return (
+                    <>
+                      <p className="text-xs text-purple-700">{selectedWorkItem.description}</p>
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+          </div>
+
+          {/* 工作流程階段選擇 */}
+          <div>
+            <label htmlFor="workflow_stage_id" className="block text-sm font-medium text-gray-700 mb-2">
+              工作流程階段 (選填)
+            </label>
+            <select
+              id="workflow_stage_id"
+              name="workflow_stage_id"
+              value={formData.workflow_stage_id}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">不使用工作流程階段</option>
+              {workflowStages.map(stage => (
+                <option key={stage.stage_id} value={stage.stage_id}>
+                  {stage.name} - {stage.description}
+                </option>
+              ))}
+            </select>
+            
+            {/* 顯示選中階段的建議任務 */}
+            {selectedStage && selectedStage.suggested_tasks && selectedStage.suggested_tasks.length > 0 && (
+              <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Workflow className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-900">建議的工作項目：</span>
+                </div>
+                <ul className="text-xs text-blue-700 space-y-1">
+                  {selectedStage.suggested_tasks.map((task, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="mr-2">•</span>
+                      <span>{task}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>

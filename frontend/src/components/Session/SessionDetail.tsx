@@ -23,8 +23,14 @@ import { Tooltip } from '../Common/Tooltip';
 import { ProjectSelector } from '../Classification/ProjectSelector';
 import { TagSelector } from '../Classification/TagSelector';
 
-const SessionDetailComponent: React.FC = () => {
-  const { sessionId } = useParams<{ sessionId: string }>();
+interface SessionDetailProps {
+  sessionId?: string;
+  embedded?: boolean;
+}
+
+const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propSessionId, embedded = false }) => {
+  const { sessionId: urlSessionId } = useParams<{ sessionId: string }>();
+  const sessionId = propSessionId || urlSessionId;
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -32,21 +38,22 @@ const SessionDetailComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showClassification, setShowClassification] = useState(false);
   const [sessionProjects, setSessionProjects] = useState<string[]>([]);
-  const [sessionTags, setSessionTags] = useState<string[]>([]);
+  const [_sessionTags, setSessionTags] = useState<string[]>([]);
   const [topicTags, setTopicTags] = useState<string[]>([]);
-  const [activityTags, setActivityTags] = useState<string[]>([]);
   
   const { completeSession, interruptSession, resumeSession, deleteSession } = useSessions();
   const { addEventListener, removeEventListener } = useWebSocket();
 
   useEffect(() => {
     if (!sessionId) {
-      navigate('/');
+      if (!embedded) {
+        navigate('/');
+      }
       return;
     }
 
     loadSessionDetails();
-  }, [sessionId, navigate]);
+  }, [sessionId, navigate, embedded]);
 
   // 監聽 WebSocket 狀態更新
   useEffect(() => {
@@ -201,11 +208,9 @@ const SessionDetailComponent: React.FC = () => {
       // 根據標籤類型分組
       const allTagIds = tags.map((t: Tag) => t.tag_id);
       const topicTagIds = tags.filter((t: Tag) => t.type === 'topic').map((t: Tag) => t.tag_id);
-      const activityTagIds = tags.filter((t: Tag) => t.type === 'activity').map((t: Tag) => t.tag_id);
       
       setSessionTags(allTagIds);
       setTopicTags(topicTagIds);
-      setActivityTags(activityTagIds);
       
       // 不再這裡載入訊息，交給 ChatInterface 的 messageStore 處理
       setMessages([]);
@@ -265,7 +270,9 @@ const SessionDetailComponent: React.FC = () => {
     try {
       await deleteSession(sessionId);
       toast.success('Session 已刪除');
-      navigate('/');
+      if (!embedded) {
+        navigate('/');
+      }
     } catch (error) {
       toast.error('無法刪除 Session');
     }
@@ -319,12 +326,14 @@ const SessionDetailComponent: React.FC = () => {
     return (
       <div className="text-center py-12">
         <div className="text-red-600 mb-4">{error || 'Session 不存在'}</div>
-        <button 
-          onClick={() => navigate('/')}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          返回 Sessions 列表
-        </button>
+        {!embedded && (
+          <button 
+            onClick={() => navigate('/')}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            返回 Sessions 列表
+          </button>
+        )}
       </div>
     );
   }
@@ -452,12 +461,6 @@ const SessionDetailComponent: React.FC = () => {
                 selectedTags={topicTags}
                 onTagsChange={setTopicTags}
                 tagType="topic"
-              />
-              <TagSelector
-                sessionId={sessionId!}
-                selectedTags={activityTags}
-                onTagsChange={setActivityTags}
-                tagType="activity"
               />
             </div>
           </div>

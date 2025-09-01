@@ -17,6 +17,17 @@ export interface Session {
   updatedAt: Date;
   completedAt?: Date;
   deletedAt?: Date;
+  // Work Item 關聯
+  work_item_id?: string;
+  // 工作流程階段
+  workflow_stage_id?: string;
+  workflow_stage?: {
+    stage_id: string;
+    name: string;
+    color?: string;
+    icon?: string;
+    description?: string;
+  };
   // 分類相關
   projects?: Array<{
     project_id: string;
@@ -47,6 +58,8 @@ export interface CreateSessionRequest {
   continueChat?: boolean;
   previousSessionId?: string;
   dangerouslySkipPermissions?: boolean;
+  workflow_stage_id?: string;
+  work_item_id?: string;
 }
 
 export interface Message {

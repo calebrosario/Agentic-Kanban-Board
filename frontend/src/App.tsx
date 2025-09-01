@@ -11,6 +11,11 @@ import { SessionsProvider } from './contexts/SessionsContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { LoginPage } from './components/Auth/LoginPage';
+import { WorkflowStages } from './pages/WorkflowStages';
+import { WorkItemListPage } from './pages/WorkItemListPage';
+import { WorkItemDetailPage } from './pages/WorkItemDetailPage';
+import AgentPromptsPage from './pages/AgentPromptsPage';
+import AgentPromptDetailPage from './pages/AgentPromptDetailPage';
 
 function App() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -53,6 +58,11 @@ function App() {
                           <Routes>
                             <Route path="/" element={<SplitView onCreateSession={() => setIsCreateModalOpen(true)} />} />
                             <Route path="/sessions/:sessionId" element={<SplitView onCreateSession={() => setIsCreateModalOpen(true)} />} />
+                            <Route path="/workflow-stages" element={<WorkflowStages />} />
+                            <Route path="/work-items" element={<WorkItemListPage />} />
+                            <Route path="/work-items/:id" element={<WorkItemDetailPage />} />
+                            <Route path="/agent-prompts" element={<AgentPromptsPage />} />
+                            <Route path="/agent-prompts/:name" element={<AgentPromptDetailPage />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                           </Routes>
                         </ErrorBoundary>

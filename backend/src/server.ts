@@ -77,6 +77,11 @@ async function startServer() {
     await db.initialize();
     logger.info('Database initialized successfully');
 
+    // Initialize Agent Prompt Service
+    const { agentPromptService } = await import('./services/AgentPromptService');
+    await agentPromptService.initialize();
+    logger.info('Agent Prompt Service initialized');
+
     // Initialize process manager
     processManager = new ProcessManager();
     
@@ -164,12 +169,24 @@ async function startServer() {
     // Tag routes (需要認證)
     const tagRouter = (await import('./routes/tag.routes')).default;
     
+    // Workflow Stage routes (需要認證)
+    const workflowStageRouter = (await import('./routes/workflowStage.routes')).default;
+    
+    // Work Item routes (需要認證)
+    const { workItemRouter } = await import('./routes/workitem.routes');
+    
+    // Agent Prompts routes (需要認證)
+    const agentPromptsRouter = (await import('./routes/agentPrompts')).default;
+    
     // Session routes (需要認證)
     const { authMiddleware } = await import('./middleware/auth.middleware');
     app.use('/api/sessions', authMiddleware, sessionRouter);
     app.use('/api/common-paths', authMiddleware, commonPathRouter);
     app.use('/api/projects', authMiddleware, projectRouter);
     app.use('/api/tags', authMiddleware, tagRouter);
+    app.use('/api/workflow-stages', authMiddleware, workflowStageRouter);
+    app.use('/api/work-items', authMiddleware, workItemRouter);
+    app.use('/api/agent-prompts', authMiddleware, agentPromptsRouter);
     
     logger.info('Routes initialized successfully');
 

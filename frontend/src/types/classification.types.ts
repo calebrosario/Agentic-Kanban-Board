@@ -15,7 +15,7 @@ export interface Tag {
   tag_id: string;
   name: string;
   color?: string;
-  type: 'general' | 'activity' | 'topic' | 'department';
+  type: 'general' | 'topic' | 'department';
   usage_count: number;
   created_at: string;
   updated_at: string;
@@ -33,7 +33,7 @@ export interface CreateProjectRequest {
 export interface CreateTagRequest {
   name: string;
   color?: string;
-  type?: 'general' | 'activity' | 'topic' | 'department';
+  type?: 'general' | 'topic' | 'department';
 }
 
 // 更新專案請求
@@ -49,7 +49,7 @@ export interface UpdateProjectRequest {
 export interface UpdateTagRequest {
   name?: string;
   color?: string;
-  type?: 'general' | 'activity' | 'topic' | 'department';
+  type?: 'general' | 'topic' | 'department';
 }
 
 // 專案統計

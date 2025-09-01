@@ -5,7 +5,7 @@ export interface Tag {
   tag_id: string;
   name: string;
   color?: string;
-  type: 'general' | 'activity' | 'topic' | 'department';
+  type: 'general' | 'topic' | 'department';
   usage_count: number;
   created_at?: string;
   updated_at?: string;
@@ -255,7 +255,7 @@ export class TagRepository {
   }
 
   // Find or create tag by name
-  async findOrCreateTag(name: string, type: 'general' | 'activity' | 'topic' | 'department' = 'general'): Promise<Tag> {
+  async findOrCreateTag(name: string, type: 'general' | 'topic' | 'department' = 'general'): Promise<Tag> {
     let tag = await this.getTagByName(name);
     if (!tag) {
       tag = await this.createTag({ name, type });
