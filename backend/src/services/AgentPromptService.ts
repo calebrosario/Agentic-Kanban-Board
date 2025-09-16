@@ -134,12 +134,39 @@ export class AgentPromptService {
   }
 
   /**
+   * 取得 agent 的純提示詞內容（不包含 frontmatter）
+   */
+  async getAgentPromptOnly(agentName: string): Promise<string | null> {
+    if (!this.claudePath) {
+      throw new Error('Claude agents path not configured');
+    }
+
+    // 驗證 agent 名稱安全性
+    if (agentName.includes('..') || agentName.includes('/') || agentName.includes('\\')) {
+      throw new Error('Invalid agent name');
+    }
+
+    try {
+      const filePath = path.join(this.claudePath, `${agentName}.md`);
+      const content = await fs.readFile(filePath, 'utf-8');
+      
+      // 解析並返回只有 body 部分（移除 frontmatter）
+      const parsedContent = this.parseMarkdownWithFrontmatter(content);
+      return parsedContent.body.trim();
+    } catch (error) {
+      console.error(`Failed to read agent prompt for ${agentName}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * 解析 Markdown 檔案的 YAML frontmatter
    */
   private parseMarkdownWithFrontmatter(content: string): {
     description?: string;
     tools?: string[];
     body: string;
+    frontmatter?: Record<string, any>;
   } {
     const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
     const match = content.match(frontmatterRegex);
@@ -148,18 +175,44 @@ export class AgentPromptService {
       return { body: content };
     }
 
-    const frontmatter = match[1];
+    const frontmatterText = match[1];
     const body = match[2];
     
-    // 簡單解析 YAML（只處理 name, description, tools）
-    const description = frontmatter.match(/description:\s*(.+)/)?.[1];
-    const toolsMatch = frontmatter.match(/tools:\s*\[([^\]]+)\]/);
+    // 解析 YAML frontmatter
+    const frontmatter: Record<string, any> = {};
+    
+    // 解析 name
+    const nameMatch = frontmatterText.match(/name:\s*(.+)/);
+    if (nameMatch) frontmatter.name = nameMatch[1].trim();
+    
+    // 解析 description（可能是多行）
+    const descriptionMatch = frontmatterText.match(/description:\s*([\s\S]+?)(?=\n\w+:|$)/);
+    if (descriptionMatch) {
+      // 處理多行 description，移除過多的轉義字符
+      let description = descriptionMatch[1]
+        .replace(/\\n/g, '\n')  // 替換 \n 為真正的換行
+        .replace(/\\\\/g, '\\')  // 替換 \\ 為 \\
+        .trim();
+      frontmatter.description = description;
+    }
+    
+    // 解析 model
+    const modelMatch = frontmatterText.match(/model:\s*(.+)/);
+    if (modelMatch) frontmatter.model = modelMatch[1].trim();
+    
+    // 解析 color
+    const colorMatch = frontmatterText.match(/color:\s*(.+)/);
+    if (colorMatch) frontmatter.color = colorMatch[1].trim();
+    
+    // 解析 tools（如果存在）
+    const toolsMatch = frontmatterText.match(/tools:\s*\[([^\]]+)\]/);
     const tools = toolsMatch ? toolsMatch[1].split(',').map(t => t.trim()) : undefined;
     
     return {
-      description,
+      description: frontmatter.description,
       tools,
-      body
+      body,
+      frontmatter
     };
   }
 
