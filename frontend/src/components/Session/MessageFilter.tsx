@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { Message } from '../../types/session.types';
 
@@ -21,6 +22,9 @@ interface MessageFilterProps {
 
 export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFilterChange }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [buttonRect, setButtonRect] = React.useState<DOMRect | null>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   const toggleType = (type: Message['type']) => {
     const newHiddenTypes = new Set(hiddenTypes);
@@ -52,11 +56,38 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
 
   const visibleCount = Object.keys(MESSAGE_TYPE_CONFIG).length - hiddenTypes.size;
 
+  const handleToggle = () => {
+    if (!isExpanded && buttonRef.current) {
+      setButtonRect(buttonRef.current.getBoundingClientRect());
+    }
+    setIsExpanded(!isExpanded);
+  };
+
+  // 點擊外部關閉
+  React.useEffect(() => {
+    if (!isExpanded) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      // 檢查點擊是否在按鈕或下拉選單內
+      if (
+        buttonRef.current && !buttonRef.current.contains(target) &&
+        dropdownRef.current && !dropdownRef.current.contains(target)
+      ) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isExpanded]);
+
   return (
     <div className="relative">
       {/* 過濾器按鈕 */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        ref={buttonRef}
+        onClick={handleToggle}
         className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
       >
         <Filter className="w-4 h-4" />
@@ -64,9 +95,16 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
         {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
       </button>
 
-      {/* 過濾器面板 */}
-      {isExpanded && (
-        <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-[9999] min-w-[280px]">
+      {/* 過濾器面板 - 使用 Portal 渲染到 body */}
+      {isExpanded && buttonRect && createPortal(
+        <div
+          ref={dropdownRef}
+          className="fixed bg-white rounded-lg shadow-2xl border border-gray-200 p-4 z-[99999] min-w-[280px]"
+          style={{
+            top: buttonRect.bottom + 8,
+            right: window.innerWidth - buttonRect.right,
+          }}
+        >
           <div className="space-y-3">
             {/* 快速操作按鈕 */}
             <div className="flex gap-2 pb-3 border-b border-gray-200">
@@ -123,7 +161,8 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
