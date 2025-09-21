@@ -72,8 +72,8 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
   const completedSessionCount = workItem.completed_session_count || 0;
 
   return (
-    <div 
-      className="bg-white rounded-lg shadow hover:shadow-md transition-all duration-200 cursor-pointer"
+    <div
+      className="glass-card rounded-xl hover:shadow-soft-md transition-all duration-200 cursor-pointer"
       onClick={handleCardClick}
     >
       <div className="p-6">

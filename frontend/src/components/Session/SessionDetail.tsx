@@ -329,7 +329,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
         {!embedded && (
           <button 
             onClick={() => navigate('/')}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="btn-primary"
           >
             返回 Sessions 列表
           </button>
@@ -341,7 +341,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
   return (
     <div className="flex flex-col h-full">
       {/* 頁面標題和操作 */}
-      <div className="bg-white border-b border-gray-200 px-3 py-2">
+      <div className="glass-card border-b border-glass-border px-3 py-2">
         <div className="pl-24">
           {/* 標題和狀態 */}
           <div className="flex items-start justify-between gap-2 mb-1">
@@ -370,10 +370,10 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
                 <button
                   onClick={() => setShowClassification(!showClassification)}
                   className={cn(
-                    "p-1.5 rounded transition-colors",
-                    showClassification 
-                      ? "bg-blue-100 text-blue-600" 
-                      : "text-gray-600 hover:bg-gray-100"
+                    "p-1.5 rounded-lg transition-all hover:shadow-soft-sm",
+                    showClassification
+                      ? "bg-primary-100 text-primary-600"
+                      : "text-gray-600 hover:bg-gray-50"
                   )}
                 >
                   <Settings className="w-3.5 h-3.5" />
@@ -383,7 +383,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
               <Tooltip content="匯出對話">
                 <button
                   onClick={handleExportMessages}
-                  className="p-1.5 text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                  className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-all hover:shadow-soft-sm"
                 >
                   <Download className="w-3.5 h-3.5" />
                 </button>
@@ -394,7 +394,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
                 <Tooltip content="中斷執行">
                   <button
                     onClick={handleInterrupt}
-                    className="p-1.5 text-yellow-600 hover:bg-yellow-50 rounded transition-colors"
+                    className="p-1.5 text-warning-600 hover:bg-warning-50 rounded-lg transition-all hover:shadow-soft-sm"
                   >
                     <Square className="w-3.5 h-3.5" />
                   </button>
@@ -405,7 +405,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
                 <Tooltip content="標記為完成">
                   <button
                     onClick={handleComplete}
-                    className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors"
+                    className="p-1.5 text-success-600 hover:bg-success-50 rounded-lg transition-all hover:shadow-soft-sm"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
                   </button>
@@ -417,7 +417,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
                   <Tooltip content="恢復 Session">
                     <button
                       onClick={handleResume}
-                      className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                      className="p-1.5 text-primary-600 hover:bg-primary-50 rounded-lg transition-all hover:shadow-soft-sm"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                     </button>
@@ -425,7 +425,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
                   <Tooltip content="標記為完成">
                     <button
                       onClick={handleComplete}
-                      className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors"
+                      className="p-1.5 text-success-600 hover:bg-success-50 rounded-lg transition-all hover:shadow-soft-sm"
                     >
                       <CheckCircle className="w-3.5 h-3.5" />
                     </button>
@@ -438,7 +438,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
               <Tooltip content="刪除 Session">
                 <button
                   onClick={handleDelete}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                  className="p-1.5 text-danger-600 hover:bg-danger-50 rounded-lg transition-all hover:shadow-soft-sm"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

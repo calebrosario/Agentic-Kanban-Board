@@ -66,7 +66,7 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
 
       {/* 過濾器面板 */}
       {isExpanded && (
-        <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-50 min-w-[280px]">
+        <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-[9999] min-w-[280px]">
           <div className="space-y-3">
             {/* 快速操作按鈕 */}
             <div className="flex gap-2 pb-3 border-b border-gray-200">

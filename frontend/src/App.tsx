@@ -16,6 +16,7 @@ import { WorkItemListPage } from './pages/WorkItemListPage';
 import { WorkItemDetailPage } from './pages/WorkItemDetailPage';
 import AgentPromptsPage from './pages/AgentPromptsPage';
 import AgentPromptDetailPage from './pages/AgentPromptDetailPage';
+import { GlassDemo } from './pages/GlassDemo';
 
 function App() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -63,6 +64,7 @@ function App() {
                             <Route path="/work-items/:id" element={<WorkItemDetailPage />} />
                             <Route path="/agent-prompts" element={<AgentPromptsPage />} />
                             <Route path="/agent-prompts/:name" element={<AgentPromptDetailPage />} />
+                            <Route path="/glass-demo" element={<GlassDemo />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                           </Routes>
                         </ErrorBoundary>

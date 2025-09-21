@@ -271,34 +271,38 @@ export const WorkflowStages: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* 頁面標題 */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <Workflow className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">工作流程階段管理</h1>
+            <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-blue">
+              <Workflow className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              工作流程階段管理
+            </h1>
           </div>
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 btn-primary"
           >
             <Plus className="w-4 h-4" />
             新增階段
           </button>
         </div>
 
-        {/* 新增表單 */}
+        {/* 新增表單 - 玻璃卡片 */}
         {isCreating && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">新增工作流程階段</h2>
+          <div className="glass-card rounded-xl p-6 mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">新增工作流程階段</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -308,7 +312,7 @@ export const WorkflowStages: React.FC = () => {
                   type="text"
                   value={formData.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="input"
                   placeholder="例如：需求分析"
                 />
               </div>
@@ -320,7 +324,7 @@ export const WorkflowStages: React.FC = () => {
                   type="text"
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="input"
                   placeholder="簡短描述這個階段的目的"
                 />
               </div>
@@ -370,7 +374,7 @@ export const WorkflowStages: React.FC = () => {
                       value={formData.system_prompt || ''}
                       onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
                       rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="input"
                       placeholder="定義 AI Agent 在這個階段的行為和角色..."
                     />
                   </div>
@@ -450,7 +454,7 @@ export const WorkflowStages: React.FC = () => {
                 </label>
                 <input
                   type="color"
-                  value={formData.color || '#8B5CF6'}
+                  value={formData.color}
                   onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                   className="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
                 />
@@ -490,13 +494,13 @@ export const WorkflowStages: React.FC = () => {
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="btn-secondary"
               >
                 取消
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex items-center gap-2 btn-primary"
               >
                 <Save className="w-4 h-4" />
                 儲存
@@ -504,13 +508,14 @@ export const WorkflowStages: React.FC = () => {
             </div>
           </div>
         )}
+        
 
-        {/* 階段列表 */}
+        {/* 階段列表 - 玻璃卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {stages.map((stage) => (
             <div
               key={stage.stage_id}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              className="glass-card rounded-xl p-6 hover:shadow-soft-md transition-all duration-200 hover:-translate-y-1"
             >
               {editingStage === stage.stage_id ? (
                 // 編輯模式
@@ -519,7 +524,7 @@ export const WorkflowStages: React.FC = () => {
                     type="text"
                     value={formData.name || ''}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-semibold"
+                    className="input font-semibold"
                   />
                   {/* 簡化的提示詞選擇 */}
                   {promptSource === 'agent' ? (
@@ -527,7 +532,7 @@ export const WorkflowStages: React.FC = () => {
                       <select
                         value={formData.agent_ref || ''}
                         onChange={(e) => handleAgentChange(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        className="input text-sm"
                       >
                         <option value="">選擇 Agent...</option>
                         {agents.map(agent => (
@@ -545,13 +550,13 @@ export const WorkflowStages: React.FC = () => {
                       value={formData.system_prompt || ''}
                       onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      className="input text-sm"
                     />
                   )}
                   <div className="flex justify-end">
                     <input
                       type="color"
-                      value={formData.color || '#8B5CF6'}
+                      value={formData.color}
                       onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                       className="w-10 h-10 border border-gray-300 rounded-lg cursor-pointer"
                     />
@@ -559,13 +564,13 @@ export const WorkflowStages: React.FC = () => {
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={handleCancel}
-                      className="px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-xl transition-all hover:shadow-soft-sm"
                     >
                       <X className="w-4 h-4" />
                     </button>
                     <button
                       onClick={handleSave}
-                      className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      className="px-3 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-blue transition-all"
                     >
                       <Save className="w-4 h-4" />
                     </button>
@@ -573,7 +578,7 @@ export const WorkflowStages: React.FC = () => {
                 </div>
               ) : (
                 // 顯示模式
-                <>
+                <div>
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <div
@@ -587,13 +592,13 @@ export const WorkflowStages: React.FC = () => {
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleEdit(stage)}
-                        className="p-1.5 text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                        className="p-1.5 text-gray-600 hover:bg-white/60 rounded-lg transition-all hover:shadow-soft-sm"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(stage.stage_id)}
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                        className="p-1.5 text-danger-600 hover:bg-danger-50 rounded-lg transition-all hover:shadow-soft-sm"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -614,7 +619,7 @@ export const WorkflowStages: React.FC = () => {
                           <FileText className="w-4 h-4 text-blue-500" />
                           <a
                             href={`/agent-prompts/${stage.agent_ref}`}
-                            className="text-sm bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 transition-colors cursor-pointer"
+                            className="text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded-lg hover:bg-primary-100 transition-all hover:shadow-soft-sm cursor-pointer"
                             onClick={(e) => {
                               e.preventDefault();
                               window.location.href = `/agent-prompts/${stage.agent_ref}`;
@@ -656,7 +661,7 @@ export const WorkflowStages: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </>
+                </div>
               )}
             </div>
           ))}

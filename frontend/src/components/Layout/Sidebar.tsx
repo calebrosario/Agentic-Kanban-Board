@@ -48,12 +48,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
 
   return (
     <div className={cn(
-      "bg-white shadow-lg border-r border-gray-200 flex flex-col transition-all duration-300",
+      "glass-extreme border-r border-glass-border flex flex-col transition-all duration-300",
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Logo */}
       <div className={cn(
-        "border-b border-gray-200 relative",
+        "border-b border-glass-border relative",
         isCollapsed ? "p-3" : "p-6"
       )}>
         <div className={cn(
@@ -72,11 +72,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             </div>
           )}
         </div>
-        
+
         {/* 收合/展開按鈕 */}
         <button
           onClick={toggleSidebar}
-          className="absolute -right-3 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full p-1 hover:bg-gray-50 transition-colors z-20"
+          className="absolute -right-3 top-1/2 -translate-y-1/2 glass-ultra rounded-full p-1.5 hover:shadow-soft-md transition-all z-30 border border-white/40"
         >
           {isCollapsed ? (
             <ChevronRight className="w-4 h-4 text-gray-600" />
@@ -85,6 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
           )}
         </button>
       </div>
+      
 
       {/* Navigation */}
       <nav className={cn(
@@ -98,8 +99,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
               className={cn(
                 'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors relative',
                 location.pathname === '/'
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
+                  : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
               )}
             >
               <Home className="w-5 h-5 text-current" />
@@ -116,8 +117,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             className={cn(
               'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
               location.pathname === '/'
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
+                : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
             )}
           >
             <div className="flex items-center space-x-3">
@@ -128,8 +129,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
               <span className={cn(
                 'inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full',
                 location.pathname === '/'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-gray-100 text-gray-800'
+                  ? 'bg-white/90 text-blue-600 border border-white/50'
+                  : 'bg-white/50 text-gray-700 border border-glass-border'
               )}>
                 {totalSessions}
               </span>
@@ -144,8 +145,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
               className={cn(
                 'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors',
                 location.pathname === '/work-items'
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'relative bg-white/30 backdrop-blur-md text-purple-700 border border-white/50 shadow-soft before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/20 before:to-purple-600/20 before:rounded-lg'
+                  : 'text-gray-700 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-soft hover:border hover:border-white/30'
               )}
             >
               <Briefcase className="w-5 h-5 text-current" />
@@ -157,8 +158,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             className={cn(
               'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
               location.pathname === '/work-items'
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'relative bg-white/30 backdrop-blur-md text-purple-700 border border-white/50 shadow-soft overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/20 before:to-purple-600/20 before:-z-10'
+                : 'text-gray-700 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-soft hover:border hover:border-white/30'
             )}
           >
             <div className="flex items-center space-x-3">
@@ -175,8 +176,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
               className={cn(
                 'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors',
                 location.pathname === '/workflow-stages'
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
+                  : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
               )}
             >
               <Workflow className="w-5 h-5 text-current" />
@@ -188,8 +189,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             className={cn(
               'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
               location.pathname === '/workflow-stages'
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
+                : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
             )}
           >
             <div className="flex items-center space-x-3">
@@ -206,8 +207,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
               className={cn(
                 'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors',
                 location.pathname.startsWith('/agent-prompts')
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
+                  : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
               )}
             >
               <FileText className="w-5 h-5 text-current" />
@@ -219,8 +220,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             className={cn(
               'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
               location.pathname.startsWith('/agent-prompts')
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
+                : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
             )}
           >
             <div className="flex items-center space-x-3">
@@ -233,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
 
       {/* 底部操作區 */}
       <div className={cn(
-        "border-t border-gray-200 space-y-2",
+        "border-t border-glass-border space-y-2",
         isCollapsed ? "p-2" : "p-4"
       )}>
         {isCollapsed ? (
@@ -241,7 +242,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             <Tooltip content="建立 Session" side="right">
               <button 
                 onClick={onCreateSession}
-                className="w-full flex items-center justify-center p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full flex items-center justify-center p-2 btn-primary"
               >
                 <Plus className="w-5 h-5" />
               </button>
@@ -250,7 +251,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             <Tooltip content="設定" side="right">
               <button 
                 onClick={() => setIsSettingsOpen(true)}
-                className="w-full flex items-center justify-center p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                className="w-full flex items-center justify-center p-2 btn-secondary"
               >
                 <Settings className="w-5 h-5" />
               </button>
@@ -259,7 +260,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             <Tooltip content="登出" side="right">
               <button 
                 onClick={logout}
-                className="w-full flex items-center justify-center p-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+                className="w-full flex items-center justify-center p-2 bg-danger-50 text-danger-700 rounded-xl hover:bg-danger-100 shadow-soft-sm hover:shadow-soft transition-all"
               >
                 <LogOut className="w-5 h-5" />
               </button>
@@ -269,7 +270,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
           <>
             <button 
               onClick={onCreateSession}
-              className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full flex items-center justify-center btn-primary"
             >
               <Plus className="w-4 h-4 mr-2" />
               建立 Session
@@ -277,7 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             
             <button 
               onClick={() => setIsSettingsOpen(true)}
-              className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="w-full flex items-center justify-center btn-secondary"
             >
               <Settings className="w-4 h-4 mr-2" />
               設定
@@ -285,7 +286,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             
             <button 
               onClick={logout}
-              className="w-full flex items-center justify-center px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
+              className="w-full flex items-center justify-center px-4 py-2 bg-danger-50 text-danger-700 rounded-xl hover:bg-danger-100 shadow-soft-sm hover:shadow-soft transition-all"
             >
               <LogOut className="w-4 h-4 mr-2" />
               登出

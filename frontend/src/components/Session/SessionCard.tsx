@@ -55,7 +55,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           <Tooltip key="complete" content="標記為完成">
             <button
               onClick={onComplete}
-              className="p-1 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded transition-all"
+              className="p-1.5 text-gray-600 hover:text-success-600 hover:bg-success-50 rounded-lg transition-all hover:shadow-soft-sm"
             >
               <CheckCircle className="w-3.5 h-3.5" />
             </button>
@@ -68,7 +68,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           <Tooltip key="resume" content="恢復 Session">
             <button
               onClick={onResume}
-              className="p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-all"
+              className="p-1.5 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all hover:shadow-soft-sm"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -78,7 +78,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           <Tooltip key="complete" content="標記為完成">
             <button
               onClick={onComplete}
-              className="p-1 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded transition-all"
+              className="p-1.5 text-gray-600 hover:text-success-600 hover:bg-success-50 rounded-lg transition-all hover:shadow-soft-sm"
             >
               <CheckCircle className="w-3.5 h-3.5" />
             </button>
@@ -98,7 +98,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           <Tooltip key="interrupt" content="中斷執行">
             <button
               onClick={onInterrupt}
-              className="p-1 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded transition-all"
+              className="p-1.5 text-gray-600 hover:text-warning-600 hover:bg-warning-50 rounded-lg transition-all hover:shadow-soft-sm"
             >
               <Square className="w-3.5 h-3.5" />
             </button>
@@ -112,7 +112,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       <Tooltip key="delete" content="刪除 Session">
         <button
           onClick={onDelete}
-          className="p-1 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-all"
+          className="p-1.5 text-gray-600 hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-all hover:shadow-soft-sm"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -125,7 +125,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   return (
     <div 
       className={cn(
-        "relative group bg-white rounded-md shadow-sm border border-gray-200 hover:shadow-md transition-all hover:border-gray-300",
+        "relative group card hover:shadow-soft-md transition-all hover:-translate-y-0.5",
         deviceType === "desktop" ? 'min-w-[220px]' : '',
         onDragStart ? 'cursor-move' : '',
         isDragging ? 'opacity-50' : ''

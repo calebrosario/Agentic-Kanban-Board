@@ -164,14 +164,14 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="card shadow-soft-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col rounded-xl animate-slide-in-up">
         {/* Modal 標題 */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
-          <h2 className="text-xl font-semibold text-gray-900">建立新 Session</h2>
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0 bg-gradient-to-r from-gray-50 to-white">
+          <h2 className="text-xl font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">建立新 Session</h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-all hover:shadow-soft-sm"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -192,7 +192,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               value={formData.name}
               onChange={handleInputChange}
               placeholder="例如：實作使用者登入功能"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="input"
               required
             />
           </div>
@@ -220,7 +220,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                       key={pathOption.id}
                       type="button"
                       onClick={() => handleQuickPathSelect(pathOption.path)}
-                      className="flex items-center space-x-1.5 px-2.5 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                      className="flex items-center space-x-1.5 px-2.5 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 rounded-lg transition-all hover:shadow-soft-sm border border-gray-200"
                       title={pathOption.path}
                     >
                       <IconComponent className="w-3 h-3" />
@@ -240,7 +240,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                 value={formData.workingDir}
                 onChange={handleInputChange}
                 placeholder="輸入工作目錄路徑..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 input"
                 required
               />
               {/* <button
@@ -273,7 +273,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               value={formData.work_item_id}
               onChange={handleInputChange}
               disabled={!!defaultWorkItemId} // 如果有預設值就禁用選擇
-              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`input ${
                 defaultWorkItemId ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
             >
@@ -317,7 +317,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               name="workflow_stage_id"
               value={formData.workflow_stage_id}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="input"
             >
               <option value="">不使用工作流程階段</option>
               {workflowStages.map(stage => (
@@ -358,7 +358,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               onChange={handleInputChange}
               placeholder="請詳細描述你想要 Claude Code 幫你完成的任務..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              className="input resize-none"
               required
             />
           </div>
