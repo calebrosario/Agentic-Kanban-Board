@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  Square, 
-  RotateCcw, 
-  Trash2, 
+import {
+  Square,
+  RotateCcw,
+  Trash2,
   Download,
   Folder,
   CheckCircle,
-  Settings
+  Settings,
+  Plus
 } from 'lucide-react';
 import { sessionApi, projectApi, tagApi } from '../../services/api';
 import { Session, Message, SessionStatus } from '../../types/session.types';
@@ -22,6 +23,7 @@ import toast from 'react-hot-toast';
 import { Tooltip } from '../Common/Tooltip';
 import { ProjectSelector } from '../Classification/ProjectSelector';
 import { TagSelector } from '../Classification/TagSelector';
+import { CreateSessionModal } from './CreateSessionModal';
 
 interface SessionDetailProps {
   sessionId?: string;
@@ -40,6 +42,7 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
   const [sessionProjects, setSessionProjects] = useState<string[]>([]);
   const [_sessionTags, setSessionTags] = useState<string[]>([]);
   const [topicTags, setTopicTags] = useState<string[]>([]);
+  const [showQuickStart, setShowQuickStart] = useState(false);
   
   const { completeSession, interruptSession, resumeSession, deleteSession } = useSessions();
   const { addEventListener, removeEventListener } = useWebSocket();
@@ -314,6 +317,33 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
     toast.success('訊息已匯出');
   };
 
+  const handleQuickStart = () => {
+    setShowQuickStart(true);
+  };
+
+  const handleQuickStartCreated = (newSession: Session) => {
+    setShowQuickStart(false);
+    toast.success('新 Session 已建立');
+    // 導航到新的 Session
+    navigate(`/sessions/${newSession.sessionId}`);
+  };
+
+  // 準備預填資料
+  const getPrefillData = () => {
+    if (!session) return undefined;
+
+    return {
+      baseSessionName: session.name,
+      workingDir: session.workingDir,
+      work_item_id: session.work_item_id,
+      workflow_stage_id: session.workflow_stage_id,
+      name: `${session.name} - 新任務`,
+      task: `基於前一個對話的上下文，請先閱讀 dev.md 和相關專案檔案。
+
+新任務：`,
+    };
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -386,6 +416,15 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
                   className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-all hover:shadow-soft-sm"
                 >
                   <Download className="w-3.5 h-3.5" />
+                </button>
+              </Tooltip>
+
+              <Tooltip content="基於此對話快速啟動">
+                <button
+                  onClick={handleQuickStart}
+                  className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all hover:shadow-soft-sm"
+                >
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </Tooltip>
 
@@ -486,6 +525,14 @@ const SessionDetailComponent: React.FC<SessionDetailProps> = ({ sessionId: propS
           onSessionUpdate={handleSessionUpdate}
         />
       </div>
+
+      {/* 快速啟動 Modal */}
+      <CreateSessionModal
+        isOpen={showQuickStart}
+        onClose={() => setShowQuickStart(false)}
+        prefillData={getPrefillData()}
+        onCreated={handleQuickStartCreated}
+      />
     </div>
   );
 };
