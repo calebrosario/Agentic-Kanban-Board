@@ -6,6 +6,8 @@
 
 **A comprehensive session management system for Claude Code with advanced workflow capabilities**
 
+**📖 Language / 語言:** [English](README.md) | [繁體中文](README-zh-TW.md)
+
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](#requirements)
@@ -18,7 +20,7 @@
 Claude Code Board is a powerful web-based management system designed for developers working with Claude Code CLI. It provides an intuitive interface to manage multiple AI coding sessions simultaneously, with advanced features including workflow automation, agent-based prompting, and intelligent project organization.
 
 ![Session List Management](assets/SessionList.png)
-*主控制台展示多個活躍 Session 的狀態和管理界面*
+*Main dashboard showcasing multiple active sessions with status tracking and management interface*
 
 
 ## 🆚 Why Claude Code Board vs Direct CLI?
@@ -131,14 +133,14 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
    - Backend API: `http://localhost:3001`
 
 ![Welcome Interface](assets/Demo1.png)
-*初次啟動後的歡迎界面*
+*Welcome interface after initial startup*
 
 ## 🎯 Usage Guide
 
 ### Creating Your First Session
 
 ![Session Creation Wizard](assets/CreateSession.png)
-*Session 創建向導界面，支援快速模板和預設配置*
+*Session creation wizard with quick templates and preset configurations*
 
 1. **Basic Setup**
    - Click "New Session" from the main dashboard
@@ -160,7 +162,7 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 ### Working with Agents
 
 ![Agent Configuration](assets/EditWorkStageAgent.png)
-*Workflow Stage 與 Agent 配置界面*
+*Workflow Stage and Agent configuration interface*
 
 1. **Agent Setup**
    - Configure your Claude agents directory in settings
@@ -175,7 +177,7 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 ### Message Management
 
 ![Message Filter Interface](assets/SessionDetail.png)
-*訊息過濾和管理界面*
+*Message filtering and management interface*
 
 - **Filtering**: Hide/show different message types (user, assistant, tool_use, thinking)
 - **Export**: Download conversation history as JSON
@@ -185,7 +187,7 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 ### Project Organization
 
 ![Project Organization](assets/WorkItem.png)
-*專案分類和工作項目組織界面*
+*Project classification and work item organization interface*
 
 - **Work Items**: Group related sessions under project tasks
 - **Classification**: Tag sessions with projects and topics
@@ -231,10 +233,10 @@ VITE_SOCKET_URL=http://localhost:3001
 ### Workflow Stages
 
 ![Workflow Stage Configuration](assets/WorkStage.png)
-*Workflow Stage 編輯界面展示 Agent 選擇和自訂提示*
+*Workflow Stage editing interface showcasing Agent selection and custom prompts*
 
 ![Agent Configuration](assets/Agent.png)
-*展示 Agent*
+*Agent management and configuration interface*
 
 - **Custom Prompts**: Define stage-specific system prompts
 - **Agent References**: Link stages to specific Claude agents
@@ -253,14 +255,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - 📚 **Documentation**: Check this README and inline code documentation
 - 🐛 **Bug Reports**: Open an issue on GitHub
 - 💡 **Feature Requests**: Discuss in GitHub Discussions
-- 💬 **Community**: Join our Discord server (coming soon)
-
-### Acknowledgments
-
-- **Anthropic**: For the amazing Claude Code CLI
-- **React Community**: For excellent documentation and ecosystem
-- **TailwindCSS**: For the utility-first CSS framework
-- **Socket.IO**: For real-time communication capabilities
 
 ---
 
