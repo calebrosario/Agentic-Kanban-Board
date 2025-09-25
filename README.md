@@ -8,6 +8,8 @@
 
 **📖 Language / 語言:** [English](README.md) | [繁體中文](README-zh-TW.md)
 
+**⚠️ IMPORTANT:** [Read Disclaimer First](#️-disclaimer) | **🚀 Quick Start:** [Installation](#installation) | **📖 Guide:** [Usage](#-usage-guide)
+
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](#requirements)
@@ -243,6 +245,35 @@ VITE_SOCKET_URL=http://localhost:3001
 - **Suggested Tasks**: Provide task templates for each stage
 - **Color Coding**: Visual organization with custom colors
 
+
+## ⚠️ Disclaimer
+
+**IMPORTANT SECURITY NOTICE**
+
+This tool is designed for **personal computer use only** and is **NOT suitable for online deployment**. The application has **no security protections** beyond basic hardcoded authentication.
+
+**Key Security Limitations:**
+- No encryption for data transmission
+- No secure authentication system
+- No input validation or sanitization
+- No protection against common web vulnerabilities
+- No access control mechanisms
+- Database and file system directly accessible
+
+**LIABILITY DISCLAIMER:**
+The authors and contributors of this project accept **NO RESPONSIBILITY** for any damages, losses, or security breaches that may occur from using this software. This includes but is not limited to:
+- Loss of intellectual property or creative work
+- Financial losses or damages
+- Data breaches or unauthorized access
+- System compromises or malware infections
+- Any other direct or indirect damages
+
+**BY USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT:**
+- You use it entirely at your own risk
+- You understand the security limitations
+- You will only use it on secure, personal computers
+- You will not deploy it on public or shared networks
+- You accept full responsibility for any consequences
 
 ## 📝 License
 
