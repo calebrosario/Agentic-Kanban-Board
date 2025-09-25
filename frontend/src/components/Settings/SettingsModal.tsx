@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Plus, Trash2, Settings, FolderOpen, Code, Home } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useSettings, CommonPath } from '../../hooks/useSettings';
@@ -108,8 +109,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  return createPortal(
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[99999] p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden sm:mx-auto">
         {/* 標題 */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
@@ -259,7 +260,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
