@@ -257,7 +257,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <p className="text-red-600 mb-4">載入訊息失敗</p>
-          <button onClick={() => initializeFromAPI(sessionId)} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button onClick={() => initializeFromAPI(sessionId)} className="btn-primary">
             重試
           </button>
         </div>
@@ -268,7 +268,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
   return (
     <div className="flex flex-col h-full">
       {/* 頂部工具列 */}
-      <div className="bg-white border-b border-gray-200 px-4 py-2">
+      <div className="glass border-b border-glass-border px-4 py-2">
         <div className="flex items-center justify-between">
           {!isSessionActive ? (
             <div className="flex items-center space-x-2 text-gray-600">
@@ -286,7 +286,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
       </div>
 
       {/* 訊息列表 */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto bg-gradient-soft px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
         <div ref={messagesStartRef} />
 
         {/* 載入更多指示器 */}
@@ -298,7 +298,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
                 <span className="text-sm text-gray-500">載入更多訊息...</span>
               </div>
             ) : (
-              <button onClick={() => loadMoreMessages("older")} className="text-sm text-blue-600 hover:text-blue-700">
+              <button onClick={() => loadMoreMessages("older")} className="text-sm text-primary-600 hover:text-primary-700 font-medium hover:underline">
                 載入更早的訊息
               </button>
             )}
@@ -309,20 +309,20 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
           <div className="text-center py-16">
             {filteredCount > 0 ? (
               <>
-                <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="bg-gradient-to-br from-warning-400 to-warning-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-soft-md">
                   <Bot className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">沒有可顯示的訊息</h3>
-                <p className="text-gray-600 dark:text-gray-400">有 {filteredCount} 則訊息被過濾隱藏</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">沒有可顯示的訊息</h3>
+                <p className="text-gray-600">有 {filteredCount} 則訊息被過濾隱藏</p>
                 <p className="text-sm text-gray-500 mt-2">點擊右上角的訊息過濾按鈕調整設定</p>
               </>
             ) : (
               <>
-                <div className="bg-gradient-to-br from-green-400 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="bg-gradient-to-br from-success-400 to-success-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-soft-md animate-float">
                   <Bot className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">開始新的對話</h3>
-                <p className="text-gray-600 dark:text-gray-400">向 Claude Code 發送訊息開始互動</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">開始新的對話</h3>
+                <p className="text-gray-600">向 Claude Code 發送訊息開始互動</p>
               </>
             )}
           </div>
@@ -331,7 +331,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
             {/* 過濾提示 */}
             {filteredCount > 0 && (
               <div className="flex justify-center mb-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 text-yellow-700 text-sm rounded-full">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-warning-50 text-warning-700 text-sm rounded-full border border-warning-200">
                   <span>已隱藏 {filteredCount} 則訊息</span>
                 </div>
               </div>
@@ -344,9 +344,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
         {isProcessing && (
           <div className="w-full">
             <div className="mb-4 pr-4 sm:pr-4 md:pr-4 lg:pr-4">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm w-full border border-gray-200 dark:border-gray-700">
+              <div className="card rounded-2xl p-4 shadow-soft w-full">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-success-400 to-success-500 flex items-center justify-center shadow-soft-sm">
                     <Bot className="w-4 h-4 text-white" />
                   </div>
                   <div>

@@ -45,7 +45,7 @@ const MessageInput = React.memo(({
   }, []);
 
   return (
-    <div className="border-t border-gray-100 dark:border-gray-700 p-4 bg-white dark:bg-gray-800 shadow-lg">
+    <div className="border-t border-glass-border p-4 glass">
       <div className="max-w-4xl mx-auto">
         <div className="flex gap-3 items-end">
           <div className="flex-1 relative">
@@ -57,14 +57,14 @@ const MessageInput = React.memo(({
               placeholder={placeholder}
               disabled={disabled || isSending}
               className={cn(
-                'w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-2xl resize-none',
-                'border border-gray-200 dark:border-gray-700',
-                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
-                'disabled:bg-gray-100 disabled:text-gray-400 dark:disabled:bg-gray-800',
-                'placeholder-gray-400 dark:placeholder-gray-500',
-                'text-gray-900 dark:text-gray-100',
+                'w-full px-4 py-3 bg-white rounded-2xl resize-none',
+                'border border-gray-200',
+                'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+                'disabled:bg-gray-50 disabled:text-gray-400',
+                'placeholder-gray-400',
+                'text-gray-900',
                 'transition-all duration-200',
-                'shadow-sm hover:shadow-md focus:shadow-md'
+                'shadow-soft hover:shadow-soft-md focus:shadow-blue'
               )}
               rows={1}
               style={{
@@ -82,13 +82,13 @@ const MessageInput = React.memo(({
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || disabled || isSending}
             className={cn(
-              'p-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl',
-              'hover:from-blue-600 hover:to-blue-700 hover:shadow-lg',
-              'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+              'p-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-2xl',
+              'hover:from-primary-600 hover:to-primary-700 hover:shadow-blue',
+              'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
               'disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:shadow-none',
               'transition-all duration-200 transform hover:scale-105 active:scale-95',
               'flex items-center justify-center min-w-[48px] h-[48px]',
-              'shadow-md'
+              'shadow-soft-md'
             )}
             title="發送訊息 (Enter)"
           >

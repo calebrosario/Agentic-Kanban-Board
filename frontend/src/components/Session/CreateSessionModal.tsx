@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, Home, Code, FolderOpen, ShieldOff, Workflow, Briefcase } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';
 import { useSettings } from '../../hooks/useSettings';
-import { CreateSessionRequest } from '../../types/session.types';
+import { CreateSessionRequest, Session } from '../../types/session.types';
 import { workflowStageService, WorkflowStage } from '../../services/workflowStageService';
 import { useWorkItemStore } from '../../stores/workItemStore';
 import toast from 'react-hot-toast';
@@ -11,12 +11,16 @@ interface CreateSessionModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultWorkItemId?: string;
+  prefillData?: Partial<CreateSessionRequest & { baseSessionName?: string }>;
+  onCreated?: (session: Session) => void;
 }
 
 export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   isOpen,
   onClose,
   defaultWorkItemId,
+  prefillData,
+  onCreated,
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -26,6 +30,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
     dangerouslySkipPermissions: false,
     workflow_stage_id: '',
     work_item_id: defaultWorkItemId || '',
+    ...prefillData, // 預填資料覆蓋預設值
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [workflowStages, setWorkflowStages] = useState<WorkflowStage[]>([]);
@@ -124,10 +129,10 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         work_item_id: formData.work_item_id || undefined,
       };
 
-      await createSession(request);
-      
+      const newSession = await createSession(request);
+
       toast.success('Session 建立成功！');
-      
+
       // 重置表單，但保留 Work Item ID 和預設路徑如果有的話
       const workItem = defaultWorkItemId ? workItems.find(w => w.work_item_id === defaultWorkItemId) : null;
       setFormData({
@@ -140,8 +145,13 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         work_item_id: defaultWorkItemId || '',
       });
       setSelectedStage(null);
-      
+
       onClose();
+
+      // 如果有回調函數，呼叫它
+      if (onCreated && newSession) {
+        onCreated(newSession);
+      }
     } catch (error) {
       toast.error('建立 Session 失敗');
     } finally {
@@ -164,14 +174,14 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="card shadow-soft-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col rounded-xl animate-slide-in-up">
         {/* Modal 標題 */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
-          <h2 className="text-xl font-semibold text-gray-900">建立新 Session</h2>
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0 bg-gradient-to-r from-gray-50 to-white">
+          <h2 className="text-xl font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">建立新 Session</h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-all hover:shadow-soft-sm"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -179,6 +189,19 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
 
         {/* Modal 內容 - 可滾動區域 */}
         <div className="flex-1 overflow-y-auto">
+          {/* 預填提示 */}
+          {prefillData && (
+            <div className="mx-6 mt-4 p-3 glass-card rounded-lg border border-blue-200">
+              <div className="flex items-center gap-2 text-blue-700 text-sm">
+                <MessageSquare className="w-4 h-4" />
+                <span>基於「{prefillData.baseSessionName || '前一個對話'}」快速建立</span>
+              </div>
+              <p className="text-blue-600 text-xs mt-1">
+                已自動填入基礎設定，請調整任務內容和選擇適合的 Agent
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Session 名稱 */}
           <div>
@@ -192,7 +215,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               value={formData.name}
               onChange={handleInputChange}
               placeholder="例如：實作使用者登入功能"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="input"
               required
             />
           </div>
@@ -220,7 +243,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                       key={pathOption.id}
                       type="button"
                       onClick={() => handleQuickPathSelect(pathOption.path)}
-                      className="flex items-center space-x-1.5 px-2.5 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                      className="flex items-center space-x-1.5 px-2.5 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 rounded-lg transition-all hover:shadow-soft-sm border border-gray-200"
                       title={pathOption.path}
                     >
                       <IconComponent className="w-3 h-3" />
@@ -240,7 +263,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                 value={formData.workingDir}
                 onChange={handleInputChange}
                 placeholder="輸入工作目錄路徑..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 input"
                 required
               />
               {/* <button
@@ -273,7 +296,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               value={formData.work_item_id}
               onChange={handleInputChange}
               disabled={!!defaultWorkItemId} // 如果有預設值就禁用選擇
-              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`input ${
                 defaultWorkItemId ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
             >
@@ -317,7 +340,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               name="workflow_stage_id"
               value={formData.workflow_stage_id}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="input"
             >
               <option value="">不使用工作流程階段</option>
               {workflowStages.map(stage => (
@@ -358,9 +381,36 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               onChange={handleInputChange}
               placeholder="請詳細描述你想要 Claude Code 幫你完成的任務..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              className="input resize-none"
               required
             />
+
+            {/* 快速任務模板 */}
+            <div className="mt-2">
+              <div className="text-xs text-gray-500 mb-2">快速模板：</div>
+              <div className="flex flex-wrap gap-1">
+                {[
+                  { key: 'continue', label: '繼續工作', template: '基於前一個對話的上下文，繼續進行相關工作。' },
+                  { key: 'review', label: '程式審查', template: '請審查此專案的程式碼品質、安全性和最佳實踐。請先閱讀 dev.md 和相關專案檔案。' },
+                  { key: 'fix', label: '修復錯誤', template: '協助分析和修復專案中的錯誤。請先了解專案架構和現有程式碼。' },
+                  { key: 'feature', label: '功能開發', template: '協助開發新功能，請先了解現有架構和設計模式。' },
+                  { key: 'docs', label: '撰寫文件', template: '協助撰寫或更新專案文件，請先分析現有程式碼結構。' }
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => {
+                      const currentTask = formData.task;
+                      const newTask = currentTask ? `${currentTask}\n\n${item.template}` : item.template;
+                      setFormData(prev => ({ ...prev, task: newTask }));
+                    }}
+                    className="px-2 py-1 text-xs glass-ultra rounded border border-white/40 hover:shadow-soft transition-all"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* 繼續對話選項 */}

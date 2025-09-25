@@ -53,27 +53,27 @@ const KanbanColumn: React.FC<KanbanColumnProps & { sortType?: SortType }> = ({ t
     switch (color) {
       case "yellow":
         return {
-          header: "bg-yellow-50 border-yellow-200",
-          title: "text-yellow-800",
-          count: "bg-yellow-100 text-yellow-800",
+          header: "bg-gradient-to-r from-warning-50 to-warning-100/50",
+          title: "text-warning-700",
+          count: "bg-warning-100 text-warning-700 border border-warning-200",
         };
       case "green":
         return {
-          header: "bg-green-50 border-green-200",
-          title: "text-green-800",
-          count: "bg-green-100 text-green-800",
+          header: "bg-gradient-to-r from-success-50 to-success-100/50",
+          title: "text-success-700",
+          count: "bg-success-100 text-success-700 border border-success-200",
         };
       case "blue":
         return {
-          header: "bg-blue-50 border-blue-200",
-          title: "text-blue-800",
-          count: "bg-blue-100 text-blue-800",
+          header: "bg-gradient-to-r from-primary-50 to-primary-100/50",
+          title: "text-primary-700",
+          count: "bg-primary-100 text-primary-700 border border-primary-200",
         };
       case "red":
         return {
-          header: "bg-red-50 border-red-200",
-          title: "text-red-800",
-          count: "bg-red-100 text-red-800",
+          header: "bg-gradient-to-r from-danger-50 to-danger-100/50",
+          title: "text-danger-700",
+          count: "bg-danger-100 text-danger-700 border border-danger-200",
         };
     }
   };
@@ -128,12 +128,12 @@ const KanbanColumn: React.FC<KanbanColumnProps & { sortType?: SortType }> = ({ t
   const deviceType = useDeviceType();
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col ${deviceType === "mobile" ? "h-[calc(100vh-280px)]" : "h-[600px]"} ${deviceType === "desktop" ? "min-w-[280px]" : ""}`}>
+    <div className={`glass-card rounded-xl shadow-soft flex flex-col ${deviceType === "mobile" ? "h-[calc(100vh-280px)]" : "h-[600px]"} ${deviceType === "desktop" ? "min-w-[280px]" : ""}`}>
       {/* 欄位標題 */}
-      <div className={`px-4 py-3 border-b rounded-t-lg flex-shrink-0 ${colorClasses.header}`}>
+      <div className={`px-4 py-3 border-b border-glass-border rounded-t-xl flex-shrink-0 ${colorClasses.header}`}>
         <div className="flex items-center justify-between">
           <h3 className={`font-semibold ${colorClasses.title}`}>{title}</h3>
-          <span className={`inline-flex items-center justify-center w-6 h-6 text-xs font-medium rounded-full ${colorClasses.count}`}>{filteredSessions.length}</span>
+          <span className={`inline-flex items-center justify-center w-7 h-7 text-xs font-medium rounded-full shadow-soft-sm ${colorClasses.count}`}>{filteredSessions.length}</span>
         </div>
       </div>
 
@@ -227,9 +227,9 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
   return (
     <div className={`h-full flex flex-col min-w-0`}>
       {/* 固定的頂部區域 - 包含標題、搜尋和建立按鈕 */}
-      <div className={`bg-white border-b border-gray-200 ${deviceType === "mobile" ? "px-4" : "px-6"} py-4 flex-shrink-0`}>
+      <div className={`glass-card rounded-b-none border-b border-glass-border ${deviceType === "mobile" ? "px-4" : "px-6"} py-4 flex-shrink-0`}>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-gray-800">Sessions</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Sessions</h1>
 
           {/* 搜尋框、排序和建立按鈕 */}
           <div className="flex items-center gap-2">
@@ -250,7 +250,7 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
             />
 
             {/* 建立按鈕 */}
-            <button onClick={onCreateSession} className="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm">
+            <button onClick={onCreateSession} className="btn-primary flex items-center gap-2 text-sm">
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">建立</span>
             </button>
@@ -280,16 +280,18 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
             <>
               {/* 行動版標籤頁 */}
               {deviceType === "mobile" && (
-                <div className="flex border-b border-gray-200 mb-4 -mx-4 px-4 overflow-x-auto">
-                  <button onClick={() => setActiveTab("processing")} className={`px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === "processing" ? "border-yellow-500 text-yellow-700" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
-                    正在處理 ({sessionsByStatus[SessionStatus.PROCESSING]?.length || 0})
-                  </button>
-                  <button onClick={() => setActiveTab("idle")} className={`px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === "idle" ? "border-green-500 text-green-700" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
-                    閒置 ({sessionsByStatus[SessionStatus.IDLE]?.length || 0})
-                  </button>
-                  <button onClick={() => setActiveTab("completed")} className={`px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === "completed" ? "border-blue-500 text-blue-700" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
-                    已完成 ({[...(sessionsByStatus[SessionStatus.COMPLETED] || []), ...(sessionsByStatus[SessionStatus.ERROR] || []), ...(sessionsByStatus[SessionStatus.INTERRUPTED] || [])].length})
-                  </button>
+                <div className="glass-card rounded-xl shadow-soft p-1 mb-4 overflow-x-auto">
+                  <div className="flex">
+                    <button onClick={() => setActiveTab("processing")} className={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-all ${activeTab === "processing" ? "bg-warning-100 text-warning-700 shadow-soft-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                      正在處理 ({sessionsByStatus[SessionStatus.PROCESSING]?.length || 0})
+                    </button>
+                    <button onClick={() => setActiveTab("idle")} className={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-all ${activeTab === "idle" ? "bg-success-100 text-success-700 shadow-soft-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                      閒置 ({sessionsByStatus[SessionStatus.IDLE]?.length || 0})
+                    </button>
+                    <button onClick={() => setActiveTab("completed")} className={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-all ${activeTab === "completed" ? "bg-primary-100 text-primary-700 shadow-soft-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                      已完成 ({[...(sessionsByStatus[SessionStatus.COMPLETED] || []), ...(sessionsByStatus[SessionStatus.ERROR] || []), ...(sessionsByStatus[SessionStatus.INTERRUPTED] || [])].length})
+                    </button>
+                  </div>
                 </div>
               )}
 

@@ -27,7 +27,7 @@ Feature: Session 管理
     And 每個 Session 應包含以下資訊：
       | sessionId | name | status | workingDir | createdAt |
 
-  Scenario Outline: 查詢不同狀態的 Session 資訊
+  Scenario: 查詢不同狀態的 Session 資訊
     Given 存在一個 Session
     And Session 狀態為 "<狀態>"
     When 使用者查詢該 Session 的詳細資訊

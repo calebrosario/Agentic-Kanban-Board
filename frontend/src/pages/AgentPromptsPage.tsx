@@ -117,14 +117,14 @@ const AgentPromptsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-      {/* 頁面標題 */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Agent 提示詞庫</h1>
+      {/* 頁面標題 - 使用玻璃效果 */}
+      <div className="glass-extreme rounded-2xl p-6 mb-6">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">Agent 提示詞庫</h1>
         <p className="text-gray-600 mt-1">瀏覽和管理 Claude Code Agent 提示詞</p>
       </div>
 
-      {/* 設定區域 */}
-      <div className="bg-white rounded-lg shadow mb-6 p-4">
+      {/* 設定區域 - 玻璃卡片 */}
+      <div className="glass-card rounded-xl p-4 mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FolderOpen className="h-5 w-5 text-gray-500" />
@@ -138,7 +138,7 @@ const AgentPromptsPage: React.FC = () => {
           </div>
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className="flex items-center space-x-1 px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm glass-ultra rounded-xl transition-all hover:shadow-soft border border-white/40"
           >
             <Settings className="h-4 w-4" />
             <span>設定</span>
@@ -147,7 +147,7 @@ const AgentPromptsPage: React.FC = () => {
 
         {/* 設定表單 */}
         {showConfig && (
-          <div className="mt-4 pt-4 border-t">
+          <div className="mt-4 pt-4 border-t border-white/30">
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -158,7 +158,7 @@ const AgentPromptsPage: React.FC = () => {
                   value={newPath}
                   onChange={(e) => setNewPath(e.target.value)}
                   placeholder="例如: C:\Users\User\.claude\agents"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 glass-ultra border border-white/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50"
                 />
                 {configError && (
                   <p className="mt-1 text-sm text-red-600">{configError}</p>
@@ -167,7 +167,7 @@ const AgentPromptsPage: React.FC = () => {
               <div className="flex space-x-2">
                 <button
                   onClick={handleSavePath}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 btn-primary"
                 >
                   儲存
                 </button>
@@ -177,7 +177,7 @@ const AgentPromptsPage: React.FC = () => {
                     setNewPath(config.path || '');
                     setConfigError('');
                   }}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                  className="px-4 py-2 btn-secondary"
                 >
                   取消
                 </button>
@@ -195,10 +195,10 @@ const AgentPromptsPage: React.FC = () => {
               <div
                 key={agent.name}
                 onClick={() => handleAgentClick(agent.name)}
-                className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow cursor-pointer"
+                className="glass-card rounded-xl p-4 cursor-pointer hover:shadow-soft-md hover:scale-[1.02] transition-all"
               >
                 <div className="flex items-start space-x-3">
-                  <FileText className="h-6 w-6 text-blue-500 flex-shrink-0 mt-1" />
+                  <FileText className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 truncate">
                       {agent.name}
@@ -212,18 +212,18 @@ const AgentPromptsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg p-8 text-center">
+          <div className="glass-card rounded-xl p-8 text-center">
             <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">目錄中沒有找到 agent 檔案</p>
             <p className="text-sm text-gray-500 mt-1">請確認路徑設定正確</p>
           </div>
         )
       ) : (
-        <div className="bg-blue-50 rounded-lg p-8 text-center">
-          <FolderOpen className="h-12 w-12 text-blue-400 mx-auto mb-3" />
+        <div className="glass-ultra rounded-xl p-8 text-center">
+          <FolderOpen className="h-12 w-12 text-blue-500 mx-auto mb-3" />
           <p className="text-gray-700 mb-2">請先設定 Claude agents 路徑</p>
           <p className="text-sm text-gray-600">
-            通常位於 <code className="bg-white px-2 py-1 rounded">~/.claude/agents</code>
+            通常位於 <code className="bg-white/50 px-2 py-1 rounded">~/.claude/agents</code>
           </p>
         </div>
       )}

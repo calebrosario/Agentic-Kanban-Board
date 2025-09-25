@@ -13,14 +13,14 @@ export const Layout: React.FC<LayoutProps> = ({ children, onCreateSession }) => 
   const isMobile = useIsMobile();
   
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen relative">
       {/* 側邊欄 - 只在非手機版顯示 */}
       {!isMobile && <Sidebar onCreateSession={onCreateSession} />}
-      
+
       {/* 主要內容區域 */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden relative main-content-bg">
         <Header />
-        <main className={`flex-1 overflow-auto bg-gray-50 ${isMobile ? 'pb-16' : ''}`}>
+        <main className={`flex-1 overflow-auto ${isMobile ? 'pb-16' : ''}`}>
           {children}
         </main>
         

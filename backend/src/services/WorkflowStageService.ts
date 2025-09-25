@@ -146,10 +146,11 @@ export class WorkflowStageService {
     
     if (stage.agent_ref) {
       try {
-        const agentContent = await agentPromptService.getAgentContent(stage.agent_ref);
-        if (agentContent?.content) {
+        // 使用新的方法只取得提示詞內容（不包含 frontmatter）
+        const promptContent = await agentPromptService.getAgentPromptOnly(stage.agent_ref);
+        if (promptContent) {
           return {
-            content: agentContent.content,
+            content: promptContent,
             source: 'agent',
             agentName: stage.agent_ref
           };

@@ -116,15 +116,17 @@ export const WorkItemListPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex-1 bg-gray-50">
+    <div className="flex-1">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="glass-card rounded-xl p-4 flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
-            <Briefcase className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Work Items</h1>
+            <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-blue">
+              <Briefcase className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Work Items</h1>
             {stats && (
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+              <span className="px-3 py-1 bg-primary-50 text-primary-700 border border-primary-200 rounded-full text-sm font-medium">
                 總計 {stats.total}
               </span>
             )}
@@ -134,13 +136,13 @@ export const WorkItemListPage: React.FC = () => {
             <button
               onClick={loadData}
               disabled={loading}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all hover:shadow-soft-sm disabled:opacity-50"
             >
               <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button
               onClick={() => setCreateDialogOpen(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="btn-primary flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               新增 Work Item
@@ -150,11 +152,11 @@ export const WorkItemListPage: React.FC = () => {
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex justify-between items-center">
-            <span className="text-red-700">{error}</span>
+          <div className="mb-6 p-4 bg-danger-50 border border-danger-200 rounded-xl flex justify-between items-center shadow-soft">
+            <span className="text-danger-700">{error}</span>
             <button
               onClick={clearError}
-              className="text-red-500 hover:text-red-700"
+              className="text-danger-500 hover:text-danger-700 transition-colors"
             >
               ✕
             </button>
@@ -162,8 +164,8 @@ export const WorkItemListPage: React.FC = () => {
         )}
 
         {/* Tabs and Search */}
-        <div className="bg-white rounded-lg shadow mb-6">
-          <div className="border-b border-gray-200">
+        <div className="glass-card rounded-xl shadow-soft mb-6">
+          <div className="border-b border-glass-border">
             <nav className="flex -mb-px">
               {statusTabs.map(tab => (
                 <button
@@ -172,15 +174,15 @@ export const WorkItemListPage: React.FC = () => {
                   className={`
                     px-6 py-3 border-b-2 font-medium text-sm transition-colors
                     ${statusFilter === tab.value
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-primary-500 text-primary-600 bg-primary-50/50'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                     }
                   `}
                 >
                   <span className="flex items-center gap-2">
                     {tab.label}
                     {tab.count !== undefined && (
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">
+                      <span className="px-2 py-0.5 bg-white/80 text-gray-600 rounded-full text-xs border border-gray-200">
                         {tab.count}
                       </span>
                     )}
@@ -203,11 +205,13 @@ export const WorkItemListPage: React.FC = () => {
         {/* Content */}
         {loading && !workItems.length ? (
           <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
           </div>
         ) : filteredWorkItems.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-16 text-center">
-            <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <div className="glass-extreme rounded-xl p-16 text-center">
+            <div className="inline-flex p-4 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mb-4">
+              <Briefcase className="w-16 h-16 text-gray-400" />
+            </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               {searchQuery ? '沒有找到符合條件的 Work Items' : '還沒有 Work Items'}
             </h3>
@@ -217,7 +221,7 @@ export const WorkItemListPage: React.FC = () => {
             {!searchQuery && (
               <button
                 onClick={() => setCreateDialogOpen(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+                className="btn-primary inline-flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
                 創建第一個 Work Item

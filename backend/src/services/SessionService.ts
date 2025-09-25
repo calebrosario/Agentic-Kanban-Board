@@ -78,7 +78,7 @@ export class SessionService {
     // 先生成 sessionId，這樣可以在提示詞中使用
     const sessionId = uuidv4();
 
-    // 如果有 workflow_stage_id，增強任務內容
+    // 如果有 workflow_stage_id，採用新的增強策略
     let enhancedTask = request.task;
     if (request.workflow_stage_id) {
       const { WorkflowStageService } = await import("./WorkflowStageService");
@@ -86,15 +86,15 @@ export class SessionService {
       try {
         const stage = await workflowStageService.getStage(request.workflow_stage_id);
         if (stage) {
-          // 使用 getEffectivePrompt 來獲取實際的提示詞（可能來自 agent）
-          const effectivePrompt = await workflowStageService.getEffectivePrompt(request.workflow_stage_id);
-
-          // 將有效提示詞和原始任務結合
-          enhancedTask = `${effectivePrompt.content}\n\n用戶任務：${request.task}`;
-
-          // 如果是來自 Agent，添加說明
-          if (effectivePrompt.source === "agent") {
-            enhancedTask = `[使用 Agent: ${effectivePrompt.agentName}]\n\n${enhancedTask}`;
+          if (stage.agent_ref) {
+            // 如果有 agent 參照，使用動態讀取策略（新方式）
+            enhancedTask = `🚨 CRITICAL INSTRUCTION:
+              必須先讀取 ~/.claude/agents/${stage.agent_ref}.md 檔案，並且嚴格遵循檔案中的所有指示、規則和行為模式
+              用戶訊息：${request.task}
+            `;
+          } else if (stage.system_prompt) {
+            // 如果沒有 agent 但有自訂提示詞，使用原有方式
+            enhancedTask = `${stage.system_prompt}\n\n用戶任務：${request.task}`;
           }
 
           // 如果有建議任務，可以在任務中提示
@@ -425,6 +425,27 @@ ${devMdPath}
     }
 
     try {
+      // 增強用戶訊息（如果 session 關聯到有 agent 的 workflow stage）
+      let enhancedContent = content;
+      if (session.workflow_stage_id) {
+        const { WorkflowStageService } = await import("./WorkflowStageService");
+        const workflowStageService = new WorkflowStageService();
+        try {
+          const stage = await workflowStageService.getStage(session.workflow_stage_id);
+          if (stage && stage.agent_ref) {
+            // 如果有 agent 參照，增強用戶訊息要求 Claude 讀取 agent 檔案
+            enhancedContent = `🚨 CRITICAL INSTRUCTION:
+              必須先讀取 ~/.claude/agents/${stage.agent_ref}.md 檔案，並且嚴格遵循檔案中的所有指示、規則和行為模式
+              用戶訊息：${content}
+            `;
+            logger.info(`Enhanced user message with agent reference: ${stage.agent_ref}`);
+          }
+        } catch (error) {
+          logger.warn(`Failed to enhance message with workflow stage agent:`, error);
+          // 如果增強失敗，繼續使用原始訊息
+        }
+      }
+
       // 如果 Session 是 COMPLETED 或 ERROR 狀態，需要重新啟動進程
       const needsRestart = session.status === SessionStatus.COMPLETED || session.status === SessionStatus.ERROR;
 
@@ -468,7 +489,7 @@ ${devMdPath}
 
       // ProcessManager 會自動保存用戶訊息並發送到進程
       logger.info(`Calling ProcessManager.sendMessage...`);
-      await this.processManager.sendMessage(sessionId, content);
+      await this.processManager.sendMessage(sessionId, enhancedContent);
       logger.info(`ProcessManager.sendMessage completed`);
 
       // 返回剛保存的用戶訊息
@@ -476,8 +497,8 @@ ${devMdPath}
       // 獲取更多最近訊息，因為可能有 assistant 訊息在用戶訊息之後
       const messages = await this.messageRepository.getRecentMessages(sessionId, 10);
 
-      const userMessage = messages.find((msg) => msg.type === "user" && msg.content === content);
-      logger.info(`Looking for user message with content: "${content}"`);
+      const userMessage = messages.find((msg) => msg.type === "user" && msg.content === enhancedContent);
+      logger.info(`Looking for user message with content: "${enhancedContent?.slice(0, 100)}"`);
       logger.info(`Found user message:`, userMessage);
 
       if (!userMessage) {

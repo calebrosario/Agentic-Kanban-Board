@@ -56,24 +56,24 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
 
   // 獲取訊息樣式
   const getMessageStyle = () => {
-    const baseStyle = 'shadow-sm hover:shadow-md transition-all duration-200 break-words overflow-hidden backdrop-blur-sm';
-    
+    const baseStyle = 'glass-card shadow-soft hover:shadow-soft-md transition-all duration-200 break-words overflow-hidden';
+
     switch (message.type) {
       case 'user':
-        return `${baseStyle} bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white ring-1 ring-blue-400/20`;
+        return `${baseStyle} bg-gradient-to-br from-primary-500 to-primary-600 text-white`;
       case 'assistant':
       case 'claude':
-        return `${baseStyle} bg-gradient-to-br from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-750 dark:to-gray-800 border border-gray-200/60 dark:border-gray-600/40 ring-1 ring-gray-100/50 dark:ring-gray-700/30`;
+        return `${baseStyle} bg-white border border-gray-100`;
       case 'system':
-        return `${baseStyle} bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-900/30 dark:via-yellow-900/25 dark:to-orange-900/30 border border-amber-200/60 dark:border-amber-700/40 ring-1 ring-amber-100/50 dark:ring-amber-700/30`;
+        return `${baseStyle} bg-warning-50 border border-warning-200 text-warning-900`;
       case 'tool_use':
-        return `${baseStyle} bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-900/30 dark:via-green-900/25 dark:to-teal-900/30 border border-emerald-200/60 dark:border-emerald-700/40 ring-1 ring-emerald-100/50 dark:ring-emerald-700/30`;
+        return `${baseStyle} bg-success-50 border border-success-200 text-success-900`;
       case 'thinking':
-        return `${baseStyle} bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 dark:from-purple-900/30 dark:via-violet-900/25 dark:to-indigo-900/30 border border-purple-200/60 dark:border-purple-700/40 ring-1 ring-purple-100/50 dark:ring-purple-700/30`;
+        return `${baseStyle} bg-purple-50 border border-purple-200 text-purple-900`;
       case 'error':
-        return `${baseStyle} bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 dark:from-red-900/30 dark:via-rose-900/25 dark:to-pink-900/30 border border-red-200/60 dark:border-red-700/40 ring-1 ring-red-100/50 dark:ring-red-700/30`;
+        return `${baseStyle} bg-danger-50 border border-danger-200 text-danger-900`;
       default:
-        return `${baseStyle} bg-gradient-to-br from-gray-50 via-slate-50 to-gray-50 dark:from-gray-800/50 dark:via-slate-800/40 dark:to-gray-800/50 border border-gray-200/60 dark:border-gray-600/40 ring-1 ring-gray-100/50 dark:ring-gray-700/30`;
+        return `${baseStyle} bg-gray-50 border border-gray-200 text-gray-900`;
     }
   };
 
@@ -90,19 +90,19 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
         {metadata.toolStatus && (
           <div className="flex items-center gap-1.5 text-xs">
             {metadata.toolStatus === 'start' && (
-              <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+              <div className="flex items-center gap-1.5 text-primary-600">
                 <Loader className="w-3 h-3 animate-spin" />
                 <span>執行中...</span>
               </div>
             )}
             {metadata.toolStatus === 'complete' && (
-              <div className="flex items-center gap-1.5 text-green-600 dark:text-green-400">
+              <div className="flex items-center gap-1.5 text-success-600">
                 <CheckCircle className="w-3 h-3" />
                 <span>已完成</span>
               </div>
             )}
             {metadata.toolStatus === 'error' && (
-              <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
+              <div className="flex items-center gap-1.5 text-danger-600">
                 <XCircle className="w-3 h-3" />
                 <span>執行失敗</span>
               </div>
@@ -111,9 +111,9 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
         )}
 
         {metadata.filePath && (
-          <div className="inline-flex items-center gap-1.5 text-xs bg-gradient-to-r from-gray-100 to-slate-100 dark:from-gray-700/60 dark:to-slate-700/50 px-2 py-1 rounded-full shadow-sm ring-1 ring-gray-200/50 dark:ring-gray-600/30 backdrop-blur-sm">
-            <FileText className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-            <span className="text-gray-700 dark:text-gray-300 font-mono text-xs">{metadata.filePath}</span>
+          <div className="inline-flex items-center gap-1.5 text-xs bg-gray-100 px-2 py-1 rounded-full border border-gray-200">
+            <FileText className="w-3 h-3 text-gray-500" />
+            <span className="text-gray-700 font-mono text-xs">{metadata.filePath}</span>
           </div>
         )}
 
@@ -121,13 +121,13 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
           <div className="mt-1.5">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-800 transition-colors"
             >
               {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
               <span className="font-medium">參數詳情</span>
             </button>
             {isExpanded && (
-              <pre className="mt-1.5 text-xs bg-gradient-to-br from-gray-50 via-slate-50 to-gray-50 dark:from-gray-800/60 dark:via-slate-800/50 dark:to-gray-800/60 text-gray-700 dark:text-gray-300 p-2 rounded-lg overflow-x-auto border border-gray-200/60 dark:border-gray-600/40 shadow-inner ring-1 ring-gray-100/50 dark:ring-gray-700/30 backdrop-blur-sm">
+              <pre className="mt-1.5 text-xs bg-gray-50 text-gray-700 p-2 rounded-lg overflow-x-auto border border-gray-200 shadow-inner">
                 {JSON.stringify(metadata.toolInput, null, 2)}
               </pre>
             )}
@@ -142,8 +142,8 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
     if (message.type !== 'thinking' || !showThinking) return null;
 
     return (
-      <div className="mt-1.5 p-2 bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 dark:from-purple-900/30 dark:via-violet-900/25 dark:to-indigo-900/30 rounded-lg border border-purple-200/60 dark:border-purple-700/40 shadow-inner ring-1 ring-purple-100/50 dark:ring-purple-700/30 backdrop-blur-sm">
-        <div className="text-xs text-purple-700 dark:text-purple-300 whitespace-pre-wrap font-mono leading-relaxed">
+      <div className="mt-1.5 p-2 bg-purple-50 rounded-lg border border-purple-200 shadow-inner">
+        <div className="text-xs text-purple-700 whitespace-pre-wrap font-mono leading-relaxed">
           {message.content}
         </div>
       </div>
