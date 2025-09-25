@@ -7,7 +7,7 @@
 **A comprehensive session management system for Claude Code with advanced workflow capabilities**
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
-[![License](https://img.shields.io/badge/license-ISC-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](#requirements)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
@@ -19,6 +19,42 @@ Claude Code Board is a powerful web-based management system designed for develop
 
 ![Session List Management](assets/SessionList.png)
 *主控制台展示多個活躍 Session 的狀態和管理界面*
+
+
+## 🆚 Why Claude Code Board vs Direct CLI?
+
+### Enhanced CLI Experience
+Claude Code CLI is excellent for single-focus coding sessions. However, when managing complex projects with multiple contexts, some additional capabilities become valuable:
+- **Concurrent Development** - Working on multiple features or projects simultaneously
+- **Session Organization** - Organizing conversations by project goals and development stages
+- **Agent Workflow** - Streamlined switching between different AI specializations
+- **Visual Management** - Web interface for better session overview and navigation
+
+
+### Workflow Comparison
+
+**Traditional CLI Workflow** 😤
+```
+1. Open project directory
+2. Launch cmd/terminal window
+3. Enter Claude Code CLI command
+4. Input commands and wait for completion
+5. With multiple projects: hunt for the right terminal window
+6. Difficult to run multiple session with same project at the same time
+```
+
+**Claude Code Board Workflow** 🚀
+```
+1. Create new session directly in web interface
+2. Select project directory and Agent with one click
+3. Launch multiple conversations for same project effortlessly
+4. Cross-session continuity: build upon previous conversations
+5. Clear completion notifications when tasks finish
+6. Intuitive interface: see all session status at a glance
+7. Instant switching: click to enter any conversation
+8. Concurrent management: handle multiple projects seamlessly
+```
+
 
 ## ✨ Key Features
 
@@ -96,69 +132,6 @@ Claude Code Board is a powerful web-based management system designed for develop
 
 ![Welcome Interface](assets/Demo1.png)
 *初次啟動後的歡迎界面*
-
-## 🆚 Why Claude Code Board vs Direct CLI?
-
-### Enhanced CLI Experience
-Claude Code CLI is excellent for single-focus coding sessions. However, when managing complex projects with multiple contexts, some additional capabilities become valuable:
-- **Concurrent Development** - Working on multiple features or projects simultaneously
-- **Session Organization** - Organizing conversations by project goals and development stages
-- **Agent Workflow** - Streamlined switching between different AI specializations
-- **Visual Management** - Web interface for better session overview and navigation
-
-
-### Workflow Comparison
-
-**Traditional CLI Workflow** 😤
-```
-1. Open project directory
-2. Launch cmd/terminal window
-3. Enter Claude Code CLI command
-4. Input commands and wait for completion
-5. With multiple projects: hunt for the right terminal window
-6. Difficult to run multiple session with same project at the same time
-```
-
-**Claude Code Board Workflow** 🚀
-```
-1. Create new session directly in web interface
-2. Select project directory and Agent with one click
-3. Launch multiple conversations for same project effortlessly
-4. Cross-session continuity: build upon previous conversations
-5. Clear completion notifications when tasks finish
-6. Intuitive interface: see all session status at a glance
-7. Instant switching: click to enter any conversation
-8. Concurrent management: handle multiple projects seamlessly
-```
-
-### Our Solution
-Claude Code Board transforms the CLI experience into a comprehensive development platform:
-
-**🔄 Multi-Session Management**
-- Run multiple Claude Code instances simultaneously
-- Switch between different projects and contexts seamlessly
-- Each session maintains independent working directories
-
-**🤖 Smart Agent System**
-- Dynamic agent loading saves tokens and maintains prompt effectiveness
-- Agent instructions are re-injected for each message, ensuring consistent behavior
-- No prompt dilution over long conversations
-
-**📊 Project Organization**
-- Work Items organize sessions under project tasks
-- Session templates for common development workflows
-- Quick launch new sessions based on existing ones
-
-**🎯 Workflow Stages**
-- Pre-configured development stages (code review, debugging, feature development)
-- Consistent AI behavior across team members
-- Custom prompt templates for repeatable tasks
-
-**💾 Session Persistence**
-- Full conversation history with export capabilities
-- Session recovery and continuation
-- Real-time status tracking and notifications
-
 
 ## 🎯 Usage Guide
 
@@ -271,7 +244,7 @@ VITE_SOCKET_URL=http://localhost:3001
 
 ## 📝 License
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Support
 
