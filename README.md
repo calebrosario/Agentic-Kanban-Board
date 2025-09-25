@@ -45,18 +45,9 @@ Claude Code Board is a powerful web-based management system designed for develop
 
 
 ### 🎨 Modern UI/UX
-- **Glass Morphism Design** - Beautiful frosted glass effects throughout the interface
 - **Responsive Layout** - Optimized for desktop and tablet viewing
-- **Dark/Light Theme Support** - Seamless theme switching capability
 - **Real-time Notifications** - Windows Toast notifications for session events
 - **Message Filtering** - Advanced filtering system for different message types
-
-
-### 🔧 Developer Tools
-- **Message Export** - Export conversation history in JSON format
-- **BDD Testing Framework** - Comprehensive test coverage with Cucumber.js
-- **TypeScript Support** - Full type safety across frontend and backend
-- **Hot Reload Development** - Fast development workflow with automatic reloading
 
 ## 🚀 Quick Start
 
@@ -115,6 +106,31 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 - **Agent Workflow** - Streamlined switching between different AI specializations
 - **Visual Management** - Web interface for better session overview and navigation
 
+
+### Workflow Comparison
+
+**Traditional CLI Workflow** 😤
+```
+1. Open project directory
+2. Launch cmd/terminal window
+3. Enter Claude Code CLI command
+4. Input commands and wait for completion
+5. With multiple projects: hunt for the right terminal window
+6. Difficult to run multiple session with same project at the same time
+```
+
+**Claude Code Board Workflow** 🚀
+```
+1. Create new session directly in web interface
+2. Select project directory and Agent with one click
+3. Launch multiple conversations for same project effortlessly
+4. Cross-session continuity: build upon previous conversations
+5. Clear completion notifications when tasks finish
+6. Intuitive interface: see all session status at a glance
+7. Instant switching: click to enter any conversation
+8. Concurrent management: handle multiple projects seamlessly
+```
+
 ### Our Solution
 Claude Code Board transforms the CLI experience into a comprehensive development platform:
 
@@ -142,6 +158,7 @@ Claude Code Board transforms the CLI experience into a comprehensive development
 - Full conversation history with export capabilities
 - Session recovery and continuation
 - Real-time status tracking and notifications
+
 
 ## 🎯 Usage Guide
 
