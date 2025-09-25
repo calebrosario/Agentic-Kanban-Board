@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, Home, Code, FolderOpen, ShieldOff, Workflow, Briefcase } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';
 import { useSettings } from '../../hooks/useSettings';
-import { CreateSessionRequest } from '../../types/session.types';
+import { CreateSessionRequest, Session } from '../../types/session.types';
 import { workflowStageService, WorkflowStage } from '../../services/workflowStageService';
 import { useWorkItemStore } from '../../stores/workItemStore';
 import toast from 'react-hot-toast';
