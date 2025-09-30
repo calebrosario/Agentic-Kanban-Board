@@ -3,7 +3,7 @@ import { Plus, Briefcase, RefreshCw } from 'lucide-react';
 import { useWorkItemStore } from '../stores/workItemStore';
 import { useWorkflowStageStore } from '../stores/workflowStageStore';
 import toast from 'react-hot-toast';
-import { WorkItemCard } from '../components/WorkItem/WorkItemCard';
+import { WorkItemRow } from '../components/WorkItem/WorkItemRow';
 import { CreateWorkItemDialog } from '../components/WorkItem/CreateWorkItemDialog';
 import { EditWorkItemDialog } from '../components/WorkItem/EditWorkItemDialog';
 import { WorkItemStatus, WorkItem } from '../types/workitem';
@@ -101,11 +101,26 @@ export const WorkItemListPage: React.FC = () => {
     toast.success('Work Item 已更新');
   };
 
-  // 搜尋過濾
-  const filteredWorkItems = workItems.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // 搜尋過濾和排序
+  const filteredWorkItems = workItems
+    .filter(item =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      // 當篩選為「全部」時，按狀態排序：規劃中 -> 進行中 -> 已完成 -> 已取消
+      if (statusFilter === 'all') {
+        const statusOrder = {
+          'planning': 1,
+          'in_progress': 2,
+          'completed': 3,
+          'cancelled': 4
+        };
+        return statusOrder[a.status] - statusOrder[b.status];
+      }
+      // 其他情況按創建時間排序（最新的在前）
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
 
   const statusTabs = [
     { value: 'all', label: '全部', count: stats?.total },
@@ -229,9 +244,9 @@ export const WorkItemListPage: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-3">
             {filteredWorkItems.map(workItem => (
-              <WorkItemCard
+              <WorkItemRow
                 key={workItem.work_item_id}
                 workItem={workItem}
                 onEdit={handleEdit}

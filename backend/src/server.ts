@@ -177,7 +177,10 @@ async function startServer() {
     
     // Agent Prompts routes (需要認證)
     const agentPromptsRouter = (await import('./routes/agentPrompts')).default;
-    
+
+    // Task Template routes (需要認證)
+    const taskTemplateRouter = (await import('./routes/taskTemplate.routes')).default;
+
     // Session routes (需要認證)
     const { authMiddleware } = await import('./middleware/auth.middleware');
     app.use('/api/sessions', authMiddleware, sessionRouter);
@@ -187,6 +190,7 @@ async function startServer() {
     app.use('/api/workflow-stages', authMiddleware, workflowStageRouter);
     app.use('/api/work-items', authMiddleware, workItemRouter);
     app.use('/api/agent-prompts', authMiddleware, agentPromptsRouter);
+    app.use('/api/task-templates', authMiddleware, taskTemplateRouter);
     
     logger.info('Routes initialized successfully');
 

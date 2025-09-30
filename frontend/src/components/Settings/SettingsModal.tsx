@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Plus, Trash2, Settings, FolderOpen, Code, Home } from 'lucide-react';
+import { X, Plus, Trash2, Settings, FolderOpen, Code, Home, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useSettings, CommonPath } from '../../hooks/useSettings';
+import { TaskTemplateSettings } from './TaskTemplateSettings';
 
 
 interface SettingsModalProps {
@@ -16,10 +17,14 @@ const iconComponents = {
   Home,
 };
 
+type TabType = 'paths' | 'templates';
+
 export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [activeTab, setActiveTab] = useState<TabType>('paths');
+
   const {
     commonPaths,
     resetToDefault,
@@ -28,7 +33,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     deleteCommonPath,
     reloadSettings,
   } = useSettings();
-  
+
   const [editingPath, setEditingPath] = useState<CommonPath | null>(null);
 
   // 當開啟 modal 時重新載入設定
@@ -126,10 +131,35 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
         </div>
 
+        {/* Tab 導航 */}
+        <div className="flex border-b border-gray-200 px-4 sm:px-6">
+          <button
+            onClick={() => setActiveTab('paths')}
+            className={`flex items-center space-x-2 px-4 py-3 border-b-2 transition-colors ${
+              activeTab === 'paths'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <FolderOpen className="w-4 h-4" />
+            <span>常用路徑</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('templates')}
+            className={`flex items-center space-x-2 px-4 py-3 border-b-2 transition-colors ${
+              activeTab === 'templates'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>任務模板</span>
+          </button>
+        </div>
+
         {/* 內容 */}
-        <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-160px)] sm:max-h-[calc(90vh-200px)]">
-          <div className="space-y-4 sm:space-y-6">
-            {/* 常用路徑設定 */}
+        <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-220px)] sm:max-h-[calc(90vh-260px)]">
+          {activeTab === 'paths' && (
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-900">常用路徑</h3>
@@ -244,7 +274,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               )}
             </div>
-          </div>
+          )}
+
+          {activeTab === 'templates' && <TaskTemplateSettings />}
         </div>
 
         {/* 底部按鈕 */}

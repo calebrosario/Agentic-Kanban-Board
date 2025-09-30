@@ -48,262 +48,287 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
 
   return (
     <div className={cn(
-      "glass-extreme border-r border-glass-border flex flex-col transition-all duration-300",
-      isCollapsed ? "w-16" : "w-64"
+      "flex flex-col h-screen bg-gradient-to-br from-blue-100/60 via-purple-100/50 to-cyan-100/60 backdrop-blur-md border-r border-white/20",
+      "transition-[width] duration-300 ease-in-out",
+      isCollapsed ? "w-20" : "w-72"
     )}>
-      {/* Logo */}
+      {/* 懸浮卡片 */}
       <div className={cn(
-        "border-b border-glass-border relative",
-        isCollapsed ? "p-3" : "p-6"
+        "glass-extreme rounded-2xl flex flex-col border border-white/70 backdrop-blur-2xl bg-white/30 h-full",
+        "transition-[margin,background-color,border-color] duration-300 ease-in-out !shadow-none",
+        isCollapsed ? "m-2" : "m-4"
       )}>
+        {/* Logo */}
         <div className={cn(
-          "flex items-center",
-          isCollapsed ? "justify-center" : "space-x-3"
+          "relative transition-[padding] duration-300 ease-in-out",
+          isCollapsed ? "p-3" : "p-6"
         )}>
-          <img 
-            src="/asset/logo.png" 
-            alt="Claude Logo" 
-            className="w-8 h-8"
-          />
-          {!isCollapsed && (
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">Claude Code</h2>
-              <p className="text-xs text-gray-500">Session Manager</p>
-            </div>
-          )}
-        </div>
+          <div className={cn(
+            "flex items-center",
+            isCollapsed ? "justify-center" : "space-x-3"
+          )}>
+            <img
+              src="/asset/logo.png"
+              alt="Claude Logo"
+              className={cn(
+                "drop-shadow-md transition-[width,height] duration-300 ease-in-out",
+                isCollapsed ? "w-6 h-6" : "w-8 h-8"
+              )}
+            />
+            {!isCollapsed && (
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 drop-shadow-sm">Claude Code</h2>
+                <p className="text-xs text-gray-600">Session Manager</p>
+              </div>
+            )}
+          </div>
 
-        {/* 收合/展開按鈕 */}
-        <button
-          onClick={toggleSidebar}
-          className="absolute -right-3 top-1/2 -translate-y-1/2 glass-ultra rounded-full p-1.5 hover:shadow-soft-md transition-all z-30 border border-white/40"
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-4 h-4 text-gray-600" />
-          ) : (
-            <ChevronLeft className="w-4 h-4 text-gray-600" />
-          )}
-        </button>
-      </div>
+          {/* 收合/展開按鈕 */}
+          <button
+            onClick={toggleSidebar}
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2 glass-card rounded-full hover:shadow-soft-lg transition-all z-30 border border-white/50 bg-white/20 hover:bg-white/30",
+              isCollapsed ? "-right-1 p-1.5" : "-right-2 p-2"
+            )}
+          >
+            {isCollapsed ? (
+              <ChevronRight className="w-3 h-3 text-gray-700" />
+            ) : (
+              <ChevronLeft className="w-3 h-3 text-gray-700" />
+            )}
+          </button>
+
+          {/* 裝飾性分隔線 */}
+          <div className={cn(
+            "w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent",
+            isCollapsed ? "mt-2" : "mt-4"
+          )}></div>
+        </div>
       
 
-      {/* Navigation */}
-      <nav className={cn(
-        "flex-1 space-y-2",
-        isCollapsed ? "p-2" : "p-4"
-      )}>
-        {isCollapsed ? (
-          <Tooltip content="所有 Sessions" side="right">
+        {/* Navigation */}
+        <nav className={cn(
+          "flex-1 transition-[padding] duration-300 ease-in-out",
+          isCollapsed ? "space-y-1 p-2" : "space-y-1.5 p-4"
+        )}>
+          {isCollapsed ? (
+            <Tooltip content="所有 Sessions" side="right">
+              <Link
+                to="/"
+                className={cn(
+                  'flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-colors duration-200 relative group mx-1',
+                  location.pathname === '/'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                    : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
+                )}
+              >
+                <Home className="w-4 h-4 text-current transition-transform group-hover:scale-110" />
+                {totalSessions > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold rounded-full bg-red-500 text-white shadow-md border border-red-400 min-w-[16px] h-4">
+                    {totalSessions > 99 ? '99+' : totalSessions}
+                  </span>
+                )}
+              </Link>
+            </Tooltip>
+          ) : (
             <Link
               to="/"
               className={cn(
-                'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors relative',
+                'flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                 location.pathname === '/'
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
-                  : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                  : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
               )}
             >
-              <Home className="w-5 h-5 text-current" />
+              <div className="flex items-center space-x-3">
+                <Home className="w-5 h-5 text-current transition-transform group-hover:scale-110" />
+                <span className="font-medium">所有 Sessions</span>
+              </div>
               {totalSessions > 0 && (
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">
+                <span className={cn(
+                  'inline-flex items-center justify-center px-2.5 py-1 text-xs font-bold rounded-full transition-all',
+                  location.pathname === '/'
+                    ? 'bg-white/95 text-blue-600 border border-white/70 shadow-sm'
+                    : 'bg-white/60 text-gray-700 border border-white/50 group-hover:bg-white/80'
+                )}>
                   {totalSessions}
                 </span>
               )}
             </Link>
-          </Tooltip>
-        ) : (
-          <Link
-            to="/"
-            className={cn(
-              'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-              location.pathname === '/'
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
-                : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
-            )}
-          >
-            <div className="flex items-center space-x-3">
-              <Home className="w-5 h-5 text-current" />
-              <span>所有 Sessions</span>
-            </div>
-            {totalSessions > 0 && (
-              <span className={cn(
-                'inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full',
-                location.pathname === '/'
-                  ? 'bg-white/90 text-blue-600 border border-white/50'
-                  : 'bg-white/50 text-gray-700 border border-glass-border'
-              )}>
-                {totalSessions}
-              </span>
-            )}
-          </Link>
-        )}
+          )}
 
-        {isCollapsed ? (
-          <Tooltip content="Work Items" side="right">
+          {isCollapsed ? (
+            <Tooltip content="Work Items" side="right">
+              <Link
+                to="/work-items"
+                className={cn(
+                  'flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-all duration-200 group mx-1',
+                  location.pathname === '/work-items'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                    : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
+                )}
+              >
+                <Briefcase className="w-4 h-4 text-current transition-transform group-hover:scale-110" />
+              </Link>
+            </Tooltip>
+          ) : (
             <Link
               to="/work-items"
               className={cn(
-                'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors',
+                'flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                 location.pathname === '/work-items'
-                  ? 'relative bg-white/30 backdrop-blur-md text-purple-700 border border-white/50 shadow-soft before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/20 before:to-purple-600/20 before:rounded-lg'
-                  : 'text-gray-700 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-soft hover:border hover:border-white/30'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                  : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
               )}
             >
-              <Briefcase className="w-5 h-5 text-current" />
+              <div className="flex items-center space-x-3">
+                <Briefcase className="w-5 h-5 text-current transition-transform group-hover:scale-110" />
+                <span className="font-medium">Work Items</span>
+              </div>
             </Link>
-          </Tooltip>
-        ) : (
-          <Link
-            to="/work-items"
-            className={cn(
-              'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-              location.pathname === '/work-items'
-                ? 'relative bg-white/30 backdrop-blur-md text-purple-700 border border-white/50 shadow-soft overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/20 before:to-purple-600/20 before:-z-10'
-                : 'text-gray-700 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-soft hover:border hover:border-white/30'
-            )}
-          >
-            <div className="flex items-center space-x-3">
-              <Briefcase className="w-5 h-5 text-current" />
-              <span>Work Items</span>
-            </div>
-          </Link>
-        )}
+          )}
 
-        {isCollapsed ? (
-          <Tooltip content="工作流程階段" side="right">
+          {isCollapsed ? (
+            <Tooltip content="工作流程階段" side="right">
+              <Link
+                to="/workflow-stages"
+                className={cn(
+                  'flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-all duration-200 group mx-1',
+                  location.pathname === '/workflow-stages'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                    : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
+                )}
+              >
+                <Workflow className="w-4 h-4 text-current transition-transform group-hover:scale-110" />
+              </Link>
+            </Tooltip>
+          ) : (
             <Link
               to="/workflow-stages"
               className={cn(
-                'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors',
+                'flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                 location.pathname === '/workflow-stages'
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
-                  : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                  : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
               )}
             >
-              <Workflow className="w-5 h-5 text-current" />
+              <div className="flex items-center space-x-3">
+                <Workflow className="w-5 h-5 text-current transition-transform group-hover:scale-110" />
+                <span className="font-medium">工作流程階段</span>
+              </div>
             </Link>
-          </Tooltip>
-        ) : (
-          <Link
-            to="/workflow-stages"
-            className={cn(
-              'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-              location.pathname === '/workflow-stages'
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
-                : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
-            )}
-          >
-            <div className="flex items-center space-x-3">
-              <Workflow className="w-5 h-5 text-current" />
-              <span>工作流程階段</span>
-            </div>
-          </Link>
-        )}
+          )}
 
-        {isCollapsed ? (
-          <Tooltip content="Agent 提示詞" side="right">
+          {isCollapsed ? (
+            <Tooltip content="Agent 提示詞" side="right">
+              <Link
+                to="/agent-prompts"
+                className={cn(
+                  'flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-all duration-200 group mx-1',
+                  location.pathname.startsWith('/agent-prompts')
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                    : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
+                )}
+              >
+                <FileText className="w-4 h-4 text-current transition-transform group-hover:scale-110" />
+              </Link>
+            </Tooltip>
+          ) : (
             <Link
               to="/agent-prompts"
               className={cn(
-                'flex items-center justify-center p-2 rounded-lg text-sm font-medium transition-colors',
+                'flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                 location.pathname.startsWith('/agent-prompts')
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
-                  : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft-lg backdrop-blur-sm border border-blue-400/30'
+                  : 'text-gray-600 hover:bg-white/40 hover:shadow-soft-md hover:backdrop-blur-sm hover:border hover:border-white/40 hover:text-gray-800'
               )}
             >
-              <FileText className="w-5 h-5 text-current" />
+              <div className="flex items-center space-x-3">
+                <FileText className="w-5 h-5 text-current transition-transform group-hover:scale-110" />
+                <span className="font-medium">Agent 提示詞</span>
+              </div>
             </Link>
-          </Tooltip>
-        ) : (
-          <Link
-            to="/agent-prompts"
-            className={cn(
-              'flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-              location.pathname.startsWith('/agent-prompts')
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue'
-                : 'text-gray-600 hover:bg-white/50 hover:shadow-soft'
-            )}
-          >
-            <div className="flex items-center space-x-3">
-              <FileText className="w-5 h-5 text-current" />
-              <span>Agent 提示詞</span>
-            </div>
-          </Link>
-        )}
+          )}
       </nav>
 
-      {/* 底部操作區 */}
-      <div className={cn(
-        "border-t border-glass-border space-y-2",
-        isCollapsed ? "p-2" : "p-4"
-      )}>
-        {isCollapsed ? (
-          <>
-            <Tooltip content="建立 Session" side="right">
-              <button 
+        {/* 底部操作區 */}
+        <div className={cn(
+          "space-y-2 mt-2 transition-[padding] duration-300 ease-in-out",
+          isCollapsed ? "p-2" : "p-4"
+        )}>
+          {/* 裝飾性分隔線 */}
+          <div className={cn(
+            "w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent",
+            isCollapsed ? "mb-2" : "mb-3"
+          )}></div>
+          {isCollapsed ? (
+            <>
+              <Tooltip content="建立 Session" side="right">
+                <button
+                  onClick={onCreateSession}
+                  className="w-full flex items-center justify-center p-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-green-400/30 backdrop-blur-sm group mx-1"
+                >
+                  <Plus className="w-4 h-4 transition-transform group-hover:scale-110" />
+                </button>
+              </Tooltip>
+
+              <Tooltip content="設定" side="right">
+                <button
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="w-full flex items-center justify-center p-2.5 bg-white/20 text-gray-700 rounded-lg hover:bg-white/30 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-white/40 backdrop-blur-sm group mx-1"
+                >
+                  <Settings className="w-4 h-4 transition-transform group-hover:scale-110" />
+                </button>
+              </Tooltip>
+
+              <Tooltip content="登出" side="right">
+                <button
+                  onClick={logout}
+                  className="w-full flex items-center justify-center p-2.5 bg-red-50/80 text-red-600 rounded-lg hover:bg-red-100/80 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-red-200/50 backdrop-blur-sm group mx-1"
+                >
+                  <LogOut className="w-4 h-4 transition-transform group-hover:scale-110" />
+                </button>
+              </Tooltip>
+            </>
+          ) : (
+            <>
+              <button
                 onClick={onCreateSession}
-                className="w-full flex items-center justify-center p-2 btn-primary"
+                className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-green-400/30 backdrop-blur-sm group font-medium"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4 mr-2 transition-transform group-hover:scale-110" />
+                建立 Session
               </button>
-            </Tooltip>
-            
-            <Tooltip content="設定" side="right">
-              <button 
+
+              <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="w-full flex items-center justify-center p-2 btn-secondary"
+                className="w-full flex items-center justify-center px-4 py-3 bg-white/20 text-gray-700 rounded-xl hover:bg-white/30 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-white/40 backdrop-blur-sm group font-medium"
               >
-                <Settings className="w-5 h-5" />
+                <Settings className="w-4 h-4 mr-2 transition-transform group-hover:scale-110" />
+                設定
               </button>
-            </Tooltip>
-            
-            <Tooltip content="登出" side="right">
-              <button 
+
+              <button
                 onClick={logout}
-                className="w-full flex items-center justify-center p-2 bg-danger-50 text-danger-700 rounded-xl hover:bg-danger-100 shadow-soft-sm hover:shadow-soft transition-all"
+                className="w-full flex items-center justify-center px-4 py-3 bg-red-50/80 text-red-600 rounded-xl hover:bg-red-100/80 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-red-200/50 backdrop-blur-sm group font-medium"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-4 h-4 mr-2 transition-transform group-hover:scale-110" />
+                登出
               </button>
-            </Tooltip>
-          </>
-        ) : (
-          <>
-            <button 
-              onClick={onCreateSession}
-              className="w-full flex items-center justify-center btn-primary"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              建立 Session
-            </button>
-            
-            <button 
-              onClick={() => setIsSettingsOpen(true)}
-              className="w-full flex items-center justify-center btn-secondary"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              設定
-            </button>
-            
-            <button 
-              onClick={logout}
-              className="w-full flex items-center justify-center px-4 py-2 bg-danger-50 text-danger-700 rounded-xl hover:bg-danger-100 shadow-soft-sm hover:shadow-soft transition-all"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              登出
-            </button>
-          </>
-        )}
+            </>
+          )}
         
-        {loading && !isCollapsed && (
-          <div className="mt-3 flex items-center justify-center text-xs text-gray-500">
-            <div className="animate-spin w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full mr-2"></div>
-            載入中...
-          </div>
-        )}
+          {loading && !isCollapsed && (
+            <div className="mt-3 flex items-center justify-center text-xs text-gray-500">
+              <div className="animate-spin w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full mr-2"></div>
+              載入中...
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 設定模態窗口 */}
-      <SettingsModal 
+      <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />

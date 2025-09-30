@@ -440,6 +440,55 @@ export class Database {
           CREATE INDEX IF NOT EXISTS idx_sessions_work_item_id ON sessions(work_item_id)
         `);
 
+        // Create task_templates table for storing task templates
+        this.db.run(`
+          CREATE TABLE IF NOT EXISTS task_templates (
+            id TEXT PRIMARY KEY,
+            label TEXT NOT NULL,
+            template TEXT NOT NULL,
+            sort_order INTEGER NOT NULL DEFAULT 0,
+            is_default BOOLEAN DEFAULT 0,
+            is_active BOOLEAN DEFAULT 1,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, async (err) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          // Check if task_templates table is empty and insert default templates
+          const count = await this.get<{count: number}>('SELECT COUNT(*) as count FROM task_templates');
+          if (count && count.count === 0) {
+            // Insert default templates
+            const defaultTemplates = [
+              { id: '1', label: '繼續工作', template: '基於前一個對話的上下文，繼續進行相關工作。', sort_order: 1 },
+              { id: '2', label: '程式審查', template: '請審查此專案的程式碼品質、安全性和最佳實踐。請先閱讀 dev.md 和相關專案檔案。', sort_order: 2 },
+              { id: '3', label: '修復錯誤', template: '協助分析和修復專案中的錯誤。請先了解專案架構和現有程式碼。', sort_order: 3 },
+              { id: '4', label: '功能開發', template: '協助開發新功能，請先了解現有架構和設計模式。', sort_order: 4 },
+              { id: '5', label: '撰寫文件', template: '協助撰寫或更新專案文件，請先分析現有程式碼結構。', sort_order: 5 },
+            ];
+
+            for (const t of defaultTemplates) {
+              await this.run(`
+                INSERT INTO task_templates (id, label, template, sort_order, is_default, is_active)
+                VALUES (?, ?, ?, ?, 1, 1)
+              `, [t.id, t.label, t.template, t.sort_order]);
+            }
+            console.log('Default task templates inserted');
+          }
+        });
+
+        // Create indexes for task_templates
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_task_templates_sort_order ON task_templates(sort_order)
+        `);
+
+        this.db.run(`
+          CREATE INDEX IF NOT EXISTS idx_task_templates_is_active ON task_templates(is_active)
+        `);
+
         resolve();
       });
     });

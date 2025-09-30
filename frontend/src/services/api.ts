@@ -322,4 +322,49 @@ export const tagApi = {
   },
 };
 
+// Task Template API
+import { TaskTemplate, CreateTaskTemplateRequest, UpdateTaskTemplateRequest, ReorderTaskTemplatesRequest } from '../types/taskTemplate.types';
+
+export const taskTemplateApi = {
+  // 獲取所有任務模板
+  async getAllTemplates(): Promise<TaskTemplate[]> {
+    const response = await api.get<{ success: boolean; data: TaskTemplate[] }>('/task-templates');
+    return response.data.data;
+  },
+
+  // 獲取單個任務模板
+  async getTemplate(id: string): Promise<TaskTemplate> {
+    const response = await api.get<{ success: boolean; data: TaskTemplate }>(`/task-templates/${id}`);
+    return response.data.data;
+  },
+
+  // 創建新任務模板
+  async createTemplate(data: CreateTaskTemplateRequest): Promise<TaskTemplate> {
+    const response = await api.post<{ success: boolean; data: TaskTemplate }>('/task-templates', data);
+    return response.data.data;
+  },
+
+  // 更新任務模板
+  async updateTemplate(id: string, data: UpdateTaskTemplateRequest): Promise<TaskTemplate> {
+    const response = await api.put<{ success: boolean; data: TaskTemplate }>(`/task-templates/${id}`, data);
+    return response.data.data;
+  },
+
+  // 刪除任務模板
+  async deleteTemplate(id: string): Promise<void> {
+    await api.delete(`/task-templates/${id}`);
+  },
+
+  // 重新排序任務模板
+  async reorderTemplates(templates: ReorderTaskTemplatesRequest[]): Promise<void> {
+    await api.post('/task-templates/reorder', { templates });
+  },
+
+  // 重置為預設模板
+  async resetToDefault(): Promise<TaskTemplate[]> {
+    const response = await api.post<{ success: boolean; data: TaskTemplate[] }>('/task-templates/reset');
+    return response.data.data;
+  },
+};
+
 export default api;

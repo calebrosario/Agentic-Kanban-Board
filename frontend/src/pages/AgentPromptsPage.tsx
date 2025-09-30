@@ -116,38 +116,47 @@ const AgentPromptsPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      {/* 頁面標題 - 使用玻璃效果 */}
-      <div className="glass-extreme rounded-2xl p-6 mb-6">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">Agent 提示詞庫</h1>
-        <p className="text-gray-600 mt-1">瀏覽和管理 Claude Code Agent 提示詞</p>
-      </div>
-
-      {/* 設定區域 - 玻璃卡片 */}
-      <div className="glass-card rounded-xl p-4 mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <FolderOpen className="h-5 w-5 text-gray-500" />
-            <span className="text-sm text-gray-700">
-              {config.configured ? (
-                <>當前路徑: <code className="bg-gray-100 px-2 py-1 rounded">{config.path}</code></>
-              ) : (
-                '尚未設定 Claude agents 路徑'
-              )}
-            </span>
+    <div className="flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="glass-card rounded-xl p-4 flex justify-between items-center mb-8">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl shadow-blue">
+              <FileText className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Agent 提示詞庫</h1>
+            {agents.length > 0 && (
+              <span className="px-3 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-full text-sm font-medium">
+                總計 {agents.length}
+              </span>
+            )}
           </div>
-          <button
-            onClick={() => setShowConfig(!showConfig)}
-            className="flex items-center gap-2 px-4 py-2 text-sm glass-ultra rounded-xl transition-all hover:shadow-soft border border-white/40"
-          >
-            <Settings className="h-4 w-4" />
-            <span>設定</span>
-          </button>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowConfig(!showConfig)}
+              className="flex items-center gap-2 px-4 py-2 text-sm glass-ultra rounded-xl transition-all hover:shadow-soft border border-white/40"
+            >
+              <Settings className="h-4 w-4" />
+              <span>設定</span>
+            </button>
+          </div>
         </div>
 
-        {/* 設定表單 */}
+        {/* 設定區域 */}
         {showConfig && (
-          <div className="mt-4 pt-4 border-t border-white/30">
+          <div className="glass-card rounded-xl p-4 mb-6">
+            <div className="flex items-center gap-2 mb-4">
+              <FolderOpen className="h-5 w-5 text-gray-500" />
+              <span className="text-sm text-gray-700">
+                {config.configured ? (
+                  <>當前路徑: <code className="bg-gray-100 px-2 py-1 rounded">{config.path}</code></>
+                ) : (
+                  '尚未設定 Claude agents 路徑'
+                )}
+              </span>
+            </div>
+
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -185,48 +194,66 @@ const AgentPromptsPage: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
 
-      {/* Agent 列表 */}
-      {config.configured ? (
-        agents.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {agents.map((agent) => (
-              <div
-                key={agent.name}
-                onClick={() => handleAgentClick(agent.name)}
-                className="glass-card rounded-xl p-4 cursor-pointer hover:shadow-soft-md hover:scale-[1.02] transition-all"
-              >
-                <div className="flex items-start space-x-3">
-                  <FileText className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 truncate">
-                      {agent.name}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      {agent.fileName}
-                    </p>
+        {/* Agent 列表 */}
+        {config.configured ? (
+          agents.length > 0 ? (
+            <div className="space-y-3">
+              {agents.map((agent) => (
+                <div
+                  key={agent.name}
+                  onClick={() => handleAgentClick(agent.name)}
+                  className="glass-card hover:shadow-soft-md transition-all duration-200 cursor-pointer border-l-4 border-l-purple-300"
+                >
+                  <div className="px-4 py-3">
+                    <div className="flex items-center gap-4">
+                      {/* Agent 資訊 */}
+                      <div className="flex items-center gap-3 min-w-0" style={{ width: '300px' }}>
+                        <FileText className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm font-semibold text-gray-900 truncate">
+                            {agent.name}
+                          </h3>
+                          <p className="text-xs text-gray-500 truncate">
+                            📁 {agent.fileName}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* 描述區域 */}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm text-gray-400 italic">點擊查看詳細內容</span>
+                      </div>
+
+                      {/* 狀態指示 */}
+                      <div className="flex items-center" style={{ width: '100px' }}>
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                          <span>🤖</span>
+                          可用
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
+              ))}
+            </div>
+          ) : (
           <div className="glass-card rounded-xl p-8 text-center">
             <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">目錄中沒有找到 agent 檔案</p>
             <p className="text-sm text-gray-500 mt-1">請確認路徑設定正確</p>
           </div>
-        )
-      ) : (
-        <div className="glass-ultra rounded-xl p-8 text-center">
-          <FolderOpen className="h-12 w-12 text-blue-500 mx-auto mb-3" />
-          <p className="text-gray-700 mb-2">請先設定 Claude agents 路徑</p>
-          <p className="text-sm text-gray-600">
-            通常位於 <code className="bg-white/50 px-2 py-1 rounded">~/.claude/agents</code>
-          </p>
-        </div>
-      )}
+          )
+        ) : (
+          <div className="glass-ultra rounded-xl p-8 text-center">
+            <FolderOpen className="h-12 w-12 text-blue-500 mx-auto mb-3" />
+            <p className="text-gray-700 mb-2">請先設定 Claude agents 路徑</p>
+            <p className="text-sm text-gray-600">
+              通常位於 <code className="bg-white/50 px-2 py-1 rounded">~/.claude/agents</code>
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
