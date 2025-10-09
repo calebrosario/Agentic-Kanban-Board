@@ -21,6 +21,7 @@ export const WorkflowStages: React.FC = () => {
   const [editingStage, setEditingStage] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState<Partial<WorkflowStage>>({});
+  const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
   
   // Agent 相關狀態
   const [agents, setAgents] = useState<AgentListItem[]>([]);
@@ -281,15 +282,24 @@ export const WorkflowStages: React.FC = () => {
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* 頁面標題 */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="glass-card rounded-xl p-4 flex justify-between items-center mb-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow-blue">
               <Workflow className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-              工作流程階段管理
-            </h1>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                工作流程階段管理
+              </h1>
+              <p className="text-sm text-gray-600 mt-0.5">配置 AI 工作流程的專業化階段</p>
+            </div>
+            {stages.length > 0 && (
+              <span className="px-3 py-1 bg-primary-50 text-primary-700 border border-primary-200 rounded-full text-sm font-medium">
+                {stages.length} 個階段
+              </span>
+            )}
           </div>
+
           <button
             onClick={handleCreate}
             className="flex items-center gap-2 btn-primary"
@@ -301,9 +311,9 @@ export const WorkflowStages: React.FC = () => {
 
         {/* 新增表單 - 玻璃卡片 */}
         {isCreating && (
-          <div className="glass-card rounded-xl p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">新增工作流程階段</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="glass-card rounded-xl p-5 mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-3">新增工作流程階段</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   名稱 *
@@ -330,10 +340,10 @@ export const WorkflowStages: React.FC = () => {
               </div>
               {/* 提示詞來源選擇 */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   提示詞來源 *
                 </label>
-                <div className="flex gap-4 mb-4">
+                <div className="flex gap-4 mb-3">
                   <label className="flex items-center">
                     <input
                       type="radio"
@@ -400,10 +410,10 @@ export const WorkflowStages: React.FC = () => {
                     
                     {/* Agent 錯誤提示 */}
                     {agentError && (
-                      <div className="mt-3 p-4 bg-red-50 border-l-4 border-red-400 rounded">
+                      <div className="mt-2 p-3 bg-red-50 border-l-4 border-red-400 rounded">
                         <div className="flex">
-                          <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0" />
-                          <div className="ml-3">
+                          <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0" />
+                          <div className="ml-2">
                             <p className="text-sm text-red-700">{agentError}</p>
                             <div className="mt-2 flex gap-2">
                               <button
@@ -491,7 +501,7 @@ export const WorkflowStages: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-2 mt-4">
               <button
                 onClick={handleCancel}
                 className="btn-secondary"
@@ -510,116 +520,200 @@ export const WorkflowStages: React.FC = () => {
         )}
         
 
-        {/* 階段列表 - 玻璃卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* 階段列表 - 列表模式 */}
+        <div className="space-y-3">
           {stages.map((stage) => (
             <div
               key={stage.stage_id}
-              className="glass-card rounded-xl p-6 hover:shadow-soft-md transition-all duration-200 hover:-translate-y-1"
+              className="glass-card rounded-lg overflow-hidden hover:shadow-soft-md transition-all duration-200"
             >
               {editingStage === stage.stage_id ? (
-                // 編輯模式
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    value={formData.name || ''}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="input font-semibold"
-                  />
-                  {/* 簡化的提示詞選擇 */}
-                  {promptSource === 'agent' ? (
-                    <div>
-                      <select
-                        value={formData.agent_ref || ''}
-                        onChange={(e) => handleAgentChange(e.target.value)}
-                        className="input text-sm"
-                      >
-                        <option value="">選擇 Agent...</option>
-                        {agents.map(agent => (
-                          <option key={agent.name} value={agent.name}>
-                            {agent.name}
-                          </option>
-                        ))}
-                      </select>
-                      {agentError && (
-                        <p className="mt-1 text-xs text-red-600">{agentError}</p>
-                      )}
+                // 編輯模式 - 列表適配表單
+                <div className="p-4 bg-gray-50 border-t border-gray-200">
+                  <h4 className="text-sm font-semibold text-gray-800 mb-4">編輯工作流程階段</h4>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* 左側基本信息 */}
+                    <div className="space-y-3">
+                      {/* 名稱和描述 */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">名稱 *</label>
+                          <input
+                            type="text"
+                            value={formData.name || ''}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="階段名稱"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">顏色</label>
+                          <input
+                            type="color"
+                            value={formData.color || '#8B5CF6'}
+                            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                            className="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">描述</label>
+                        <input
+                          type="text"
+                          value={formData.description || ''}
+                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="簡短描述這個階段的目的"
+                        />
+                      </div>
+
+                      {/* 提示詞來源切換 */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-2">提示詞來源 *</label>
+                        <div className="flex gap-4 mb-3">
+                          <label className="flex items-center text-sm">
+                            <input
+                              type="radio"
+                              value="custom"
+                              checked={promptSource === 'custom'}
+                              onChange={() => handlePromptSourceChange('custom')}
+                              className="mr-2"
+                            />
+                            自訂提示詞
+                          </label>
+                          <label className="flex items-center text-sm">
+                            <input
+                              type="radio"
+                              value="agent"
+                              checked={promptSource === 'agent'}
+                              onChange={() => handlePromptSourceChange('agent')}
+                              disabled={!isAgentConfigured}
+                              className="mr-2"
+                            />
+                            使用 Agent
+                          </label>
+                        </div>
+
+                        {/* 根據選擇顯示不同輸入 */}
+                        {promptSource === 'agent' ? (
+                          <div>
+                            <select
+                              value={formData.agent_ref || ''}
+                              onChange={(e) => handleAgentChange(e.target.value)}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                              <option value="">選擇 Agent...</option>
+                              {agents.map(agent => (
+                                <option key={agent.name} value={agent.name}>
+                                  {agent.name}
+                                </option>
+                              ))}
+                            </select>
+                            {agentError && (
+                              <p className="mt-1 text-xs text-red-600">{agentError}</p>
+                            )}
+                          </div>
+                        ) : (
+                          <textarea
+                            value={formData.system_prompt || ''}
+                            onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                            rows={4}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="定義 AI Agent 在這個階段的行為和角色..."
+                          />
+                        )}
+                      </div>
                     </div>
-                  ) : (
-                    <textarea
-                      value={formData.system_prompt || ''}
-                      onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
-                      rows={3}
-                      className="input text-sm"
-                    />
-                  )}
-                  <div className="flex justify-end">
-                    <input
-                      type="color"
-                      value={formData.color}
-                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                      className="w-10 h-10 border border-gray-300 rounded-lg cursor-pointer"
-                    />
+
+                    {/* 右側建議任務 */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-2">建議任務</label>
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {(formData.suggested_tasks || []).map((task, index) => (
+                          <div key={index} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={task}
+                              onChange={(e) => {
+                                const tasks = [...(formData.suggested_tasks || [])];
+                                tasks[index] = e.target.value;
+                                setFormData({ ...formData, suggested_tasks: tasks });
+                              }}
+                              className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="建議任務描述..."
+                            />
+                            <button
+                              onClick={() => {
+                                const tasks = (formData.suggested_tasks || []).filter((_, i) => i !== index);
+                                setFormData({ ...formData, suggested_tasks: tasks });
+                              }}
+                              className="px-2 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const tasks = [...(formData.suggested_tasks || []), ''];
+                            setFormData({ ...formData, suggested_tasks: tasks });
+                          }}
+                          className="w-full py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all border border-dashed border-blue-300 hover:border-blue-400"
+                        >
+                          + 新增建議任務
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-end gap-2">
+
+                  {/* 按鈕組 */}
+                  <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                     <button
                       onClick={handleCancel}
-                      className="px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-xl transition-all hover:shadow-soft-sm"
+                      className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
                     >
-                      <X className="w-4 h-4" />
+                      取消
                     </button>
                     <button
                       onClick={handleSave}
-                      className="px-3 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-blue transition-all"
+                      className="px-4 py-2 text-sm bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-blue transition-all"
                     >
-                      <Save className="w-4 h-4" />
+                      儲存變更
                     </button>
                   </div>
                 </div>
               ) : (
-                // 顯示模式
-                <div>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2">
+                // 緊湊列表顯示模式
+                <div className="px-4 py-3">
+                  <div className="flex items-center gap-4">
+                    {/* 階段基本信息 */}
+                    <div className="flex items-center gap-3 min-w-0 flex-shrink-0" style={{ width: '200px' }}>
                       <div
-                        className="w-3 h-3 rounded-full"
+                        className="w-3 h-3 rounded-full flex-shrink-0"
                         style={{ backgroundColor: stage.color }}
                       />
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {stage.name}
-                      </h3>
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-semibold text-gray-900 truncate">
+                          {stage.name}
+                        </h3>
+                        {stage.description && (
+                          <p className="text-xs text-gray-500 truncate">{stage.description}</p>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => handleEdit(stage)}
-                        className="p-1.5 text-gray-600 hover:bg-white/60 rounded-lg transition-all hover:shadow-soft-sm"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(stage.stage_id)}
-                        className="p-1.5 text-danger-600 hover:bg-danger-50 rounded-lg transition-all hover:shadow-soft-sm"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {stage.description && (
-                    <p className="text-sm text-gray-600 mb-3">{stage.description}</p>
-                  )}
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <span className="text-xs font-medium text-gray-500">
-                        {stage.agent_ref ? '使用 Agent' : '系統提示詞'}
-                      </span>
-                      {stage.agent_ref ? (
-                        <div className="mt-1 flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-blue-500" />
+
+                    {/* 提示詞來源 */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 flex-shrink-0">
+                          {stage.agent_ref ? '🤖' : '📝'}
+                        </span>
+                        {stage.agent_ref ? (
                           <a
                             href={`/agent-prompts/${stage.agent_ref}`}
-                            className="text-sm bg-primary-50 text-primary-700 px-2 py-1 rounded-lg hover:bg-primary-100 transition-all hover:shadow-soft-sm cursor-pointer"
+                            className="text-sm bg-primary-50 text-primary-700 px-2 py-0.5 rounded hover:bg-primary-100 transition-all cursor-pointer flex-shrink-0"
                             onClick={(e) => {
                               e.preventDefault();
                               window.location.href = `/agent-prompts/${stage.agent_ref}`;
@@ -627,40 +721,79 @@ export const WorkflowStages: React.FC = () => {
                           >
                             {stage.agent_ref}.md
                           </a>
-                        </div>
+                        ) : (
+                          <p className="text-sm text-gray-700 truncate">
+                            {stage.system_prompt}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 建議任務 */}
+                    <div className="flex items-center gap-2 min-w-0" style={{ width: '250px' }}>
+                      {stage.suggested_tasks && stage.suggested_tasks.length > 0 ? (
+                        <>
+                          <span className="text-xs text-gray-500 flex-shrink-0">💡</span>
+                          <div className="flex items-center gap-1 min-w-0 flex-1">
+                            <span className="text-sm text-gray-700 truncate">
+                              {stage.suggested_tasks[0]}
+                            </span>
+                            {stage.suggested_tasks.length > 1 && (
+                              <button
+                                onClick={() => {
+                                  const newExpanded = new Set(expandedTasks);
+                                  if (expandedTasks.has(stage.stage_id)) {
+                                    newExpanded.delete(stage.stage_id);
+                                  } else {
+                                    newExpanded.add(stage.stage_id);
+                                  }
+                                  setExpandedTasks(newExpanded);
+                                }}
+                                className="text-xs text-blue-600 hover:text-blue-700 flex-shrink-0"
+                              >
+                                +{stage.suggested_tasks.length - 1}
+                              </button>
+                            )}
+                          </div>
+                        </>
                       ) : (
-                        <p className="text-sm text-gray-700 mt-1 line-clamp-3">
-                          {stage.system_prompt}
-                        </p>
+                        <span className="text-xs text-gray-400">無建議任務</span>
                       )}
                     </div>
-                    
-                    {stage.suggested_tasks && stage.suggested_tasks.length > 0 && (
-                      <div>
-                        <span className="text-xs font-medium text-gray-500">建議任務</span>
-                        <ul className="text-sm text-gray-700 mt-1 space-y-1">
-                          {stage.suggested_tasks.map((task, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="mr-2">•</span>
-                              <span>{task}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-end text-xs text-gray-500">
-                      <div
-                        className={`px-2 py-0.5 rounded-full text-xs ${
-                          stage.is_active
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-500'
-                        }`}
+
+                    {/* 操作按鈕 */}
+                    <div className="flex gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => handleEdit(stage)}
+                        className="p-1.5 text-gray-600 hover:bg-white/60 rounded transition-all hover:shadow-soft-sm"
+                        title="編輯"
                       >
-                        {stage.is_active ? '啟用' : '停用'}
-                      </div>
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(stage.stage_id)}
+                        className="p-1.5 text-danger-600 hover:bg-danger-50 rounded transition-all hover:shadow-soft-sm"
+                        title="刪除"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
+
+                  {/* 展開的建議任務 */}
+                  {expandedTasks.has(stage.stage_id) && stage.suggested_tasks && stage.suggested_tasks.length > 1 && (
+                    <div className="mt-2 ml-6 pt-2 border-t border-gray-100">
+                      <div className="text-xs text-gray-500 mb-1">所有建議任務：</div>
+                      <ul className="text-sm text-gray-700 space-y-0.5">
+                        {stage.suggested_tasks.map((task, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="mr-1.5 text-gray-400">•</span>
+                            <span>{task}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

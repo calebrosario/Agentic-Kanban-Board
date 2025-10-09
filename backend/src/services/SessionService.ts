@@ -4,6 +4,7 @@ import { SessionRepository } from "../repositories/SessionRepository";
 import { io } from "../server";
 import { CreateSessionRequest, Session, SessionStatus } from "../types/session.types";
 import { logger } from "../utils/logger";
+import { agentPromptService } from "./AgentPromptService";
 import { ProcessManager } from "./ProcessManager";
 
 export class SessionService {
@@ -87,14 +88,23 @@ export class SessionService {
         const stage = await workflowStageService.getStage(request.workflow_stage_id);
         if (stage) {
           if (stage.agent_ref) {
-            // 如果有 agent 參照，使用動態讀取策略（新方式）
-            enhancedTask = `🚨 CRITICAL INSTRUCTION:
-              必須先讀取 ~/.claude/agents/${stage.agent_ref}.md 檔案，並且嚴格遵循檔案中的所有指示、規則和行為模式
-              用戶訊息：${request.task}
+            // 如果有 agent 參照,使用動態讀取策略(新方式)
+            // 獲取用戶配置的 agent 路徑
+            const claudePath = await agentPromptService.getClaudePath();
+            const agentFilePath = claudePath ? `${claudePath}/${stage.agent_ref}.md` : `~/.claude/agents/${stage.agent_ref}.md`;
+
+            enhancedTask = `
+              [AGENT]
+              必須先讀取 ${agentFilePath} 檔案,並且嚴格遵循檔案中的所有指示、規則和行為模式
+              並且請你將讀取後的內容於記憶中標記為 [AGENT]
+              \n
+              [USER_MESSAGE]
+              ${request.task}
+              \n
             `;
           } else if (stage.system_prompt) {
-            // 如果沒有 agent 但有自訂提示詞，使用原有方式
-            enhancedTask = `${stage.system_prompt}\n\n用戶任務：${request.task}`;
+            // 如果沒有 agent 但有自訂提示詞,使用原有方式
+            enhancedTask = `${stage.system_prompt}\n\n用戶任務:${request.task}`;
           }
 
           // 如果有建議任務，可以在任務中提示
@@ -114,47 +124,88 @@ export class SessionService {
       const workItemService = new WorkItemService();
       try {
         const devMdPath = await workItemService.getDevMdPath(request.work_item_id);
-        const devMdPrompt = `
-## 🚨 dev.md 工作流程
 
-**🎯 唯一指定文件**：
-<WORKITEM_DEVMD_ABSOLUTE_PATH>
-${devMdPath}
-</WORKITEM_DEVMD_ABSOLUTE_PATH>
+        // 嘗試讀取 dev-progress.md agent 檔案
+        const claudePath = await agentPromptService.getClaudePath();
+        let devMdPrompt = "";
 
-**⚠️ 路徑嚴格約束**：
-- **ONLY編輯上述絕對路徑**
-- **禁止創建任何其他 dev.md**
-- **禁止修改工作區根目錄的 dev.md**
-- 開始前必須用 Read 工具讀取此路徑
+        if (claudePath) {
+          // 檢查 dev-progress.md 是否存在
+          try {
+            const devProgressContent = await agentPromptService.getAgentContent("_dev-progress");
+            if (devProgressContent) {
+              // 如果找到 dev-progress.md,使用動態讀取策略
+              const devProgressFilePath = `${claudePath}/_dev-progress.md`;
+              devMdPrompt = `
+        [PROGRESS_FILE_KEY_VALUE]
+        dev_md_path = ${devMdPath}
+        quest_name = ${request.name}
+        session_id = ${sessionId.substring(0, 8)}
 
-**核心規則**：
-1. 讀取指定路徑→執行→更新同一文件
-2. 重要內容必存檔至 \`docs/\` 並記錄路徑
-3. **嚴格格式**：## [${request.name}] - ${sessionId.substring(0, 8)}
-4. **段落管理**：
-   - 相同任務名+sessionId：更新現有段落
-   - 不同任務名或sessionId：**新增段落（追加在文件末尾）**
-   - **絕不刪除或覆蓋其他任務段落**
+        [GLOBAL_PROGRESS_FILE]
+        必須先讀取 ${devProgressFilePath} 檔案
+        並且請你將讀取後的內容於記憶中標記為 [GLOBAL_PROGRESS_FILE]
+        遵循規則維護指定 dev.md 文件
+        數值對應請參考 [PROGRESS_FILE_KEY_VALUE]
+        \n`;
+            }
+          } catch (error) {
+            logger.info(`dev-progress.md not found, using default prompt`);
+          }
+        }
 
-**禁止項目**：
-- ❌ 創建/修改其他路徑的 dev.md
-- ❌ 使用日期/Session-001 替代 sessionId
-- ❌ 修改 ${request.name} 為其他名稱  
-- ❌ 刪除或覆蓋已存在的任務段落
-- ❌ 僅在對話展示重要內容
+        // 如果沒有找到 dev-progress.md,使用預設提示詞
+        if (!devMdPrompt) {
+          devMdPrompt = `
+# dev.md 規範
 
-**段落格式**：
+## 🎯 指定文件
+
+* 唯一目標路徑：${devMdPath}
+
+---
+
+## ⚙️ 操作規則
+
+1. 每次執行都 **在文件末尾新增一個段落**
+2. 段落標題為 [${request.name}]-{${sessionId.substring(0, 8)}} 組成
+3. 以最精簡的文字來表達最必要且充分的訊息量
+
+---
+
+## 🧱 段落示意
+
 \`\`\`markdown
-## [${request.name}] - ${sessionId.substring(0, 8)}
-**任務**：簡述目標
-**完成項目**：功能/決策/分析
-**產出檔案**：絕對路徑列表
-**關鍵摘要**：主要結論/發現  
-**備註**：說明/待辦
+## [${request.name}]-{${sessionId.substring(0, 8)}}
+| 欄位 | 內容 |
+|------|------|
+| **任務** | ≤15字 |
+| **完成** | - 項目（每項≤10字） |
+| **產出** | - /絕對路徑 |
+| **摘要** | ≤40字，1句 |
+| **待辦** | - [ ] 項目 |
 ---
 \`\`\`
+
+---
+
+## 🚫 禁止事項
+
+* 編輯非指定路徑之 dev.md、建立、修改或覆蓋任何其他 dev.md
+* 變動 {{quest_name}} 為其他名稱
+* 使用相對路徑於「產出」欄位
+* 刪除或覆蓋已存在段落
+* 僅在對話展示內容而不寫入檔案
+
+---
+
+## 📦 補充
+
+* 所有重要產出檔案須存於 \`/docs/\` 並於「產出」中紀錄絕對路徑。
+* 每個段落代表一次任務執行記錄。
 `;
+        }
+
         enhancedTask = devMdPrompt + enhancedTask;
       } catch (error) {
         logger.warn(`Failed to get dev.md path for work item ${request.work_item_id}:`, error);
@@ -433,10 +484,22 @@ ${devMdPath}
         try {
           const stage = await workflowStageService.getStage(session.workflow_stage_id);
           if (stage && stage.agent_ref) {
-            // 如果有 agent 參照，增強用戶訊息要求 Claude 讀取 agent 檔案
-            enhancedContent = `🚨 CRITICAL INSTRUCTION:
-              必須先讀取 ~/.claude/agents/${stage.agent_ref}.md 檔案，並且嚴格遵循檔案中的所有指示、規則和行為模式
-              用戶訊息：${content}
+            // 如果有 agent 參照,增強用戶訊息要求 Claude 讀取 agent 檔案
+            // 獲取用戶配置的 agent 路徑
+            // const claudePath = await agentPromptService.getClaudePath();
+            // const agentFilePath = claudePath ? `${claudePath}/${stage.agent_ref}.md` : `~/.claude/agents/${stage.agent_ref}.md`;
+
+            enhancedContent =
+              // `
+              // [AGENT]
+              // 必須先讀取 ${agentFilePath} 檔案,並且嚴格遵循檔案中的所有指示、規則和行為模式
+              // \n
+              `
+              [CRITICAL]
+              若有，請同樣要嚴格遵循 [GLOBAL_PROGRESS_FILE] 與 [AGENT] 的所有規則。
+              \n
+              [USER_MESSAGE]
+              ${content}
             `;
             logger.info(`Enhanced user message with agent reference: ${stage.agent_ref}`);
           }
