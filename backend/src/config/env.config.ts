@@ -33,7 +33,7 @@ export interface EnvConfig {
 export const getEnvConfig = (): EnvConfig => {
   return {
     // 基礎設定
-    port: parseInt(process.env.BACKEND_PORT || '9876', 10),
+    port: parseInt(process.env.BACKEND_PORT || '8905', 10),
     databasePath: process.env.DATABASE_PATH || './data/sessions.db',
     
     // 安全設定
