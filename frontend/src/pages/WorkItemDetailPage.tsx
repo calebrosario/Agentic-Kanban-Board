@@ -61,12 +61,60 @@ export const WorkItemDetailPage: React.FC = () => {
     return saved ? JSON.parse(saved) : false;
   });
 
+  // 從 localStorage 讀取側邊欄寬度
+  const [sidebarWidth, setSidebarWidth] = useState(() => {
+    const saved = localStorage.getItem('devMdSidebarWidth');
+    return saved ? parseInt(saved, 10) : 500; // 預設 500px
+  });
+
+  // 拖曳調整寬度的狀態
+  const [isResizing, setIsResizing] = useState(false);
+  const MIN_WIDTH = 300;
+  const MAX_WIDTH = 1200;
+
   // 切換側邊欄狀態並保存到 localStorage
   const toggleDevMdSidebar = () => {
     const newState = !sidebarCollapsed;
     setSidebarCollapsed(newState);
     localStorage.setItem('devMdSidebarCollapsed', JSON.stringify(newState));
   };
+
+  // 處理拖曳開始
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  // 處理拖曳中
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+
+      const newWidth = window.innerWidth - e.clientX;
+      if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
+        setSidebarWidth(newWidth);
+        localStorage.setItem('devMdSidebarWidth', newWidth.toString());
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   // 解析 dev.md 內容，提取 Session 段落資訊
   const sessionSections = useMemo(() => {
@@ -319,13 +367,12 @@ export const WorkItemDetailPage: React.FC = () => {
     <div className="flex-1 bg-gray-50">
       <div className="flex h-full">
         {/* 主內容區 */}
-        <div className={`flex-1 px-2 sm:px-3 lg:px-4 py-2 transition-all duration-300 ${
-          sidebarCollapsed 
-            ? 'mr-12' 
-            : (rightPanelView === 'session' && selectedSessionId 
-                ? 'mr-[600px]' 
-                : 'mr-96')
-        }`}>
+        <div
+          className="flex-1 px-2 sm:px-3 lg:px-4 py-2 transition-all duration-300"
+          style={{
+            marginRight: sidebarCollapsed ? '48px' : `${sidebarWidth}px`
+          }}
+        >
         {/* Header */}
         <div className="mb-3">
           <div className="bg-white rounded-lg shadow p-3">
@@ -566,9 +613,24 @@ export const WorkItemDetailPage: React.FC = () => {
         </div>
 
         {/* 右側側邊欄 - 統一容器 */}
-        <div className={`fixed right-0 top-0 h-full bg-white shadow-lg transition-all duration-300 z-10 ${
-          sidebarCollapsed ? 'w-12' : (rightPanelView === 'session' && selectedSessionId ? 'w-[600px]' : 'w-96')
-        }`}>
+        <div
+          className="fixed right-0 top-0 h-full bg-white shadow-lg z-10"
+          style={{
+            width: sidebarCollapsed ? '48px' : `${sidebarWidth}px`,
+            transition: isResizing ? 'none' : 'all 0.3s'
+          }}
+        >
+          {/* 拖曳調整手柄 - 只在展開時顯示 */}
+          {!sidebarCollapsed && (
+            <div
+              onMouseDown={handleMouseDown}
+              className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-400 transition-colors group"
+              style={{ zIndex: 30 }}
+            >
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-gray-300 group-hover:bg-blue-500 transition-colors rounded-r" />
+            </div>
+          )}
+
           {/* 收合/展開按鈕 */}
           <button
             onClick={toggleDevMdSidebar}
