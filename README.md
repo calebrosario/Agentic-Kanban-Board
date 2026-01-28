@@ -1,6 +1,6 @@
 # Claude Code Board
 
-> **⚠️ NOTICE: This project is no longer actively maintained.**
+> ## ⚠️ NOTICE: This project is no longer actively maintained.
 >
 > This repository is archived and will not receive updates, bug fixes, or new features.
 >
