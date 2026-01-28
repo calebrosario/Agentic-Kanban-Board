@@ -1,16 +1,16 @@
 # Claude Code Board
 
-<div align="center">
-
-![Claude Code Board](assets/banner.png)
-
 > **⚠️ 公告：本專案已停止維護**
 >
 > 此儲存庫已歸檔，將不再接收更新、錯誤修復或新功能。
 >
 > **本專案採用 MIT 授權釋出** — 你可以自由 fork、修改、散布，並用於任何目的（包括商業用途），完全沒有限制。歡迎自由取用！
+>
+> 🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
 
-🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
+<div align="center">
+
+![Claude Code Board](assets/banner.png)
 
 **為 Claude Code CLI 設計的綜合性 Session 管理系統，具備先進的工作流程功能**
 

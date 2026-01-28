@@ -1,16 +1,16 @@
 # Claude Code Board
 
-<div align="center">
-
-![Claude Code Board](assets/banner.png)
-
 > **⚠️ NOTICE: This project is no longer actively maintained.**
 >
 > This repository is archived and will not receive updates, bug fixes, or new features.
 >
 > **The project is released under the MIT License** — you are free to fork, modify, distribute, and use it for any purpose, including commercial use, without restrictions. Feel free to take it and make it your own!
+>
+> 🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
 
-🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
+<div align="center">
+
+![Claude Code Board](assets/banner.png)
 
 **A comprehensive session management system for Claude Code with advanced workflow capabilities**
 
