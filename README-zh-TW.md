@@ -4,6 +4,14 @@
 
 ![Claude Code Board](assets/banner.png)
 
+> **⚠️ 公告：本專案已停止維護**
+>
+> 此儲存庫已歸檔，將不再接收更新、錯誤修復或新功能。
+>
+> **本專案採用 MIT 授權釋出** — 你可以自由 fork、修改、散布，並用於任何目的（包括商業用途），完全沒有限制。歡迎自由取用！
+
+🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
+
 **為 Claude Code CLI 設計的綜合性 Session 管理系統，具備先進的工作流程功能**
 
 **📖 Language / 語言:** [English](README.md) | [繁體中文](README-zh-TW.md)
@@ -11,7 +19,8 @@
 **⚠️ 重要：** [請先閱讀免責聲明](#️-免責聲明) | **🚀 快速開始：** [安裝步驟](#安裝) | **📖 使用指南：** [操作說明](#-使用指南)
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Maintenance](https://img.shields.io/badge/維護中%3F-否-red.svg)]()
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](#requirements)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
@@ -272,7 +281,7 @@ VITE_SOCKET_URL=http://localhost:3001
 
 ## 📝 授權
 
-本專案採用 Apache License 2.0 授權 - 詳情請見 [LICENSE](LICENSE) 檔案。
+本專案採用 MIT 授權 - 詳情請見 [LICENSE](LICENSE) 檔案。
 
 ## 🤝 支援
 

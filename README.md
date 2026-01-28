@@ -4,6 +4,14 @@
 
 ![Claude Code Board](assets/banner.png)
 
+> **⚠️ NOTICE: This project is no longer actively maintained.**
+>
+> This repository is archived and will not receive updates, bug fixes, or new features.
+>
+> **The project is released under the MIT License** — you are free to fork, modify, distribute, and use it for any purpose, including commercial use, without restrictions. Feel free to take it and make it your own!
+
+🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
+
 **A comprehensive session management system for Claude Code with advanced workflow capabilities**
 
 **📖 Language / 語言:** [English](README.md) | [繁體中文](README-zh-TW.md)
@@ -11,7 +19,8 @@
 **⚠️ IMPORTANT:** [Read Disclaimer First](#️-disclaimer) | **🚀 Quick Start:** [Installation](#installation) | **📖 Guide:** [Usage](#-usage-guide)
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-no-red.svg)]()
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](#requirements)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
@@ -277,7 +286,7 @@ The authors and contributors of this project accept **NO RESPONSIBILITY** for an
 
 ## 📝 License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Support
 
