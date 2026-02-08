@@ -15,12 +15,17 @@
     "agentPlaceholder": "Select an agent for domain-specific expertise (optional)",
     "template": "Template",
     "templatePlaceholder": "Or start with a quick template",
-    "templates": {
+      "templates": {
       "codeReview": "Code Review",
       "bugFixing": "Bug Fixing",
       "featureDev": "Feature Development",
       "documentation": "Documentation",
-      "custom": "Custom"
+      "custom": "Custom",
+      "codeReviewTemplate": "Code Review Template",
+      "bugFixingTemplate": "Bug Fixing Template",
+      "featureDevTemplate": "Feature Development Template",
+      "documentationTemplate": "Documentation Template",
+      "customTemplate": "Custom Template"
     },
     "createButton": "Create Session",
     "cancelButton": "Cancel",
