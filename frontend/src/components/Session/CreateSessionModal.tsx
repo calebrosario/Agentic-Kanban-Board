@@ -16,24 +16,17 @@ interface CreateSessionModalProps {
   onCreated?: (session: Session) => void;
 }
 
-export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
-  isOpen,
-  onClose,
-  defaultWorkItemId,
-  prefillData,
-  onCreated,
-}) => {
-  const { t } = useI18nContext();
-  const [formData, setFormData] = useState({
-    name: '',
-    workingDir: '',
-    task: '',
-    continueChat: false,
-    dangerouslySkipPermissions: false,
-    workflow_stage_id: '',
-    work_item_id: defaultWorkItemId || '',
-    ...prefillData,
-  });
+  import React, { useState, useEffect } from 'react';
+import { X, MessageSquare, Code, ShieldOff, Workflow, Briefcase } from 'lucide-react';
+import { useSessions } from '../../hooks/useSessions';
+import { useSettings } from '../../hooks/useSettings';
+import { useTaskTemplates } from '../../hooks/useTaskTemplates';
+import { CreateSessionRequest, Session } from '../../types/session.types';
+import { workflowStageService, WorkflowStage } from '../../services/workflowStageService';
+import { useWorkItemStore } from '../../stores/workItemStore';
+import { toast } from 'react-hot-toast';
+import { useI18nContext } from '../../contexts/I18nContext';
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [workflowStages, setWorkflowStages] = useState<WorkflowStage[]>([]);
   const [selectedStage, setSelectedStage] = useState<WorkflowStage | null>(null);
