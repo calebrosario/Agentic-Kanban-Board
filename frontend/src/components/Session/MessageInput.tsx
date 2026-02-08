@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Send } from 'lucide-react';
 import { cn } from '../../utils';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface MessageInputProps {
   onSendMessage: (message: string) => void;
@@ -13,6 +14,7 @@ const MessageInput = React.memo(({
   disabled = false, 
   placeholder = "輸入訊息..."
 }: MessageInputProps) => {
+  const { t } = useI18nContext();
   const [inputMessage, setInputMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -54,7 +56,7 @@ const MessageInput = React.memo(({
               value={inputMessage}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              placeholder={placeholder}
+              placeholder={placeholder || t('session.input.placeholder')}
               disabled={disabled || isSending}
               className={cn(
                 'w-full px-4 py-3 bg-white rounded-2xl resize-none',
@@ -90,7 +92,7 @@ const MessageInput = React.memo(({
               'flex items-center justify-center min-w-[48px] h-[48px]',
               'shadow-soft-md'
             )}
-            title="發送訊息 (Enter)"
+             title={t('session.input.sendWithTooltip')}
           >
             {isSending ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
