@@ -14,6 +14,7 @@ import {
   FolderOpen
 } from 'lucide-react';
 import { WorkItem } from '../../types/workitem';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface WorkItemRowProps {
   workItem: WorkItem;
@@ -28,6 +29,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
   onDelete,
   onStatusChange
 }) => {
+  const { t } = useI18nContext();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -78,10 +80,10 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
   }, [menuOpen]);
 
   const statusConfig = {
-    planning: { icon: Clock, color: 'text-gray-600', bg: 'bg-gray-100', label: '規劃中', emoji: '📋' },
-    in_progress: { icon: Play, color: 'text-blue-600', bg: 'bg-blue-100', label: '進行中', emoji: '🚀' },
-    completed: { icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100', label: '已完成', emoji: '✅' },
-    cancelled: { icon: XCircle, color: 'text-red-600', bg: 'bg-red-100', label: '已取消', emoji: '❌' }
+    planning: { icon: Clock, color: 'text-gray-600', bg: 'bg-gray-100', label: t('workitem.status.planning'), emoji: '📋' },
+    in_progress: { icon: Play, color: 'text-blue-600', bg: 'bg-blue-100', label: t('workitem.status.in_progress'), emoji: '🚀' },
+    completed: { icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100', label: t('workitem.status.completed'), emoji: '✅' },
+    cancelled: { icon: XCircle, color: 'text-red-600', bg: 'bg-red-100', label: t('workitem.status.cancelled'), emoji: '❌' }
   };
 
   const status = statusConfig[workItem.status];
@@ -120,7 +122,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
                 {workItem.description}
               </p>
             ) : (
-              <span className="text-sm text-gray-400 italic">無描述</span>
+              <span className="text-sm text-gray-400 italic">{t('workitem.detail.info.noDescription')}</span>
             )}
           </div>
 
@@ -138,8 +140,8 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
             <Calendar className="w-3 h-3 flex-shrink-0" />
             <span className="truncate">
               {workItem.completed_at
-                ? `完成 ${formatDistanceToNow(new Date(workItem.completed_at), { locale: zhTW, addSuffix: true })}`
-                : `創建 ${formatDistanceToNow(new Date(workItem.created_at), { locale: zhTW, addSuffix: true })}`
+                ? t('workitem.card.timeline.completed', { time: formatDistanceToNow(new Date(workItem.completed_at), { locale: zhTW, addSuffix: true }) })
+                : t('workitem.card.timeline.created', { time: formatDistanceToNow(new Date(workItem.created_at), { locale: zhTW, addSuffix: true }) })
               }
             </span>
           </div>
@@ -153,7 +155,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
                 setMenuOpen(!menuOpen);
               }}
               className="p-1.5 hover:bg-white/60 rounded transition-all hover:shadow-soft-sm"
-              title="更多操作"
+              title={t('workitem.row.operationsMenu')}
             >
               <MoreVertical className="w-4 h-4 text-gray-500" />
             </button>
@@ -178,7 +180,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
               }}
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 first:rounded-t-lg"
             >
-              📝 編輯
+              📝 {t('workitem.card.actions.edit')}
             </button>
           )}
 
@@ -191,7 +193,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
               }}
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             >
-              🚀 開始執行
+              🚀 {t('workitem.card.actions.startExecution')}
             </button>
           )}
 
@@ -204,7 +206,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
               }}
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             >
-              ✅ 標記完成
+              ✅ {t('workitem.card.actions.markComplete')}
             </button>
           )}
 
@@ -217,7 +219,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
               }}
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             >
-              ❌ 取消
+              ❌ {t('workitem.card.actions.cancel')}
             </button>
           )}
 
@@ -232,7 +234,7 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
                 }}
                 className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 last:rounded-b-lg"
               >
-                🗑️ 刪除
+                🗑️ {t('workitem.card.actions.delete')}
               </button>
             </>
           )}
