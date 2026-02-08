@@ -128,21 +128,51 @@
 }
   },
   "list": {
-    "title": "Sessions",
-    "empty": {
-      "title": "No Sessions Yet",
-      "description": "Create your first session to get started",
-      "createButton": "Create Session"
+      "title": "Sessions",
+      "empty": {
+        "title": "No Sessions",
+        "description": "Create your first session to get started",
+        "createButton": "Create Session"
+      },
+      "noSessions": "No sessions",
+      "noSessionsCreated": "No sessions created yet",
+      "searchPlaceholder": "Search...",
+      "createButton": "Create",
+      "mobileSortSelector": "Mobile sort selector",
+      "reload": "Reload",
+      "columns": {
+        "processing": "Processing ({count})",
+        "idle": "Idle ({count})",
+        "completed": "Completed ({count})",
+        "error": "Error ({count})",
+        "interrupted": "Interrupted ({count})"
+      },
+      "tabs": {
+        "processing": "Processing",
+        "idle": "Idle",
+        "completed": "Completed"
+      },
+      "dragAndDrop": {
+        "dragging": "Dragging session...",
+        "dropToCreateNew": "Drop here to create a new session",
+        "dropToContinue": "Drop here to continue this session",
+        "keepContext": "Keep in Work Item context",
+        "preserveNav": "Preserve navigation link"
+      },
+      "confirmDelete": "Are you sure you want to delete this session? This action cannot be undone.",
+      "error": {
+        "reload": "Failed to reload sessions",
+        "unknown": "An unknown error occurred",
+        "cantDelete": "Cannot delete this session while it's running. Stop it first."
+      },
+      "status": {
+        "markedComplete": "Session marked as complete",
+        "interrupted": "Session interrupted",
+        "resumed": "Session resumed",
+        "deleted": "Session deleted"
+      }
     },
-    "columns": {
-      "idle": "Idle",
-      "processing": "Processing",
-      "completed": "Completed",
-      "error": "Error",
-      "interrupted": "Interrupted"
-    }
-  },
-  "detail": {
+    "detail": {
     "title": "Session",
     "actions": {
       "complete": "Mark as Complete",

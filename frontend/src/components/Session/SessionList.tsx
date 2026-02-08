@@ -10,10 +10,7 @@ import { SessionCard } from "./SessionCard";
 import { SearchBar } from "../Common/SearchBar";
 import { SortSelector } from "../Common/SortSelector";
 import { sortSessions, getSortOptions, SortType } from "../../utils/sessionSort";
-
-interface SessionListProps {
-  onCreateSession: () => void;
-}
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface KanbanColumnProps {
   title: string;
@@ -156,6 +153,7 @@ const KanbanColumn: React.FC<KanbanColumnProps & { sortType?: SortType }> = ({ t
 };
 
 export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => {
+  const { t } = useI18nContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"processing" | "idle" | "completed">("idle");
   const [sortType, setSortType] = useState<SortType>('updated_desc');
@@ -166,9 +164,9 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
   const handleComplete = async (sessionId: string) => {
     try {
       await completeSession(sessionId);
-      toast.success("Session 已標記為完成");
+      toast.success(t('session.list.status.markedComplete'));
     } catch (error) {
-      toast.error("無法完成 Session");
+      toast.error(t('session.list.error.reload'));
     }
   };
 
@@ -177,16 +175,16 @@ export const SessionList: React.FC<SessionListProps> = ({ onCreateSession }) => 
       await interruptSession(sessionId);
       toast.success("Session 已中斷");
     } catch (error) {
-      toast.error("無法中斷 Session");
+      toast.error(t('session.list.status.interrupted'));
     }
   };
 
   const handleResume = async (sessionId: string) => {
     try {
       await resumeSession(sessionId);
-      toast.success("Session 已恢復");
+      toast.success(t('session.list.status.resumed'));
     } catch (error) {
-      toast.error("無法恢復 Session");
+      toast.error(t('session.list.error.cantDelete'));
     }
   };
 
