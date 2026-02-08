@@ -27,7 +27,10 @@
     "planning": "Planning",
     "in_progress": "In Progress",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "planningSet": "Set to planning",
+    "inProgressStarted": "Started execution",
+    "completedMarked": "Marked as complete"
   },
   "list": {
     "title": "All Work Items",
@@ -42,11 +45,17 @@
       "placeholder": "Search Work Items..."
     },
     "stats": {
-      "total": "Total",
+      "total": "Total {count}",
       "planning": "Planning",
       "in_progress": "In Progress",
       "completed": "Completed"
-    }
+    },
+    "empty": {
+      "noResults": "No work items matching criteria found",
+      "noItems": "No work items yet",
+      "createFirst": "Create first work item"
+    },
+    "help": "Work Items helps you organize and track related sessions"
   },
   "detail": {
     "title": "Work Item Details",
@@ -66,25 +75,91 @@
       "status": "Status",
       "stage": "Workflow Stage",
       "project": "Project",
-      "tags": "Tags"
+      "tags": "Tags",
+      "noDescription": "No description",
+      "timeInfo": "Time Information",
+      "operationsMenu": "Operations Menu"
     },
     "empty": {
       "title": "No Sessions",
       "description": "No sessions linked to this work item yet",
       "createSession": "Create Session"
-    }
+    },
+    "timeline": {
+      "created": "Created {time}",
+      "completed": "Completed {time}"
+    },
+    "sessions": {
+      "title": "Sessions",
+      "searchPlaceholder": "Search sessions...",
+      "noSessions": "No sessions yet",
+      "createFirst": "Create first session",
+      "completedSessions": "{count} completed"
+    },
+    "devmd": {
+      "title": "Development Log (dev.md)",
+      "notFound": "Work item not found",
+      "backToList": "Return to list",
+      "return": "Return",
+      "sections": "{count} sections",
+      "noSections": "No session sections yet",
+      "autoCreate": "Claude Code will automatically create sections after execution",
+      "notCreated": "dev.md has not been created yet",
+      "reload": "Reload dev.md",
+      "quickNav": "Quick Navigation",
+      "jumpToSection": "Quick jump to session section",
+      "nonStandard": "Non-standard format",
+      "download": "Download dev.md",
+      "quickNavPanel": "Quick Navigation Panel"
+    },
+    "progress": "Progress {progress}%"
   },
   "toasts": {
     "created": "Work Item created",
     "updated": "Work Item updated",
     "deleted": "Work Item deleted",
     "statusUpdated": "Work Item status updated",
-    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted."
+    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted.",
+    "sessionDeleted": "Session deleted",
+    "sessionDeleteFailed": "Failed to delete session",
+    "statusUpdatedText": "Status updated",
+    "statusUpdateFailed": "Failed to update status",
+    "devMdLoadFailed": "Failed to load dev.md",
+    "devMdDownloaded": "dev.md downloaded"
   },
   "errors": {
     "nameRequired": "Title is required",
     "createFailed": "Failed to create work item",
     "updateFailed": "Failed to update work item",
     "deleteFailed": "Failed to delete work item"
+  },
+  "card": {
+    "actions": {
+      "edit": "Edit",
+      "startExecution": "Start Execution",
+      "markComplete": "Mark Complete",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "timeline": {
+      "created": "Created {time}",
+      "completed": "Completed {time}"
+    }
+  },
+  "row": {
+    "basicInfo": "Basic Information",
+    "description": "Description",
+    "status": "Status",
+    "timeInfo": "Time Information",
+    "operationsMenu": "Operations Menu",
+    "portalMenu": "Portal Menu"
+  },
+  "sessionStatus": {
+    "processing": "Processing",
+    "completed": "Completed",
+    "error": "Error occurred",
+    "interrupted": "Interrupted",
+    "idle": "Idle",
+    "unknown": "Unknown status"
   }
 }
