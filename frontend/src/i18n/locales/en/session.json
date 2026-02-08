@@ -177,5 +177,34 @@
       "title": "No Messages",
       "description": "No messages in this conversation yet"
     }
+  },
+  "filter": {
+    "title": "Message Filter",
+    "showFilter": "Show Filter",
+    "hideFilter": "Hide Filter",
+    "types": {
+      "user": "User Messages",
+      "assistant": "Claude Responses",
+      "system": "System Messages",
+      "toolUse": "Tool Use",
+      "thinking": "Thinking Process",
+      "output": "Output Results",
+      "error": "Error Messages",
+      "allTypes": "All Message Types",
+      "hidden": "Hidden {count}",
+      "showAll": "Show All",
+      "hideAll": "Hide All",
+      "reset": "Reset to Default",
+      "messages": "messages",
+      "typesHidden": "{count} message types hidden"
+      "allShown": "Showing all message types"
+      "defaultHidden": "(default hidden)"
+      "quickActions": "Quick Actions",
+      "messageTypes": "Message Type Selection",
+      "summary": "Summary"
+      "showAllButton": "Show All",
+      "hideAllButton": "Hide All",
+      "resetButton": "Reset"
+    }
   }
 }

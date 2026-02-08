@@ -2,17 +2,18 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { Message } from '../../types/session.types';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 // 訊息類型配置
 const MESSAGE_TYPE_CONFIG: Record<Message['type'], { label: string; color: string; defaultVisible: boolean }> = {
-  user: { label: '使用者訊息', color: 'text-blue-600', defaultVisible: true },
-  claude: { label: 'Claude 回應', color: 'text-green-600', defaultVisible: true },
-  assistant: { label: '助理訊息', color: 'text-purple-600', defaultVisible: true },
-  system: { label: '系統訊息', color: 'text-gray-600', defaultVisible: true },
-  tool_use: { label: '工具使用', color: 'text-orange-600', defaultVisible: false },
-  thinking: { label: '思考過程', color: 'text-indigo-600', defaultVisible: false },
-  output: { label: '輸出結果', color: 'text-cyan-600', defaultVisible: true },
-  error: { label: '錯誤訊息', color: 'text-red-600', defaultVisible: true },
+  user: { label: t('session.filter.types.user'), color: 'text-blue-600', defaultVisible: true },
+  claude: { label: t('session.filter.types.assistant'), color: 'text-green-600', defaultVisible: true },
+  assistant: { label: 'Assistant Messages', color: 'text-purple-600', defaultVisible: true },
+  system: { label: t('session.filter.types.system'), color: 'text-gray-600', defaultVisible: true },
+  tool_use: { label: t('session.filter.types.toolUse'), color: 'text-orange-600', defaultVisible: false },
+  thinking: { label: t('session.filter.types.thinking'), color: 'text-indigo-600', defaultVisible: false },
+  output: { label: t('session.filter.types.output'), color: 'text-cyan-600', defaultVisible: true },
+  error: { label: t('session.filter.types.error'), color: 'text-red-600', defaultVisible: true },
 };
 
 interface MessageFilterProps {
@@ -21,6 +22,7 @@ interface MessageFilterProps {
 }
 
 export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFilterChange }) => {
+  const { t } = useI18nContext();
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [buttonRect, setButtonRect] = React.useState<DOMRect | null>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
@@ -91,7 +93,7 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
         className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
       >
         <Filter className="w-4 h-4" />
-        <span>訊息過濾 ({visibleCount}/{Object.keys(MESSAGE_TYPE_CONFIG).length})</span>
+        <span>{t('session.filter.title')} ({visibleCount}/{Object.keys(MESSAGE_TYPE_CONFIG).length})</span>
         {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
       </button>
 
@@ -112,19 +114,19 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
                 onClick={showAll}
                 className="flex-1 px-3 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded transition-colors"
               >
-                顯示全部
+                {t('session.filter.showAllButton')}
               </button>
               <button
                 onClick={hideAll}
                 className="flex-1 px-3 py-1 text-xs text-gray-600 hover:bg-gray-50 rounded transition-colors"
               >
-                隱藏全部
+                {t('session.filter.hideAllButton')}
               </button>
               <button
                 onClick={resetToDefault}
                 className="flex-1 px-3 py-1 text-xs text-green-600 hover:bg-green-50 rounded transition-colors"
               >
-                預設值
+                {t('session.filter.resetButton')}
               </button>
             </div>
 
@@ -141,25 +143,25 @@ export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFil
                       type="checkbox"
                       checked={isVisible}
                       onChange={() => toggleType(type as Message['type'])}
-                      className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <span className={`text-sm ${config.color}`}>{config.label}</span>
                     {!config.defaultVisible && (
-                      <span className="text-xs text-gray-400 ml-auto">(預設隱藏)</span>
+                      <span className="text-xs text-gray-400 ml-auto">{t('session.filter.defaultHidden')}</span>
                     )}
                   </label>
                 );
               })}
             </div>
+          </div>
 
-            {/* 統計資訊 */}
-            <div className="pt-3 border-t border-gray-200 text-xs text-gray-500">
-              {hiddenTypes.size > 0 ? (
-                <span>已隱藏 {hiddenTypes.size} 種訊息類型</span>
-              ) : (
-                <span>顯示所有訊息類型</span>
-              )}
-            </div>
+          {/* 統計資訊 */}
+          <div className="pt-3 border-t border-gray-200 text-xs text-gray-500">
+            {hiddenTypes.size > 0 ? (
+              <span>{t('session.filter.typesHidden', { count: hiddenTypes.size })}</span>
+            ) : (
+              <span>{t('session.filter.allShown')}</span>
+            )}
           </div>
         </div>,
         document.body
