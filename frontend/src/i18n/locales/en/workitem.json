@@ -15,14 +15,24 @@
     "description": "Description",
     "descriptionPlaceholder": "What is this work item about?",
     "status": "Status",
-    "statusPlaceholder": "Choose the current status",
+    "statusPlaceholder": "Choose current status",
     "workflowStage": "Workflow Stage",
     "workflowStagePlaceholder": "Link to a workflow stage (optional)",
     "project": "Project",
     "projectPlaceholder": "Select a project (optional)",
     "tags": "Tags",
-    "tagsPlaceholder": "Add tags for organization"
+    "tagsPlaceholder": "Add tags for organization",
+    "workspacePath": "Working Directory",
+    "workspacePathPlaceholder": "e.g., C:\\Users\\YourName\\Projects\\MyProject",
+    "workspacePathHint": "Set the default working directory for this Work Item. Sessions created will automatically use this path.",
+    "infoHint": "Work Items are containers for organizing related Sessions. You can link to this Work Item when creating a Session, or link existing Sessions later.",
+    "submit": "Create"
   },
+  "editDialog": {
+    "title": "Edit Work Item",
+    "currentStatus": "Current status:",
+    "submit": "Save changes"
+  }
   "status": {
     "planning": "Planning",
     "in_progress": "In Progress",
