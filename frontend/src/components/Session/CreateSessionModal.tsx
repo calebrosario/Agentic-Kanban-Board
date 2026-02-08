@@ -23,6 +23,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   prefillData,
   onCreated,
 }) => {
+  const { t } = useI18nContext();
   const [formData, setFormData] = useState({
     name: '',
     workingDir: '',
@@ -31,7 +32,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
     dangerouslySkipPermissions: false,
     workflow_stage_id: '',
     work_item_id: defaultWorkItemId || '',
-    ...prefillData, // 預填資料覆蓋預設值
+    ...prefillData,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [workflowStages, setWorkflowStages] = useState<WorkflowStage[]>([]);
