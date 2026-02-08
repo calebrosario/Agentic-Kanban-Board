@@ -8,6 +8,7 @@
     "save": "Save",
     "cancel": "Cancel"
   },
+  "confirmDelete": "Are you sure you want to delete this workflow stage?",
   "form": {
     "name": "Stage Name",
     "nameRequired": "Stage Name *",

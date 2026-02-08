@@ -14,8 +14,10 @@ import {
 import { workflowStageService, WorkflowStage } from '../services/workflowStageService';
 import { agentPromptService, AgentListItem } from '../services/agentPromptService';
 import toast from 'react-hot-toast';
+import { useI18nContext } from '../contexts/I18nContext';
 
 export const WorkflowStages: React.FC = () => {
+  const { t } = useI18nContext();
   const [stages, setStages] = useState<WorkflowStage[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingStage, setEditingStage] = useState<string | null>(null);
@@ -53,7 +55,7 @@ export const WorkflowStages: React.FC = () => {
       const data = await workflowStageService.getAllStages();
       setStages(data);
     } catch (error) {
-      toast.error('載入工作流程階段失敗');
+      toast.error(t('workflow.toasts.loadFailed'));
       console.error('Failed to load workflow stages:', error);
     } finally {
       setLoading(false);
@@ -138,22 +140,22 @@ export const WorkflowStages: React.FC = () => {
       if (isCreating) {
         // 驗證必要欄位
         if (!formData.name) {
-          toast.error('請填寫階段名稱');
+          toast.error(t('workflow.errors.nameRequired'));
           return;
         }
 
         // 根據提示詞來源驗證
         if (promptSource === 'custom') {
           if (!formData.system_prompt) {
-            toast.error('請填寫自訂提示詞');
+            toast.error(t('workflow.errors.saveFailed'));
             return;
           }
         } else {
           if (!formData.agent_ref) {
-            toast.error('請選擇 Agent');
+            toast.error(t('workflow.errors.selectAgent'));
             return;
           }
-          
+
           // 驗證 Agent 存在性
           const agentValid = await validateAgent(formData.agent_ref);
           if (!agentValid) {
@@ -163,7 +165,7 @@ export const WorkflowStages: React.FC = () => {
 
         // 如果有 Agent 錯誤，阻止儲存
         if (agentError) {
-          toast.error('請先解決 Agent 設定問題');
+          toast.error(t('workflow.errors.agentNotFound'));
           return;
         }
         await workflowStageService.createStage({
@@ -175,11 +177,11 @@ export const WorkflowStages: React.FC = () => {
           color: formData.color,
           icon: formData.icon
         });
-        toast.success('工作流程階段建立成功');
+        toast.success(t('workflow.toasts.created'));
       } else if (editingStage) {
         // 同樣的驗證邏輯
         if (!formData.name) {
-          toast.error('請填寫階段名稱');
+          toast.error(t('workflow.errors.nameRequired'));
           return;
         }
 
@@ -190,10 +192,10 @@ export const WorkflowStages: React.FC = () => {
           }
         } else {
           if (!formData.agent_ref) {
-            toast.error('請選擇 Agent');
+            toast.error(t('workflow.errors.selectAgent'));
             return;
           }
-          
+
           const agentValid = await validateAgent(formData.agent_ref);
           if (!agentValid) {
             return;
@@ -201,7 +203,7 @@ export const WorkflowStages: React.FC = () => {
         }
 
         if (agentError) {
-          toast.error('請先解決 Agent 設定問題');
+          toast.error(t('workflow.errors.agentNotFound'));
           return;
         }
 
@@ -215,7 +217,7 @@ export const WorkflowStages: React.FC = () => {
           icon: formData.icon,
           is_active: formData.is_active
         });
-        toast.success('工作流程階段更新成功');
+        toast.success(t('workflow.toasts.updated'));
       }
       setIsCreating(false);
       setEditingStage(null);
@@ -235,15 +237,15 @@ export const WorkflowStages: React.FC = () => {
   };
 
   const handleDelete = async (stageId: string) => {
-    if (!confirm('確定要刪除這個工作流程階段嗎？')) {
+    if (!confirm(t('workflow.confirmDelete'))) {
       return;
     }
     try {
       await workflowStageService.deleteStage(stageId);
-      toast.success('工作流程階段已刪除');
+      toast.success(t('workflow.toasts.deleted'));
       loadStages();
     } catch (error) {
-      toast.error('刪除失敗');
+      toast.error(t('workflow.toasts.deleteFailed'));
       console.error('Failed to delete workflow stage:', error);
     }
   };
@@ -289,13 +291,13 @@ export const WorkflowStages: React.FC = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                工作流程階段管理
+                {t('workflow.title')}
               </h1>
               <p className="text-sm text-gray-600 mt-0.5">配置 AI 工作流程的專業化階段</p>
             </div>
             {stages.length > 0 && (
               <span className="px-3 py-1 bg-primary-50 text-primary-700 border border-primary-200 rounded-full text-sm font-medium">
-                {stages.length} 個階段
+                {stages.length} {t('workflow.stages')}
               </span>
             )}
           </div>
@@ -305,7 +307,7 @@ export const WorkflowStages: React.FC = () => {
             className="flex items-center gap-2 btn-primary"
           >
             <Plus className="w-4 h-4" />
-            新增階段
+            {t('workflow.actions.add')}
           </button>
         </div>
 
