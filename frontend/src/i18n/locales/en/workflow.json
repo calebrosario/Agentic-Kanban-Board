@@ -1,6 +1,86 @@
 {
   "title": "Workflow Stages",
   "stages": "Stages",
+  "agentPrompts": {
+    "title": "Agent Prompt Library",
+    "header": {
+      "libraryTitle": "Agent Prompt Library",
+      "settings": "Settings"
+    },
+    "loading": "Loading...",
+    "error": {
+      "loadFailed": "Failed to load",
+      "pathRequired": "Please enter agent path",
+      "saveFailed": "Failed to save configuration",
+      "configFailed": "Configuration failed"
+    },
+    "empty": {
+      "noAgents": "No agent files found",
+      "pathNotConfigured": "Agent path not yet configured",
+      "checkPath": "Please verify agent path configuration is correct"
+    },
+    "agentList": {
+      "count": "Total {count}",
+      "settings": "Settings"
+    },
+    "settings": {
+      "title": "Agent Directory Settings",
+      "currentPath": "Current path:",
+      "notConfigured": "Agent path not yet configured",
+      "configured": "Currently configured:",
+      "path": "~/.claude/agents",
+      "placeholder": "e.g., C:\\Users\\YourName\\.claude\\agents",
+      "pathHint": "Directory containing agent prompt files (.md)",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "agentCard": {
+      "viewDetails": "View details",
+      "iconLabel": "agent file",
+      "status": {
+        "available": "Available"
+      },
+      "sections": {
+        "description": "Description",
+        "status": "Status"
+      }
+    },
+    "agentDetail": {
+      "loading": "Loading...",
+      "error": {
+        "notFound": "Agent not found: {name}",
+        "loadFailed": "Failed to load agent detail"
+      },
+      "header": {
+        "backButton": "Back to list"
+      },
+      "title": "Agent Name",
+      "fileName": "Agent file",
+      "copyContent": {
+        "button": "Copy content",
+        "copied": "Copied!",
+        "notCopied": "Copy content"
+      },
+      "sections": {
+        "title": "Section Title and Actions",
+        "description": "Description",
+        "status": "Status",
+        "tools": "Tools",
+        "promptContent": "Prompt Content",
+        "promptTitle": "Prompt Content"
+      },
+      "empty": {
+        "noDescription": "No description",
+        "noTools": "No tools",
+        "noPromptContent": "No prompt content"
+      },
+      "actions": {
+        "backToList": "Back to list",
+        "featureNotImplemented": "Feature not yet implemented: {feature}",
+        "workflowFeature": "Workflow feature"
+      }
+    }
+  },
   "actions": {
     "add": "Add Stage",
     "edit": "Edit",
