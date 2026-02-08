@@ -248,6 +248,15 @@
       "resumeTooltip": "Resume this session",
       "deleteTooltip": "Delete this session"
     },
+    "status": {
+      "error": "Error occurred",
+      "processing": "Processing"
+    },
+    "linked": {
+      "workItem": "Linked to Work Item",
+      "workflowStage": "Workflow Stage"
+    },
+    "messageCount": "{count} messages",
     "dragAndDrop": {
       "dragging": "Dragging session...",
       "dropToCreateNew": "Drop here to create a new session",
