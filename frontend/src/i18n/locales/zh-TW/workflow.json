@@ -1,0 +1,48 @@
+{
+  "title": "工作流程階段",
+  "stages": "階段",
+  "actions": {
+    "add": "新增階段",
+    "edit": "編輯",
+    "delete": "刪除",
+    "save": "儲存",
+    "cancel": "取消"
+  },
+  "form": {
+    "name": "階段名稱",
+    "nameRequired": "階段名稱 *",
+    "namePlaceholder": "例如：程式碼審查、錯誤修正",
+    "agent": "Agent",
+    "agentPlaceholder": "選擇 Agent（可選）",
+    "color": "顏色",
+    "colorPlaceholder": "選擇顏色以便視覺識別",
+    "prompt": "自訂提示詞",
+    "promptPlaceholder": "新增額外指示（可選）",
+    "suggestedTasks": "建議任務",
+    "suggestedTasksPlaceholder": "例如：審查身份驗證模組"
+  },
+  "status": {
+    "planning": "規劃中",
+    "in_progress": "執行中",
+    "completed": "已完成",
+    "cancelled": "已取消"
+  },
+  "empty": {
+    "title": "尚無工作流程階段",
+    "description": "建立工作流程階段以組織您的開發流程",
+    "createButton": "新增階段"
+  },
+  "toasts": {
+    "created": "工作流程階段建立成功",
+    "updated": "工作流程階段更新成功",
+    "deleted": "工作流程階段已刪除",
+    "loadFailed": "載入工作流程階段失敗",
+    "deleteFailed": "刪除工作流程階段失敗",
+    "updateFailed": "更新工作流程階段失敗"
+  },
+  "errors": {
+    "nameRequired": "階段名稱為必填",
+    "agentNotFound": "Agent 檔案不存在",
+    "saveFailed": "儲存工作流程階段失敗"
+  }
+}

@@ -17,20 +17,22 @@ import { WorkItemDetailPage } from './pages/WorkItemDetailPage';
 import AgentPromptsPage from './pages/AgentPromptsPage';
 import AgentPromptDetailPage from './pages/AgentPromptDetailPage';
 import { GlassDemo } from './pages/GlassDemo';
+import { I18nProvider } from './contexts/I18nContext';
 
 function App() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { isConnected, connectionError } = useWebSocket();
-  
-  // 啟用全域通知系統
+
+  // Enable global notification system
   useNotifications();
-  
+
   return (
     <ErrorBoundary>
       <Router>
-        <AuthProvider>
-          <div className="min-h-screen bg-gray-50 relative">
-            <Routes>
+        <I18nProvider>
+          <AuthProvider>
+            <div className="min-h-screen bg-gray-50 relative">
+              <Routes>
                 {/* 登入頁面 */}
                 <Route path="/login" element={<LoginPage />} />
                 

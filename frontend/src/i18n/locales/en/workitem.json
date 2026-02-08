@@ -1,0 +1,90 @@
+{
+  "title": "Work Items",
+  "actions": {
+    "add": "Add Work Item",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "form": {
+    "title": "Create Work Item",
+    "name": "Title",
+    "nameRequired": "Title *",
+    "namePlaceholder": "Enter work item title",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this work item about?",
+    "status": "Status",
+    "statusPlaceholder": "Choose the current status",
+    "workflowStage": "Workflow Stage",
+    "workflowStagePlaceholder": "Link to a workflow stage (optional)",
+    "project": "Project",
+    "projectPlaceholder": "Select a project (optional)",
+    "tags": "Tags",
+    "tagsPlaceholder": "Add tags for organization"
+  },
+  "status": {
+    "planning": "Planning",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "list": {
+    "title": "All Work Items",
+    "filter": {
+      "all": "All",
+      "planning": "Planning",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "search": {
+      "placeholder": "Search Work Items..."
+    },
+    "stats": {
+      "total": "Total",
+      "planning": "Planning",
+      "in_progress": "In Progress",
+      "completed": "Completed"
+    }
+  },
+  "detail": {
+    "title": "Work Item Details",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "startExecution": "Start Execution",
+      "markComplete": "Mark Complete"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "sessions": "Sessions"
+    },
+    "info": {
+      "created": "Created",
+      "updated": "Updated",
+      "status": "Status",
+      "stage": "Workflow Stage",
+      "project": "Project",
+      "tags": "Tags"
+    },
+    "empty": {
+      "title": "No Sessions",
+      "description": "No sessions linked to this work item yet",
+      "createSession": "Create Session"
+    }
+  },
+  "toasts": {
+    "created": "Work Item created",
+    "updated": "Work Item updated",
+    "deleted": "Work Item deleted",
+    "statusUpdated": "Work Item status updated",
+    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted."
+  },
+  "errors": {
+    "nameRequired": "Title is required",
+    "createFailed": "Failed to create work item",
+    "updateFailed": "Failed to update work item",
+    "deleteFailed": "Failed to delete work item"
+  }
+}

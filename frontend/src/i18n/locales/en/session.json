@@ -1,0 +1,83 @@
+{
+  "create": {
+    "title": "Create New Session",
+    "name": "Session Name",
+    "nameRequired": "Session Name *",
+    "namePlaceholder": "Enter a descriptive name for your coding task",
+    "workingDir": "Working Directory",
+    "workingDirRequired": "Working Directory *",
+    "workingDirPlaceholder": "Select or enter your project directory",
+    "workflowStage": "Workflow Stage",
+    "workflowStagePlaceholder": "Choose a workflow stage for specialized AI behavior",
+    "workItem": "Work Item",
+    "workItemPlaceholder": "Link to a work item for organization (optional)",
+    "agent": "Agent",
+    "agentPlaceholder": "Select an agent for domain-specific expertise (optional)",
+    "template": "Template",
+    "templatePlaceholder": "Or start with a quick template",
+    "templates": {
+      "codeReview": "Code Review",
+      "bugFixing": "Bug Fixing",
+      "featureDev": "Feature Development",
+      "documentation": "Documentation",
+      "custom": "Custom"
+    },
+    "createButton": "Create Session",
+    "cancelButton": "Cancel",
+    "errors": {
+      "nameRequired": "Session name is required",
+      "dirRequired": "Working directory is required"
+    }
+  },
+  "list": {
+    "title": "Sessions",
+    "empty": {
+      "title": "No Sessions Yet",
+      "description": "Create your first session to get started",
+      "createButton": "Create Session"
+    },
+    "columns": {
+      "idle": "Idle",
+      "processing": "Processing",
+      "completed": "Completed",
+      "error": "Error",
+      "interrupted": "Interrupted"
+    }
+  },
+  "detail": {
+    "title": "Session",
+    "actions": {
+      "complete": "Mark as Complete",
+      "interrupt": "Interrupt",
+      "resume": "Resume",
+      "delete": "Delete",
+      "returnToWorkItem": "Return to Work Item"
+    },
+    "status": {
+      "markedComplete": "Session marked as complete",
+      "interrupted": "Session interrupted",
+      "resumed": "Session resumed",
+      "deleted": "Session deleted"
+    },
+    "messages": {
+      "title": "Messages",
+      "filter": "Show / Hide Message Types",
+      "all": "Show All",
+      "user": "User Messages",
+      "assistant": "Assistant Responses",
+      "toolUse": "Tool Use",
+      "thinking": "Thinking",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "input": {
+      "placeholder": "Type a message...",
+      "send": "Send",
+      "retry": "Retry"
+    },
+    "empty": {
+      "title": "No Messages",
+      "description": "No messages in this conversation yet"
+    }
+  }
+}

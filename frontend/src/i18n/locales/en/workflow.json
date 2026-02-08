@@ -1,0 +1,48 @@
+{
+  "title": "Workflow Stages",
+  "stages": "Stages",
+  "actions": {
+    "add": "Add Stage",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "form": {
+    "name": "Stage Name",
+    "nameRequired": "Stage Name *",
+    "namePlaceholder": "e.g., Code Review, Bug Fixing",
+    "agent": "Agent",
+    "agentPlaceholder": "Select an agent (optional)",
+    "color": "Color",
+    "colorPlaceholder": "Choose a color for visual identification",
+    "prompt": "Custom Prompt",
+    "promptPlaceholder": "Add additional instructions (optional)",
+    "suggestedTasks": "Suggested Tasks",
+    "suggestedTasksPlaceholder": "e.g., Review the authentication module"
+  },
+  "status": {
+    "planning": "Planning",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "empty": {
+    "title": "No Workflow Stages",
+    "description": "Create workflow stages to organize your development process",
+    "createButton": "Add Stage"
+  },
+  "toasts": {
+    "created": "Workflow stage created successfully",
+    "updated": "Workflow stage updated successfully",
+    "deleted": "Workflow stage deleted",
+    "loadFailed": "Failed to load workflow stages",
+    "deleteFailed": "Failed to delete workflow stage",
+    "updateFailed": "Failed to update workflow stage"
+  },
+  "errors": {
+    "nameRequired": "Stage name is required",
+    "agentNotFound": "Agent file not found",
+    "saveFailed": "Failed to save workflow stage"
+  }
+}

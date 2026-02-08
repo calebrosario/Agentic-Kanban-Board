@@ -1,0 +1,19 @@
+{
+  "title": "Claude Code Board",
+  "subtitle": "セッションマネージャー",
+  "sidebar": {
+    "collapse": "サイドバーを折りたたむ",
+    "expand": "サイドバーを展開"
+  },
+  "navigation": {
+    "allSessions": "すべてのセッション",
+    "workItems": "Work Items",
+    "workflowStages": "ワークフローステージ",
+    "agentPrompts": "エージェントプロンプト"
+  },
+  "actions": {
+    "createSession": "セッション作成",
+    "settings": "設定",
+    "logout": "ログアウト"
+  }
+}
