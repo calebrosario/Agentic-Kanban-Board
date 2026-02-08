@@ -9,6 +9,7 @@ import { Message, Session } from "../../types/session.types";
 import MessageInput from "./MessageInput";
 import MessageItem from "./MessageItem";
 import { MessageFilter } from "./MessageFilter";
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface ChatInterfaceProps {
   sessionId: string;
@@ -35,6 +36,7 @@ const MessageList = React.memo<MessageListProps>(({ messages }) => {
 });
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session, isSessionActive, isProcessing = false, onSessionUpdate }) => {
+  const { t } = useI18nContext();
   // 使用 message store - 分別獲取 actions 和 state
   const messages = useMessageStore((state) => state.messages);
   const isLoading = useMessageStore((state) => state.isLoading);
@@ -229,7 +231,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
         // 成功後更新狀態
         updateMessageStatus(tempMessage.messageId, "sent");
       } catch (error) {
-        toast.error("發送訊息失敗");
+        toast.error(t('session.chat.sendError'));
         console.error("Error sending message:", error);
         // 標記為失敗
         updateMessageStatus(tempMessage.messageId, "failed");
@@ -245,7 +247,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">載入對話記錄中...</p>
+          <p className="text-gray-600">{t('session.chat.loading')}</p>
         </div>
       </div>
     );
@@ -256,9 +258,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <p className="text-red-600 mb-4">載入訊息失敗</p>
+          <p className="text-red-600 mb-4">{t('session.chat.error')}</p>
           <button onClick={() => initializeFromAPI(sessionId)} className="btn-primary">
-            重試
+            {t('session.chat.retry')}
           </button>
         </div>
       </div>
@@ -273,7 +275,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
           {!isSessionActive ? (
             <div className="flex items-center space-x-2 text-gray-600">
               <AlertCircle className="w-4 h-4" />
-              <span className="text-sm">Session 已停止，無法發送新訊息</span>
+              <span className="text-sm">{t('session.chat.sessionStopped')}</span>
             </div>
           ) : (
             <div className="flex-1" /> // 佔位元素
@@ -295,11 +297,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
             {isLoadingMore ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                <span className="text-sm text-gray-500">載入更多訊息...</span>
+                <span className="text-sm text-gray-500">{t('session.chat.loadingMore')}</span>
               </div>
             ) : (
               <button onClick={() => loadMoreMessages("older")} className="text-sm text-primary-600 hover:text-primary-700 font-medium hover:underline">
-                載入更早的訊息
+                {t('session.chat.loadEarlier')}
               </button>
             )}
           </div>
@@ -312,17 +314,17 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
                 <div className="bg-gradient-to-br from-warning-400 to-warning-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-soft-md">
                   <Bot className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">沒有可顯示的訊息</h3>
-                <p className="text-gray-600">有 {filteredCount} 則訊息被過濾隱藏</p>
-                <p className="text-sm text-gray-500 mt-2">點擊右上角的訊息過濾按鈕調整設定</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('session.chat.noMessages')}</h3>
+                <p className="text-gray-600">{t('session.chat.messagesFiltered', { count: filteredCount })}</p>
+                <p className="text-sm text-gray-500 mt-2">{t('session.chat.adjustFilter')}</p>
               </>
             ) : (
               <>
                 <div className="bg-gradient-to-br from-success-400 to-success-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-soft-md animate-float">
                   <Bot className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">開始新的對話</h3>
-                <p className="text-gray-600">向 Claude Code 發送訊息開始互動</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('session.chat.startConversation')}</h3>
+                <p className="text-gray-600">{t('session.chat.sendMessageHint')}</p>
               </>
             )}
           </div>
@@ -332,7 +334,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
             {filteredCount > 0 && (
               <div className="flex justify-center mb-2">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-warning-50 text-warning-700 text-sm rounded-full border border-warning-200">
-                  <span>已隱藏 {filteredCount} 則訊息</span>
+                  <span>{t('session.chat.messagesFiltered', { count: filteredCount })}</span>
                 </div>
               </div>
             )}
@@ -367,7 +369,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ sessionId, session
       </div>
 
       {/* 輸入框 - 使用獨立的 MessageInput 組件 */}
-      <MessageInput onSendMessage={handleSendMessage} disabled={!isSessionActive} placeholder={isSessionActive ? "輸入訊息..." : "Session 已停止"} />
+      <MessageInput onSendMessage={handleSendMessage} disabled={!isSessionActive} placeholder={isSessionActive ? t('session.input.placeholder') : t('session.chat.sessionStopped')} />
     </div>
   );
 };

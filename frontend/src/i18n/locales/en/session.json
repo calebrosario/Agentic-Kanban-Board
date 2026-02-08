@@ -46,7 +46,7 @@
     "taskDescription": "Task Description",
     "required": "Required",
     "taskContent": "Task Content",
-    "taskPlaceholder": "Please describe your requirements in detail...\ne.g., Implement user login with form validation and error handling\nor: Refactor existing API to improve performance and add error logging\nor: Analyze and fix current performance issues, focusing on loading speed",
+    "taskPlaceholder": "Please describe your requirements in detail...\\ne.g., Implement user login with form validation and error handling\\nor: Refactor existing API to improve performance and add error logging\\nor: Analyze and fix current performance issues, focusing on loading speed",
     "characters": "characters",
     "quickTemplates": "Quick Templates",
     "prefillTitle": "Quick create based on \"{{baseSessionName}}\"",
@@ -60,119 +60,54 @@
     "toasts": {
       "created": "Session created",
       "createFailed": "Failed to create session"
-    },
-    "list": {
-      "title": "Sessions",
-      "empty": {
-        "title": "No Sessions Yet",
-        "description": "Create your first session to get started",
-        "createButton": "Create Session"
-      },
-      "columns": {
-        "idle": "Idle",
-        "processing": "Processing",
-        "completed": "Completed",
-        "error": "Error",
-        "interrupted": "Interrupted"
-      },
-      "detail": {
-        "title": "Session",
-        "actions": {
-          "complete": "Mark as Complete",
-          "interrupt": "Interrupt",
-          "resume": "Resume",
-          "delete": "Delete",
-          "returnToWorkItem": "Return to Work Item"
-        },
-        "status": {
-          "markedComplete": "Session marked as complete",
-          "interrupted": "Session interrupted",
-          "resumed": "Session resumed",
-          "deleted": "Session deleted"
-        },
-        "messages": {
-          "title": "Messages",
-          "filter": "Show / Hide Message Types",
-          "all": "Show All",
-          "user": "User Messages",
-          "assistant": "Assistant Responses",
-          "toolUse": "Tool Use",
-          "thinking": "Thinking",
-          "show": "Show",
-          "hide": "Hide"
-        },
-        "input": {
-          "placeholder": "Type a message...",
-          "send": "Send",
-          "retry": "Retry"
-        },
-        "empty": {
-          "title": "No Messages",
-          "description": "No messages in this conversation yet",
-          "createButton": "Create Session"
-        }
-      },
-      "status": {
-        "markedComplete": "Session marked as complete",
-        "interrupted": "Session interrupted",
-        "resumed": "Session resumed",
-        "deleted": "Session deleted"
-        },
-      "toasts": {
-        "created": "Work Item created",
-        "updated": "Work Item updated",
-        "deleted": "Work Item deleted",
-        "statusUpdated": "Work Item status updated"
-      }
-  }
-}
+    }
   },
   "list": {
-      "title": "Sessions",
-      "empty": {
-        "title": "No Sessions",
-        "description": "Create your first session to get started",
-        "createButton": "Create Session"
-      },
-      "noSessions": "No sessions",
-      "noSessionsCreated": "No sessions created yet",
-      "searchPlaceholder": "Search...",
-      "createButton": "Create",
-      "mobileSortSelector": "Mobile sort selector",
-      "reload": "Reload",
-      "columns": {
-        "processing": "Processing ({count})",
-        "idle": "Idle ({count})",
-        "completed": "Completed ({count})",
-        "error": "Error ({count})",
-        "interrupted": "Interrupted ({count})"
-      },
-      "tabs": {
-        "processing": "Processing",
-        "idle": "Idle",
-        "completed": "Completed"
-      },
-      "dragAndDrop": {
-        "dragging": "Dragging session...",
-        "dropToCreateNew": "Drop here to create a new session",
-        "dropToContinue": "Drop here to continue this session",
-        "keepContext": "Keep in Work Item context",
-        "preserveNav": "Preserve navigation link"
-      },
-      "confirmDelete": "Are you sure you want to delete this session? This action cannot be undone.",
-      "error": {
-        "reload": "Failed to reload sessions",
-        "unknown": "An unknown error occurred",
-        "cantDelete": "Cannot delete this session while it's running. Stop it first."
-      },
-      "status": {
-        "markedComplete": "Session marked as complete",
-        "interrupted": "Session interrupted",
-        "resumed": "Session resumed",
-        "deleted": "Session deleted"
-      }
+    "title": "Sessions",
+    "empty": {
+      "title": "No Sessions",
+      "description": "Create your first session to get started",
+      "createButton": "Create Session"
     },
-    "detail": {
+    "noSessions": "No sessions",
+    "noSessionsCreated": "No sessions created yet",
+    "searchPlaceholder": "Search...",
+    "createButton": "Create",
+    "mobileSortSelector": "Mobile sort selector",
+    "reload": "Reload",
+    "columns": {
+      "idle": "Idle ({count})",
+      "processing": "Processing ({count})",
+      "completed": "Completed ({count})",
+      "error": "Error ({count})",
+      "interrupted": "Interrupted ({count})"
+    },
+    "tabs": {
+      "processing": "Processing",
+      "idle": "Idle",
+      "completed": "Completed"
+    },
+    "dragAndDrop": {
+      "dragging": "Dragging session...",
+      "dropToCreateNew": "Drop here to create a new session",
+      "dropToContinue": "Drop here to continue this session",
+      "keepContext": "Keep in Work Item context",
+      "preserveNav": "Preserve navigation link"
+    },
+    "confirmDelete": "Are you sure you want to delete this session? This action cannot be undone.",
+    "error": {
+      "reload": "Failed to reload sessions",
+      "unknown": "An unknown error occurred",
+      "cantDelete": "Cannot delete this session while it's running. Stop it first."
+    },
+    "status": {
+      "markedComplete": "Session marked as complete",
+      "interrupted": "Session interrupted",
+      "resumed": "Session resumed",
+      "deleted": "Session deleted"
+    }
+  },
+  "detail": {
     "title": "Session",
     "actions": {
       "complete": "Mark as Complete",
@@ -235,7 +170,8 @@
       "showAllButton": "Show All",
       "hideAllButton": "Hide All",
       "resetButton": "Reset"
-    },
+    }
+  },
   "card": {
     "title": "Session Card",
     "actions": {
@@ -271,19 +207,19 @@
       "preserveNavDescription": "Maintain connection to parent Work Item"
     }
   },
-  "list": {
-    "empty": {
-      "title": "No Sessions",
-      "description": "Create your first session to get started",
-      "createButton": "Create Session",
-      "status": {
-        "idle": "Idle",
-        "processing": "Processing",
-        "completed": "Completed",
-        "error": "Error",
-        "interrupted": "Interrupted"
-      }
-    }
+  "chat": {
+    "loading": "Loading conversation history...",
+    "error": "Failed to load messages",
+    "retry": "Retry",
+    "sendError": "Failed to send message",
+    "sessionStopped": "Session stopped, cannot send new messages",
+    "loadingMore": "Loading more messages...",
+    "loadEarlier": "Load earlier messages",
+    "noMessages": "No messages to display",
+    "messagesFiltered": "{count} messages filtered out",
+    "adjustFilter": "Click the message filter button in the top right to adjust settings",
+    "startConversation": "Start a new conversation",
+    "sendMessageHint": "Send a message to Claude Code to start interacting"
   },
   "input": {
     "placeholder": "Type a message...",
@@ -294,19 +230,16 @@
     "processing": "Processing...",
     "cancel": "Cancel",
     "cancelWithTooltip": "Cancel sending",
-    "interrupt": "Interrupt"
-    "interruptWithTooltip": "Interrupt message sending"
+    "interrupt": "Interrupt",
+    "interruptWithTooltip": "Interrupt message sending",
     "deleteWithTooltip": "Delete this session",
-    "navigateToWorkItem": "Return to Work Item"
+    "navigateToWorkItem": "Return to Work Item",
     "expand": "Expand to see full message history",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
     "messages": "Messages",
     "start": "Start",
     "end": "End",
     "timeSince": "{time} ago",
     "actions": "Actions"
-    },
-  }
-}
   }
 }
