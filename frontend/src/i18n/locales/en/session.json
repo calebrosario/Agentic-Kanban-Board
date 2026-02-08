@@ -114,7 +114,15 @@
       "interrupt": "Interrupt",
       "resume": "Resume",
       "delete": "Delete",
-      "returnToWorkItem": "Return to Work Item"
+      "returnToWorkItem": "Return to Work Item",
+      "classification": "Classification management",
+      "export": "Export conversation",
+      "quickStart": "Quick start based on this conversation",
+      "interruptExecution": "Interrupt execution",
+      "markComplete": "Mark as complete",
+      "resumeSession": "Resume Session",
+      "deleteSession": "Delete Session",
+      "backToList": "Return to sessions list"
     },
     "status": {
       "markedComplete": "Session marked as complete",
@@ -141,6 +149,20 @@
     "empty": {
       "title": "No Messages",
       "description": "No messages in this conversation yet"
+    },
+    "loading": "Loading session details...",
+    "notFound": "Session does not exist",
+    "error": {
+      "unknownError": "Unknown error during execution",
+      "errorType": "Error type: {type}",
+      "details": "Details: {details}",
+      "exitCode": "Exit code: {code}",
+      "errorMessage": "Error message:",
+      "noMessagesToExport": "No messages to export",
+      "exported": "Messages exported",
+      "newSessionCreated": "New session created",
+      "prefillTask": "Based on the context of the previous conversation, please read dev.md and related project files first.\n\nNew task:",
+      "newTask": "New task"
     }
   },
   "filter": {
