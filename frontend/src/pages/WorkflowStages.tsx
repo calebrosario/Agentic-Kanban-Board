@@ -595,7 +595,7 @@ export const WorkflowStages: React.FC = () => {
                               onChange={(e) => handleAgentChange(e.target.value)}
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
-                              <option value="">選擇 Agent...</option>
+                              <option value="">{t('workflow.form.selectAgent')}</option>
                               {agents.map(agent => (
                                 <option key={agent.name} value={agent.name}>
                                   {agent.name}
@@ -612,7 +612,7 @@ export const WorkflowStages: React.FC = () => {
                             onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
                             rows={4}
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="定義 AI Agent 在這個階段的行為和角色..."
+                            placeholder={t('workflow.form.systemPromptPlaceholder')}
                           />
                         )}
                       </div>
@@ -620,7 +620,7 @@ export const WorkflowStages: React.FC = () => {
 
                     {/* 右側建議任務 */}
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-2">建議任務</label>
+                      <label className="block text-xs font-medium text-gray-700 mb-2">{t('workflow.form.suggestedTasks')}</label>
                       <div className="space-y-2 max-h-64 overflow-y-auto">
                         {(formData.suggested_tasks || []).map((task, index) => (
                           <div key={index} className="flex gap-2">
@@ -633,7 +633,7 @@ export const WorkflowStages: React.FC = () => {
                                 setFormData({ ...formData, suggested_tasks: tasks });
                               }}
                               className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="建議任務描述..."
+                              placeholder={t('workflow.form.suggestedTasksPlaceholder')}
                             />
                             <button
                               onClick={() => {
@@ -653,7 +653,7 @@ export const WorkflowStages: React.FC = () => {
                           }}
                           className="w-full py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all border border-dashed border-blue-300 hover:border-blue-400"
                         >
-                          + 新增建議任務
+                            {t('workflow.form.addSuggestedTask')}
                         </button>
                       </div>
                     </div>
@@ -671,7 +671,7 @@ export const WorkflowStages: React.FC = () => {
                       onClick={handleSave}
                       className="px-4 py-2 text-sm bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-blue transition-all"
                     >
-                      儲存變更
+                      {t('workflow.actions.saveChanges')}
                     </button>
                   </div>
                 </div>
@@ -748,7 +748,7 @@ export const WorkflowStages: React.FC = () => {
                           </div>
                         </>
                       ) : (
-                        <span className="text-xs text-gray-400">無建議任務</span>
+                        <span className="text-xs text-gray-400">{t('workflow.form.noSuggestedTasks')}</span>
                       )}
                     </div>
 
@@ -757,14 +757,14 @@ export const WorkflowStages: React.FC = () => {
                       <button
                         onClick={() => handleEdit(stage)}
                         className="p-1.5 text-gray-600 hover:bg-white/60 rounded transition-all hover:shadow-soft-sm"
-                        title="編輯"
+                        title={t('workflow.actions.edit')}
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(stage.stage_id)}
                         className="p-1.5 text-danger-600 hover:bg-danger-50 rounded transition-all hover:shadow-soft-sm"
-                        title="刪除"
+                        title={t('workflow.actions.delete')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -774,7 +774,7 @@ export const WorkflowStages: React.FC = () => {
                   {/* 展開的建議任務 */}
                   {expandedTasks.has(stage.stage_id) && stage.suggested_tasks && stage.suggested_tasks.length > 1 && (
                     <div className="mt-2 ml-6 pt-2 border-t border-gray-100">
-                      <div className="text-xs text-gray-500 mb-1">所有建議任務：</div>
+                      <div className="text-xs text-gray-500 mb-1">{t('workflow.form.allTasks')}</div>
                       <ul className="text-sm text-gray-700 space-y-0.5">
                         {stage.suggested_tasks.map((task, index) => (
                           <li key={index} className="flex items-start">
