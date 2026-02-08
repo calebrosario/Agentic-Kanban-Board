@@ -196,15 +196,78 @@
       "hideAll": "Hide All",
       "reset": "Reset to Default",
       "messages": "messages",
-      "typesHidden": "{count} message types hidden"
-      "allShown": "Showing all message types"
-      "defaultHidden": "(default hidden)"
+      "typesHidden": "{count} message types hidden",
+      "allShown": "Showing all message types",
+      "defaultHidden": "(default hidden)",
       "quickActions": "Quick Actions",
       "messageTypes": "Message Type Selection",
-      "summary": "Summary"
+      "summary": "Summary",
       "showAllButton": "Show All",
       "hideAllButton": "Hide All",
       "resetButton": "Reset"
+    },
+  "card": {
+    "title": "Session Card",
+    "actions": {
+      "complete": "Complete",
+      "interrupt": "Interrupt",
+      "resume": "Resume",
+      "delete": "Delete",
+      "titleTooltip": "Mark session as complete",
+      "interruptTooltip": "Interrupt this session",
+      "resumeTooltip": "Resume this session",
+      "deleteTooltip": "Delete this session"
+    },
+    "dragAndDrop": {
+      "dragging": "Dragging session...",
+      "dropToCreateNew": "Drop here to create a new session",
+      "dropToContinue": "Drop here to continue this session",
+      "keepContext": "Keep in Work Item context",
+      "preserveNav": "Preserve navigation link"
+    },
+    "context": {
+      "preserveContextLabel": "Keep in Work Item context",
+      "preserveContextDescription": "Stay within the Work Item context",
+      "preserveNavLabel": "Preserve navigation link",
+      "preserveNavDescription": "Maintain connection to parent Work Item"
     }
+  },
+  "list": {
+    "empty": {
+      "title": "No Sessions",
+      "description": "Create your first session to get started",
+      "createButton": "Create Session",
+      "status": {
+        "idle": "Idle",
+        "processing": "Processing",
+        "completed": "Completed",
+        "error": "Error",
+        "interrupted": "Interrupted"
+      }
+    }
+  },
+  "input": {
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "sendWithTooltip": "Send message",
+    "retry": "Retry",
+    "retryWithTooltip": "Retry last message",
+    "processing": "Processing...",
+    "cancel": "Cancel",
+    "cancelWithTooltip": "Cancel sending",
+    "interrupt": "Interrupt"
+    "interruptWithTooltip": "Interrupt message sending"
+    "deleteWithTooltip": "Delete this session",
+    "navigateToWorkItem": "Return to Work Item"
+    "expand": "Expand to see full message history",
+    "collapse": "Collapse"
+    "messages": "Messages",
+    "start": "Start",
+    "end": "End",
+    "timeSince": "{time} ago",
+    "actions": "Actions"
+    },
+  }
+}
   }
 }
