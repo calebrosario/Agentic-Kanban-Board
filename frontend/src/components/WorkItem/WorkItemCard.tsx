@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { zhTW } from 'date-fns/locale';
+import { getDateLocale } from '../../i18n/dateLocale';
 import {
   Briefcase,
   Clock,
@@ -27,7 +27,7 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
   onDelete,
   onStatusChange
 }) => {
-  const { t } = useI18nContext();
+  const { t, language } = useI18nContext();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -223,13 +223,13 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
           <div className="flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             <span>
-              {t('workitem.card.timeline.created', { time: formatDistanceToNow(new Date(workItem.created_at), { locale: zhTW, addSuffix: true }) })}
+              {t('workitem.card.timeline.created', { time: formatDistanceToNow(new Date(workItem.created_at), { locale: getDateLocale(language), addSuffix: true }) })}
             </span>
           </div>
 
           {workItem.completed_at && (
             <span className="text-green-600">
-              {t('workitem.card.timeline.completed', { time: formatDistanceToNow(new Date(workItem.completed_at), { locale: zhTW, addSuffix: true }) })}
+              {t('workitem.card.timeline.completed', { time: formatDistanceToNow(new Date(workItem.completed_at), { locale: getDateLocale(language), addSuffix: true }) })}
             </span>
           )}
         </div>

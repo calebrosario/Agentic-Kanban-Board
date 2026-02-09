@@ -21,7 +21,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { zhTW } from 'date-fns/locale';
+import { getDateLocale } from '../i18n/dateLocale';
 import { useWorkItemStore } from '../stores/workItemStore';
 import { useI18nContext } from '../contexts/I18nContext';
 import { useSessions } from '../hooks/useSessions';
@@ -38,7 +38,7 @@ import { MarkdownRenderer } from '../components/Common/MarkdownRenderer';
 export const WorkItemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useI18nContext();
+  const { t, language } = useI18nContext();
   const { 
     currentWorkItem, 
     fetchWorkItem, 
@@ -419,11 +419,11 @@ export const WorkItemDetailPage: React.FC = () => {
                   {/* Meta Info inline */}
                   <span className="text-gray-500 flex items-center gap-1 text-xs">
                     <Calendar className="w-3 h-3" />
-                    {t('workitem:detail.info.createdAt', { time: formatDistanceToNow(new Date(currentWorkItem.created_at), { locale: zhTW, addSuffix: true }) })}
+                    {t('workitem:detail.info.createdAt', { time: formatDistanceToNow(new Date(currentWorkItem.created_at), { locale: getDateLocale(language), addSuffix: true }) })}
                   </span>
                   {currentWorkItem.completed_at && (
                     <span className="text-green-600 text-xs">
-                      {t('workitem:detail.info.completedAt', { time: formatDistanceToNow(new Date(currentWorkItem.completed_at), { locale: zhTW, addSuffix: true }) })}
+                      {t('workitem:detail.info.completedAt', { time: formatDistanceToNow(new Date(currentWorkItem.completed_at), { locale: getDateLocale(language), addSuffix: true }) })}
                     </span>
                   )}
                 </div>
