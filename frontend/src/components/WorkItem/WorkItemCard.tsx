@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { zhTW } from 'date-fns/locale';
+import { getDateLocale } from '../../i18n/dateLocale';
 import {
   Briefcase,
   Clock,
@@ -12,6 +12,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { WorkItem } from '../../types/workitem';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface WorkItemCardProps {
   workItem: WorkItem;
@@ -26,6 +27,7 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
   onDelete,
   onStatusChange
 }) => {
+  const { t, language } = useI18nContext();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -56,10 +58,10 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
   }, [menuOpen]);
 
   const statusConfig = {
-    planning: { icon: Clock, color: 'text-gray-500', bg: 'bg-gray-100', label: '規劃中' },
-    in_progress: { icon: Play, color: 'text-blue-500', bg: 'bg-blue-100', label: '進行中' },
-    completed: { icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-100', label: '已完成' },
-    cancelled: { icon: XCircle, color: 'text-red-500', bg: 'bg-red-100', label: '已取消' }
+    planning: { icon: Clock, color: 'text-gray-500', bg: 'bg-gray-100', label: t('workitem.status.planning') },
+    in_progress: { icon: Play, color: 'text-blue-500', bg: 'bg-blue-100', label: t('workitem.status.in_progress') },
+    completed: { icon: CheckCircle, color: 'text-green-500', bg: 'bg-green-100', label: t('workitem.status.completed') },
+    cancelled: { icon: XCircle, color: 'text-red-500', bg: 'bg-red-100', label: t('workitem.status.cancelled') }
   };
 
 
@@ -117,10 +119,10 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
-                      編輯
+                      {t('workitem.card.actions.edit')}
                     </button>
                   )}
-                  
+
                   {workItem.status === 'planning' && onStatusChange && (
                     <button
                       onClick={(e) => {
@@ -130,10 +132,10 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
-                      開始執行
+                      {t('workitem.card.actions.startExecution')}
                     </button>
                   )}
-                  
+
                   {workItem.status === 'in_progress' && onStatusChange && (
                     <button
                       onClick={(e) => {
@@ -143,10 +145,10 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
-                      標記完成
+                      {t('workitem.card.actions.markComplete')}
                     </button>
                   )}
-                  
+
                   {(workItem.status === 'planning' || workItem.status === 'in_progress') && onStatusChange && (
                     <button
                       onClick={(e) => {
@@ -156,10 +158,10 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
-                      取消
+                      {t('workitem.card.actions.cancel')}
                     </button>
                   )}
-                  
+
                   {onDelete && (
                     <>
                       <div className="border-t border-gray-100"></div>
@@ -171,7 +173,7 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
-                        刪除
+                        {t('workitem.card.actions.delete')}
                       </button>
                     </>
                   )}
@@ -221,13 +223,13 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
           <div className="flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             <span>
-              創建於 {formatDistanceToNow(new Date(workItem.created_at), { locale: zhTW, addSuffix: true })}
+              {t('workitem.card.timeline.created', { time: formatDistanceToNow(new Date(workItem.created_at), { locale: getDateLocale(language), addSuffix: true }) })}
             </span>
           </div>
-          
+
           {workItem.completed_at && (
             <span className="text-green-600">
-              完成於 {formatDistanceToNow(new Date(workItem.completed_at), { locale: zhTW, addSuffix: true })}
+              {t('workitem.card.timeline.completed', { time: formatDistanceToNow(new Date(workItem.completed_at), { locale: getDateLocale(language), addSuffix: true }) })}
             </span>
           )}
         </div>

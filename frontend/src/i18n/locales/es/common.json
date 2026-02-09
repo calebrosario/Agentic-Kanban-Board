@@ -1,0 +1,40 @@
+{
+  "language": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "es": "Español",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "loading": "Cargando...",
+  "error": {
+    "title": "Error",
+    "retry": "Reintentar",
+    "unknown": "Ocurrió un error desconocido"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior"
+  },
+  "status": {
+    "loading": "Cargando",
+    "idle": "Inactivo",
+    "processing": "Procesando",
+    "completed": "Completado",
+    "error": "Error",
+    "interrupted": "Interrumpido",
+    "planning": "Planificando",
+    "in_progress": "En progreso"
+  }
+}

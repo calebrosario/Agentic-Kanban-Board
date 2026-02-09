@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, ChevronDown, Plus } from 'lucide-react';
 import { cn } from '../../utils';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface Option {
   value: string;
@@ -26,14 +27,15 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
   value,
   onChange,
-  placeholder = '選擇項目...',
+  placeholder,
   disabled = false,
   loading = false,
   onCreateNew,
-  createNewPlaceholder = '建立新項目',
+  createNewPlaceholder,
   className,
   maxHeight = 200,
 }) => {
+  const { t } = useI18nContext();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -122,7 +124,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
             </span>
           ))
         ) : (
-          <span className="text-gray-400">{placeholder}</span>
+          <span className="text-gray-400">{placeholder || t('common:multiSelect.placeholder')}</span>
         )}
 
         {/* 下拉箭頭 */}
@@ -140,7 +142,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
             <input
               type="text"
               className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="搜尋..."
+              placeholder={t('common:multiSelect.search')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onClick={(e) => e.stopPropagation()}
@@ -151,7 +153,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           <div className="overflow-y-auto" style={{ maxHeight }}>
             {loading ? (
               <div className="px-3 py-8 text-center text-gray-500">
-                載入中...
+                {t('common:multiSelect.loading')}
               </div>
             ) : filteredOptions.length > 0 ? (
               filteredOptions.map(option => {
@@ -192,7 +194,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
               })
             ) : (
               <div className="px-3 py-4 text-center text-gray-500 text-sm">
-                沒有找到符合的項目
+                {t('common:multiSelect.noResults')}
               </div>
             )}
 
@@ -205,7 +207,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                       <input
                         type="text"
                         className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder={createNewPlaceholder}
+                        placeholder={createNewPlaceholder || t('common:multiSelect.createNew')}
                         value={newItemName}
                         onChange={(e) => setNewItemName(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleCreateNew()}
@@ -217,7 +219,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                         onClick={handleCreateNew}
                         disabled={!newItemName.trim() || loading || isLoading}
                       >
-                        {isLoading ? '建立中...' : '建立'}
+                        {isLoading ? t('common:multiSelect.creating') : t('common:multiSelect.create')}
                       </button>
                       <button
                         className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
@@ -226,7 +228,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                           setNewItemName('');
                         }}
                       >
-                        取消
+                        {t('common:actions.cancel')}
                       </button>
                     </div>
                   </div>
@@ -236,7 +238,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                     onClick={() => setIsCreating(true)}
                   >
                     <Plus className="w-4 h-4" />
-                    <span className="text-sm">{createNewPlaceholder}</span>
+                    <span className="text-sm">{createNewPlaceholder || t('common:multiSelect.createNew')}</span>
                   </div>
                 )}
               </div>

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
+import {
+  Home,
   Plus,
   Settings
 } from 'lucide-react';
 import { useSessions } from '../../hooks/useSessions';
 import { cn } from '../../utils';
 import { SettingsModal } from '../Settings/SettingsModal';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface MobileNavProps {
   onCreateSession?: () => void;
@@ -17,6 +18,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onCreateSession }) => {
   const location = useLocation();
   const { sessionsByStatus } = useSessions();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { t } = useI18nContext();
 
   const totalSessions = sessionsByStatus.idle.length + 
     sessionsByStatus.completed.length + 
@@ -65,12 +67,12 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onCreateSession }) => {
 
           {/* 右側容器 */}
           <div className="flex-1 flex justify-center">
-            <button 
+            <button
               onClick={() => setIsSettingsOpen(true)}
               className="flex flex-col items-center justify-center p-2 rounded-lg text-gray-600 hover:text-gray-900 transition-colors"
             >
               <Settings className="w-6 h-6" />
-              <span className="text-xs mt-1">設定</span>
+              <span className="text-xs mt-1">{t('sidebar:actions.settings')}</span>
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { tagApi } from '../../services/api';
 import { Tag } from '../../types/classification.types';
 import { MultiSelect } from '../Common/MultiSelect';
+import { useI18nContext } from '../../contexts/I18nContext';
 import toast from 'react-hot-toast';
 
 interface TagSelectorProps {
@@ -19,6 +20,7 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   tagType = 'general',
   className,
 }) => {
+  const { t } = useI18nContext();
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -35,7 +37,7 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
       setTags(allTags);
     } catch (error) {
       console.error('Failed to load tags:', error);
-      toast.error('載入標籤失敗');
+      toast.error(t('common:classification.tags.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -47,10 +49,10 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
       setSaving(true);
       await tagApi.updateSessionTags(sessionId, newTagIds);
       onTagsChange(newTagIds);
-      toast.success('標籤已更新');
+      toast.success(t('common:classification.tags.updateSuccess'));
     } catch (error) {
       console.error('Failed to update tags:', error);
-      toast.error('更新標籤失敗');
+      toast.error(t('common:classification.tags.updateFailed'));
     } finally {
       setSaving(false);
     }
@@ -72,10 +74,10 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
       const newTagIds = [...selectedTags, newTag.tag_id];
       await handleTagsChange(newTagIds);
       
-      toast.success('標籤已建立');
+      toast.success(t('common:classification.tags.createSuccess'));
     } catch (error) {
       console.error('Failed to create tag:', error);
-      toast.error('建立標籤失敗');
+      toast.error(t('common:classification.tags.createFailed'));
       throw error;
     }
   };
@@ -91,11 +93,11 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   const getLabel = () => {
     switch (tagType) {
       case 'topic':
-        return '主題';
+        return t('common:classification.tags.topic');
       case 'department':
-        return '部門';
+        return t('common:classification.tags.department');
       default:
-        return '標籤';
+        return t('common:classification.tags.label');
     }
   };
 
@@ -108,11 +110,11 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
         options={options}
         value={selectedTags}
         onChange={handleTagsChange}
-        placeholder={`選擇${getLabel()}...`}
+        placeholder={`${t('common:actions.select')} ${getLabel()}...`}
         disabled={saving}
         loading={loading}
         onCreateNew={handleCreateTag}
-        createNewPlaceholder={`建立新${getLabel()}`}
+        createNewPlaceholder={`${t('common:actions.create')} ${getLabel()}`}
       />
     </div>
   );

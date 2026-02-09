@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface SearchBarProps {
   placeholder?: string;
@@ -13,7 +14,7 @@ interface SearchBarProps {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
-  placeholder = '搜尋...',
+  placeholder,
   onSearch,
   defaultValue = '',
   className = '',
@@ -21,6 +22,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   showClearButton = true,
   debounceDelay = 300
 }) => {
+  const { t } = useI18nContext();
   const [searchQuery, setSearchQuery] = useState(defaultValue);
   const debouncedQuery = useDebounce(searchQuery, debounceDelay);
 
@@ -49,7 +51,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={placeholder || t('common:searchBar.placeholder')}
           autoFocus={autoFocus}
           className="w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
@@ -57,7 +59,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <button
             onClick={handleClear}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            title="清除搜尋"
+            title={t('common:searchBar.clear')}
           >
             <X className="w-4 h-4" />
           </button>

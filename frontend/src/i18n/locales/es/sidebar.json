@@ -1,0 +1,19 @@
+{
+  "title": "Claude Code Board",
+  "subtitle": "Administrador de Sesiones",
+  "sidebar": {
+    "collapse": "Contraer barra lateral",
+    "expand": "Expandir barra lateral"
+  },
+  "navigation": {
+    "allSessions": "Todas las Sesiones",
+    "workItems": "Items de Trabajo",
+    "workflowStages": "Etapas del Flujo de Trabajo",
+    "agentPrompts": "Prompts de Agentes"
+  },
+  "actions": {
+    "createSession": "Crear Sesión",
+    "settings": "Configuración",
+    "logout": "Cerrar Sesión"
+  }
+}

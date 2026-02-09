@@ -1,16 +1,8 @@
-# Claude Code Board
-
-> ## ⚠️ NOTICE: This project is no longer actively maintained.
->
-> This repository is archived and will not receive updates, bug fixes, or new features.
->
-> **The project is released under the MIT License** — you are free to fork, modify, distribute, and use it for any purpose, including commercial use, without restrictions. Feel free to take it and make it your own!
->
-> 🌐 **Landing Page:** [https://cc-board.cablate.com](https://cc-board.cablate.com)
+# Agentic Kanban Board
 
 <div align="center">
 
-![Claude Code Board](assets/banner.png)
+![Agentic Kanban Board](assets/banner.png)
 
 **A comprehensive session management system for Claude Code with advanced workflow capabilities**
 
@@ -28,13 +20,13 @@
 
 ## 🌟 Overview
 
-Claude Code Board is a powerful web-based management system designed for developers working with Claude Code CLI. It provides an intuitive interface to manage multiple AI coding sessions simultaneously, with advanced features including workflow automation, agent-based prompting, and intelligent project organization.
+Agentic Kanban Board is a powerful web-based management system designed for developers working with Claude Code CLI. It provides an intuitive interface to manage multiple AI coding sessions simultaneously, with advanced features including workflow automation, agent-based prompting, and intelligent project organization.
 
 ![Session List Management](assets/SessionList.png)
 *Main dashboard showcasing multiple active sessions with status tracking and management interface*
 
 
-## 🆚 Why Claude Code Board vs Direct CLI?
+## 🆚 Why Agentic Kanban Board vs Direct CLI?
 
 ### Enhanced CLI Experience
 Claude Code CLI is excellent for single-focus coding sessions. However, when managing complex projects with multiple contexts, some additional capabilities become valuable:
@@ -56,7 +48,7 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 6. Difficult to run multiple session with same project at the same time
 ```
 
-**Claude Code Board Workflow** 🚀
+**Agentic Kanban Board Workflow** 🚀
 ```
 1. Create new session directly in web interface
 2. Select project directory and Agent with one click
@@ -302,6 +294,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for developers who love AI-powered coding**
 
-[⭐ Star this repo](https://github.com/yourusername/claude-code-board) • [🐛 Report Bug](https://github.com/yourusername/claude-code-board/issues) • [💡 Request Feature](https://github.com/yourusername/claude-code-board/issues)
+[⭐ Star this repo](https://github.com/calebrosario/agentic-kanban-board) • [🐛 Report Bug](https://github.com/calebrosario/agentic-kanban-board/issues) • [💡 Request Feature](https://github.com/calebrosario/agentic-kanban-board/issues)
 
 </div>

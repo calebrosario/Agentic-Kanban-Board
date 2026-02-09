@@ -1,14 +1,15 @@
 import React, { JSX, useState } from 'react';
 import { format } from 'date-fns';
-import { zhTW } from 'date-fns/locale';
-import { 
-  User, Bot, Terminal, FileText, Search, Code, 
+import { getDateLocale } from '../../i18n/dateLocale';
+import {
+  User, Bot, Terminal, FileText, Search, Code,
   ChevronDown, ChevronRight, Eye, Edit, Trash,
   Brain, Loader, CheckCircle, XCircle, AlertCircle
 } from 'lucide-react';
 import { Message } from '../../types/session.types';
 import { MarkdownRenderer } from '../Common/MarkdownRenderer';
 import { cn } from '../../utils';
+import { useI18nContext } from '../../contexts/I18nContext';
 
 interface MessageItemProps {
   message: Message;
@@ -16,6 +17,7 @@ interface MessageItemProps {
 }
 
 const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming }) => {
+  const { language } = useI18nContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showThinking, setShowThinking] = useState(false);
 
@@ -228,7 +230,7 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
                 
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
-                    {format(new Date(message.timestamp), 'HH:mm', { locale: zhTW })}
+                    {format(new Date(message.timestamp), 'HH:mm', { locale: getDateLocale(language) })}
                   </span>
                   {/* 訊息狀態指示器 */}
                   <div className="flex items-center">
@@ -264,7 +266,7 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
                     <CheckCircle className="w-2.5 h-2.5 text-emerald-300" />
                   </div>
                   <span className="text-xs text-blue-300 opacity-80">
-                    {format(new Date(message.timestamp), 'HH:mm', { locale: zhTW })}
+                    {format(new Date(message.timestamp), 'HH:mm', { locale: getDateLocale(language) })}
                   </span>
                 </div>
                 
