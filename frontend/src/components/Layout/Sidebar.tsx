@@ -275,7 +275,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
                 </button>
               </Tooltip>
 
-              <Tooltip content="設定" side="right">
+              <Tooltip content={t('sidebar:actions.settings')} side="right">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
                   className="w-full flex items-center justify-center p-2.5 bg-white/20 text-gray-700 rounded-lg hover:bg-white/30 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-white/40 backdrop-blur-sm group mx-1"
@@ -284,7 +284,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
                 </button>
               </Tooltip>
 
-              <Tooltip content="登出" side="right">
+              <Tooltip content={t('sidebar:actions.logout')} side="right">
                 <button
                   onClick={logout}
                   className="w-full flex items-center justify-center p-2.5 bg-red-50/80 text-red-600 rounded-lg hover:bg-red-100/80 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-red-200/50 backdrop-blur-sm group mx-1"
@@ -308,7 +308,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
                 className="w-full flex items-center justify-center px-4 py-3 bg-white/20 text-gray-700 rounded-xl hover:bg-white/30 shadow-soft-md hover:shadow-soft-lg transition-all duration-200 border border-white/40 backdrop-blur-sm group font-medium"
               >
                 <Settings className="w-4 h-4 mr-2 transition-transform group-hover:scale-110" />
-                設定
+                {t('sidebar:actions.settings')}
               </button>
             
               <LanguageToggle />

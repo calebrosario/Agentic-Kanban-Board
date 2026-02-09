@@ -60,5 +60,25 @@
   "searchBar": {
     "placeholder": "Search...",
     "clear": "Clear search"
+  },
+  "classification": {
+    "tags": {
+      "label": "Tags",
+      "topic": "Topic",
+      "department": "Department",
+      "loadFailed": "Failed to load tags",
+      "updateSuccess": "Tags updated",
+      "updateFailed": "Failed to update tags",
+      "createSuccess": "Tag created",
+      "createFailed": "Failed to create tag"
+    },
+    "projects": {
+      "label": "Project",
+      "loadFailed": "Failed to load projects",
+      "updateSuccess": "Project updated",
+      "updateFailed": "Failed to update project",
+      "createSuccess": "Project created",
+      "createFailed": "Failed to create project"
+    }
   }
 }

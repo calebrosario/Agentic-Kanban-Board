@@ -60,5 +60,25 @@
   "searchBar": {
     "placeholder": "搜尋...",
     "clear": "清除搜尋"
+  },
+  "classification": {
+    "tags": {
+      "label": "標籤",
+      "topic": "主題",
+      "department": "部門",
+      "loadFailed": "載入標籤失敗",
+      "updateSuccess": "標籤已更新",
+      "updateFailed": "更新標籤失敗",
+      "createSuccess": "標籤已建立",
+      "createFailed": "建立標籤失敗"
+    },
+    "projects": {
+      "label": "專案",
+      "loadFailed": "載入專案失敗",
+      "updateSuccess": "專案已更新",
+      "updateFailed": "更新專案失敗",
+      "createSuccess": "專案已建立",
+      "createFailed": "建立專案失敗"
+    }
   }
 }
