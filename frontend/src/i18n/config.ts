@@ -10,6 +10,7 @@ const resources = {
     workflow: require('./locales/en/workflow.json'),
     auth: require('./locales/en/auth.json'),
     workitem: require('./locales/en/workitem.json'),
+    settings: require('./locales/en/settings.json'),
   },
   'zh-CN': {
     common: require('./locales/zh-CN/common.json'),
@@ -18,6 +19,7 @@ const resources = {
     workflow: require('./locales/zh-CN/workflow.json'),
     auth: require('./locales/zh-CN/auth.json'),
     workitem: require('./locales/zh-CN/workitem.json'),
+    settings: require('./locales/zh-CN/settings.json'),
   },
   'zh-TW': {
     common: require('./locales/zh-TW/common.json'),
@@ -26,6 +28,7 @@ const resources = {
     workflow: require('./locales/zh-TW/workflow.json'),
     auth: require('./locales/zh-TW/auth.json'),
     workitem: require('./locales/zh-TW/workitem.json'),
+    settings: require('./locales/zh-TW/settings.json'),
   },
   es: {
     common: require('./locales/es/common.json'),
@@ -34,6 +37,7 @@ const resources = {
     workflow: require('./locales/es/workflow.json'),
     auth: require('./locales/es/auth.json'),
     workitem: require('./locales/es/workitem.json'),
+    settings: require('./locales/es/settings.json'),
   },
   ja: {
     common: require('./locales/ja/common.json'),
@@ -42,6 +46,7 @@ const resources = {
     workflow: require('./locales/ja/workflow.json'),
     auth: require('./locales/ja/auth.json'),
     workitem: require('./locales/ja/workitem.json'),
+    settings: require('./locales/ja/settings.json'),
   },
   pt: {
     common: require('./locales/pt/common.json'),
@@ -50,6 +55,7 @@ const resources = {
     workflow: require('./locales/pt/workflow.json'),
     auth: require('./locales/pt/auth.json'),
     workitem: require('./locales/pt/workitem.json'),
+    settings: require('./locales/pt/settings.json'),
   },
 };
 
