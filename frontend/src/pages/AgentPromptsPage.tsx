@@ -249,9 +249,9 @@ const AgentPromptsPage: React.FC = () => {
         ) : (
           <div className="glass-ultra rounded-xl p-8 text-center">
             <FolderOpen className="h-12 w-12 text-blue-500 mx-auto mb-3" />
-            <p className="text-gray-700 mb-2">{t('workflow:agentPrompts.empty.pathNotConfigured')}</p>
+            <p className="text-gray-700 mb-2">{t('workflow:agentPrompts.empty.pleaseConfigure')}</p>
             <p className="text-sm text-gray-600">
-              {t('workflow:agentPrompts.settings.pathHint')} <code className="bg-white/50 px-2 py-1 rounded">~/.claude/agents</code>
+              {t('workflow:agentPrompts.empty.defaultLocation')} <code className="bg-white/50 px-2 py-1 rounded">~/.claude/agents</code>
             </p>
           </div>
         )}

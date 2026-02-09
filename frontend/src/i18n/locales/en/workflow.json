@@ -17,7 +17,9 @@
     "empty": {
       "noAgents": "No agent files found",
       "pathNotConfigured": "Agent path not yet configured",
-      "checkPath": "Please verify agent path configuration is correct"
+      "checkPath": "Please verify agent path configuration is correct",
+      "pleaseConfigure": "Please configure Claude agents path first",
+      "defaultLocation": "Usually located at"
     },
     "agentList": {
       "count": "Total {count}",

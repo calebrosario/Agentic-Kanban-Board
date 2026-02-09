@@ -1,6 +1,89 @@
 {
   "title": "工作流程階段",
   "stages": "階段",
+  "agentPrompts": {
+    "title": "Agent 提示詞庫",
+    "header": {
+      "libraryTitle": "Agent 提示詞庫",
+      "settings": "設定"
+    },
+    "loading": "載入中...",
+    "error": {
+      "loadFailed": "載入失敗",
+      "pathRequired": "請輸入路徑",
+      "saveFailed": "設定失敗",
+      "configFailed": "設定失敗"
+    },
+    "empty": {
+      "noAgents": "目錄中沒有找到 agent 檔案",
+      "pathNotConfigured": "尚未設定 Claude agents 路徑",
+      "checkPath": "請確認路徑設定正確",
+      "pleaseConfigure": "請先設定 Claude agents 路徑",
+      "defaultLocation": "通常位於"
+    },
+    "agentList": {
+      "count": "總計 {count}",
+      "viewDetails": "點擊查看詳細內容",
+      "settings": "設定"
+    },
+    "settings": {
+      "title": "Agent 目錄設定",
+      "currentPath": "當前路徑:",
+      "notConfigured": "尚未設定 Claude agents 路徑",
+      "configured": "目前已設定:",
+      "path": "Claude Agents 路徑",
+      "placeholder": "例如: C:\\Users\\User\\.claude\\agents",
+      "pathHint": "包含 agent 提示詞檔案的目錄 (.md)",
+      "save": "儲存",
+      "cancel": "取消"
+    },
+    "agentCard": {
+      "viewDetails": "查看詳細內容",
+      "iconLabel": "agent 檔案",
+      "status": {
+        "available": "可用"
+      },
+      "sections": {
+        "description": "描述",
+        "status": "狀態"
+      }
+    },
+    "agentDetail": {
+      "loading": "載入中...",
+      "error": {
+        "notFound": "找不到 Agent: {name}",
+        "loadFailed": "載入 Agent 詳細資訊失敗"
+      },
+      "header": {
+        "backButton": "返回列表"
+      },
+      "title": "Agent 名稱",
+      "fileName": "Agent 檔案",
+      "copyContent": {
+        "button": "複製內容",
+        "copied": "已複製!",
+        "notCopied": "複製內容"
+      },
+      "sections": {
+        "title": "區塊標題與操作",
+        "description": "描述",
+        "status": "狀態",
+        "tools": "工具",
+        "promptContent": "提示詞內容",
+        "promptTitle": "提示詞內容"
+      },
+      "empty": {
+        "noDescription": "無描述",
+        "noTools": "無工具",
+        "noPromptContent": "無提示詞內容"
+      },
+      "actions": {
+        "backToList": "返回列表",
+        "featureNotImplemented": "功能尚未實作: {feature}",
+        "workflowFeature": "工作流程功能"
+      }
+    }
+  },
   "actions": {
     "add": "新增階段",
     "edit": "編輯",
