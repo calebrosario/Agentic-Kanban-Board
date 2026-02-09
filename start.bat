@@ -2,7 +2,7 @@
 chcp 65001 >nul
 
 echo ========================================
-echo   Claude Code Board
+echo   Agentic Kanban Board
 echo ========================================
 echo.
 

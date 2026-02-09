@@ -358,7 +358,7 @@ export class ProcessManager extends EventEmitter {
       const session = await this.sessionRepository.findById(sessionId);
       if (session) {
         notificationService.notify({
-          title: 'Claude Code Board',
+          title: 'Agentic Kanban Board',
           message: `任務執行完成：${session.name}`,
           sound: true
         }).catch(err => {
@@ -543,7 +543,7 @@ export class ProcessManager extends EventEmitter {
       const session = await this.sessionRepository.findById(sessionId);
       if (session) {
         notificationService.notify({
-          title: 'Claude Code Board',
+          title: 'Agentic Kanban Board',
           message: `任務執行完成：${session.name}`,
           sound: true
         }).catch(err => {
@@ -644,7 +644,7 @@ export class ProcessManager extends EventEmitter {
           sessionRepo.findById(sessionId).then(session => {
             if (session) {
               notificationService.notify({
-                title: 'Claude Code Board',
+                title: 'Agentic Kanban Board',
                 message: `任務執行完成：${session.name}`,
                 sound: true
               }).catch(err => {
@@ -724,7 +724,7 @@ export class ProcessManager extends EventEmitter {
           errorSessionRepo.findById(sessionId).then(session => {
             if (session) {
               notificationService.notify({
-                title: 'Claude Code Board - 錯誤',
+                title: 'Agentic Kanban Board - 錯誤',
                 message: `${session.name}: ${friendlyErrorMessage}`,
                 sound: true
               }).catch(err => {

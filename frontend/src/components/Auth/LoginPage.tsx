@@ -135,7 +135,7 @@ export const LoginPage: React.FC = () => {
               />
             </div>
             <h2 className="mt-6 text-center text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              Claude Code Board
+              Agentic Kanban Board
             </h2>
             <p className="mt-3 text-center text-sm text-gray-700">
               {t('auth:title')}
@@ -159,7 +159,7 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
             <h2 className="mt-6 text-center text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              Claude Code Board
+              Agentic Kanban Board
             </h2>
             <p className="mt-3 text-center text-sm text-gray-700">
               請登入以管理您的 Sessions

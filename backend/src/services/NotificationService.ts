@@ -36,7 +36,7 @@ export class NotificationService {
           sound: options.sound !== false, // 預設播放聲音
           wait: options.wait || false,
           timeout: options.timeout || 10,
-          appID: 'Claude Code Board' // Windows 用，會顯示在通知中心
+          appID: 'Agentic Kanban Board' // Windows 用，會顯示在通知中心
         };
 
         // 使用 node-notifier 發送通知
@@ -146,7 +146,7 @@ $template = @"
 $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
 $xml.LoadXml($template)
 $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Claude Code Board").Show($toast)`;
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Agentic Kanban Board").Show($toast)`;
 
     try {
       await execAsync(`powershell -ExecutionPolicy Bypass -Command "${script.replace(/"/g, '\\"').replace(/\n/g, ' ')}"`);
@@ -189,7 +189,7 @@ ${template}
 $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
 $xml.LoadXml($template)
 $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Claude Code Board").Show($toast)`;
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Agentic Kanban Board").Show($toast)`;
 
     const escapedScript = script.replace(/"/g, '\\"').replace(/\n/g, ' ');
     await execAsync(`powershell.exe -Command "${escapedScript}"`);

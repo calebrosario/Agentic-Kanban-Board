@@ -1,7 +1,7 @@
 {
   "name": "claude-code-board-backend",
   "version": "1.0.0",
-  "description": "Backend service for Claude Code Board",
+  "description": "Backend service for Agentic Kanban Board",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/server.ts dotenv_config_path=../.env.dev",
