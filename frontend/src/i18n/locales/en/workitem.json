@@ -5,7 +5,9 @@
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "back": "Back",
+    "create": "Create"
   },
   "form": {
     "title": "Create Work Item",
@@ -40,7 +42,13 @@
     "cancelled": "Cancelled",
     "planningSet": "Set to planning",
     "inProgressStarted": "Started execution",
-    "completedMarked": "Marked as complete"
+    "completedMarked": "Marked as complete",
+    "label": {
+      "planning": "Planning",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
   },
   "list": {
     "title": "All Work Items",
@@ -88,23 +96,29 @@
       "tags": "Tags",
       "noDescription": "No description",
       "timeInfo": "Time Information",
-      "operationsMenu": "Operations Menu"
+      "operationsMenu": "Operations Menu",
+      "createdAt": "Created {time}",
+      "completedAt": "Completed {time}"
     },
     "empty": {
       "title": "No Sessions",
       "description": "No sessions linked to this work item yet",
-      "createSession": "Create Session"
+      "createSession": "Create Session",
+      "notFound": "Work item not found",
+      "backToList": "Return to list"
     },
     "timeline": {
       "created": "Created {time}",
       "completed": "Completed {time}"
     },
     "sessions": {
-      "title": "Sessions",
+      "title": "Sessions ({count})",
       "searchPlaceholder": "Search sessions...",
       "noSessions": "No sessions yet",
       "createFirst": "Create first session",
-      "completedSessions": "{count} completed"
+      "completedSessions": "{count} completed",
+      "total": "Sessions",
+      "deleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone."
     },
     "devmd": {
       "title": "Development Log (dev.md)",
@@ -120,7 +134,8 @@
       "jumpToSection": "Quick jump to session section",
       "nonStandard": "Non-standard format",
       "download": "Download dev.md",
-      "quickNavPanel": "Quick Navigation Panel"
+      "quickNavPanel": "Quick Navigation Panel",
+      "devLog": "Development Log"
     },
     "progress": "Progress {progress}%"
   },
@@ -129,19 +144,24 @@
     "updated": "Work Item updated",
     "deleted": "Work Item deleted",
     "statusUpdated": "Work Item status updated",
-    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted.",
+    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted, but will be unlinked.",
     "sessionDeleted": "Session deleted",
     "sessionDeleteFailed": "Failed to delete session",
+    "sessionDeleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone.",
     "statusUpdatedText": "Status updated",
     "statusUpdateFailed": "Failed to update status",
     "devMdLoadFailed": "Failed to load dev.md",
-    "devMdDownloaded": "dev.md downloaded"
+    "devMdDownloaded": "dev.md downloaded",
+    "workItemDeleted": "Work Item deleted",
+    "workItemDeleteFailed": "Failed to delete Work Item"
   },
   "errors": {
     "nameRequired": "Title is required",
     "createFailed": "Failed to create work item",
     "updateFailed": "Failed to update work item",
-    "deleteFailed": "Failed to delete work item"
+    "deleteFailed": "Failed to delete work item",
+    "notFound": "Work item not found",
+    "loadFailed": "Failed to load work item"
   },
   "card": {
     "actions": {

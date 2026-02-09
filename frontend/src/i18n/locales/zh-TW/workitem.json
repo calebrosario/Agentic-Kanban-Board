@@ -5,7 +5,9 @@
     "edit": "編輯",
     "delete": "刪除",
     "save": "儲存",
-    "cancel": "取消"
+    "cancel": "取消",
+    "back": "返回",
+    "create": "創建"
   },
   "form": {
     "title": "建立 Work Item",
@@ -27,7 +29,16 @@
     "planning": "規劃中",
     "in_progress": "執行中",
     "completed": "已完成",
-    "cancelled": "已取消"
+    "cancelled": "已取消",
+    "planningSet": "已設為規劃中",
+    "inProgressStarted": "已開始執行",
+    "completedMarked": "已標記完成",
+    "label": {
+      "planning": "規劃中",
+      "in_progress": "進行中",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    }
   },
   "list": {
     "title": "所有 Work Items",
@@ -49,12 +60,12 @@
     }
   },
   "detail": {
-    "title": "Work Item 詳細",
+    "title": "Work Item 詳細資訊",
     "actions": {
       "edit": "編輯",
       "delete": "刪除",
       "startExecution": "開始執行",
-      "markComplete": "標記為完成"
+      "markComplete": "標記完成"
     },
     "tabs": {
       "overview": "概覽",
@@ -66,25 +77,103 @@
       "status": "狀態",
       "stage": "工作流程階段",
       "project": "專案",
-      "tags": "標籤"
+      "tags": "標籤",
+      "noDescription": "無描述",
+      "timeInfo": "時間資訊",
+      "operationsMenu": "操作選單",
+      "createdAt": "創建於 {time}",
+      "completedAt": "完成於 {time}"
     },
     "empty": {
       "title": "尚無 Sessions",
       "description": "此 Work Item 尚無連結的 Sessions",
-      "createSession": "建立 Session"
-    }
+      "createSession": "建立 Session",
+      "notFound": "找不到 Work Item",
+      "backToList": "返回列表"
+    },
+    "timeline": {
+      "created": "建立於 {time}",
+      "completed": "完成於 {time}"
+    },
+    "sessions": {
+      "title": "Sessions ({count})",
+      "searchPlaceholder": "搜尋 Sessions...",
+      "noSessions": "還沒有 Sessions",
+      "createFirst": "創建第一個",
+      "completedSessions": "{count} 完成",
+      "total": "Sessions",
+      "deleteConfirm": "確定要刪除這個 Session 嗎？這個動作無法復原。"
+    },
+    "devmd": {
+      "title": "開發日誌 (dev.md)",
+      "notFound": "找不到 Work Item",
+      "backToList": "返回列表",
+      "return": "返回",
+      "sections": "共 {count} 個段落",
+      "noSections": "尚無 Session 段落",
+      "autoCreate": "Claude Code 執行後會自動建立段落",
+      "notCreated": "dev.md 尚未建立",
+      "reload": "重新載入 dev.md",
+      "quickNav": "快速導覽",
+      "jumpToSection": "快速跳轉到 Session 段落",
+      "nonStandard": "非標準格式",
+      "download": "下載 dev.md",
+      "quickNavPanel": "快速導覽面板",
+      "devLog": "開發日誌"
+    },
+    "progress": "進度 {progress}%"
   },
   "toasts": {
     "created": "Work Item 已建立",
     "updated": "Work Item 已更新",
     "deleted": "Work Item 已刪除",
     "statusUpdated": "Work Item 狀態已更新",
-    "deleteConfirm": "確定要刪除這個 Work Item 嗎？相關的 Sessions 不會被刪除。"
+    "deleteConfirm": "確定要刪除這個 Work Item 嗎？相關的 Sessions 不會被刪除，但會解除關聯。",
+    "sessionDeleted": "Session 已刪除",
+    "sessionDeleteFailed": "刪除 Session 失敗",
+    "sessionDeleteConfirm": "確定要刪除這個 Session 嗎？這個動作無法復原。",
+    "statusUpdatedText": "狀態已更新",
+    "statusUpdateFailed": "更新狀態失敗",
+    "devMdLoadFailed": "載入 dev.md 失敗",
+    "devMdDownloaded": "dev.md 已下載",
+    "workItemDeleted": "Work Item 已刪除",
+    "workItemDeleteFailed": "刪除 Work Item 失敗"
   },
   "errors": {
     "nameRequired": "標題為必填",
     "createFailed": "建立 Work Item 失敗",
     "updateFailed": "更新 Work Item 失敗",
-    "deleteFailed": "刪除 Work Item 失敗"
+    "deleteFailed": "刪除 Work Item 失敗",
+    "notFound": "找不到 Work Item",
+    "loadFailed": "載入 Work Item 失敗"
+  },
+  "card": {
+    "actions": {
+      "edit": "編輯",
+      "startExecution": "開始執行",
+      "markComplete": "標記完成",
+      "cancel": "取消",
+      "delete": "刪除"
+    },
+    "timeline": {
+      "created": "建立於 {time}",
+      "completed": "完成於 {time}"
+    }
+  },
+  "row": {
+    "basicInfo": "基本資訊",
+    "description": "描述",
+    "status": "狀態",
+    "timeInfo": "時間資訊",
+    "operationsMenu": "操作選單",
+    "portalMenu": "入口選單"
+  },
+  "sessionStatus": {
+    "processing": "處理中",
+    "completed": "已完成",
+    "error": "發生錯誤",
+    "interrupted": "已中斷",
+    "idle": "閒置中",
+    "unknown": "未知狀態"
   }
 }
