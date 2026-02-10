@@ -227,18 +227,25 @@ $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
   async playSound(soundFile: string): Promise<void> {
     try {
       const soundPath = path.join(__dirname, '../../sounds', soundFile);
-      
+
       // Windows：使用 PowerShell 播放聲音
       if (this.platform === 'win32') {
         await execAsync(`powershell -c "(New-Object Media.SoundPlayer '${soundPath}').PlaySync()"`);
       } else if (this.platform === 'darwin') {
         await execAsync(`afplay "${soundPath}"`);
       } else if (this.platform === 'linux') {
-        await execAsync(`paplay "${soundPath}"` || `aplay "${soundPath}"`);
+        // Try paplay first, then fall back to aplay
+        try {
+          await execAsync(`paplay "${soundPath}"`);
+        } catch (paplayError) {
+          logger.warn('paplay failed, trying aplay fallback:', paplayError);
+          await execAsync(`aplay "${soundPath}"`);
+        }
       }
-      
+
     } catch (error) {
       logger.error('Failed to play sound:', error);
+      throw new Error(`Failed to play sound file: ${soundFile}`);
     }
   }
 
@@ -249,7 +256,8 @@ $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
     try {
       const { stdout } = await execAsync('uname -r');
       return stdout.toLowerCase().includes('microsoft');
-    } catch {
+    } catch (error) {
+      logger.warn('Failed to detect WSL environment:', error);
       return false;
     }
   }
