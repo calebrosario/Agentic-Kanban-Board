@@ -108,8 +108,8 @@ Claude Code CLI 在單一專注的編程對話中表現優異。然而，在管�
 
 1. **複製儲存庫**
    ```bash
-   git clone https://github.com/yourusername/claude-code-board.git
-   cd claude-code-board
+git clone https://github.com/yourusername/agentic-kanban-board.git
+cd agentic-kanban-board
    ```
 
 2. **安裝相依套件**
@@ -297,6 +297,6 @@ VITE_SOCKET_URL=http://localhost:3001
 
 **用 ❤️ 為熱愛 AI 驅動編程的開發者而建**
 
-[⭐ 為此儲存庫加星](https://github.com/yourusername/claude-code-board) • [🐛 回報問題](https://github.com/yourusername/claude-code-board/issues) • [💡 請求功能](https://github.com/yourusername/claude-code-board/issues)
+[⭐ 為此儲存庫加星](https://github.com/yourusername/agentic-kanban-board) • [🐛 回報問題](https://github.com/yourusername/agentic-kanban-board/issues) • [💡 請求功能](https://github.com/yourusername/agentic-kanban-board/issues)
 
 </div>
