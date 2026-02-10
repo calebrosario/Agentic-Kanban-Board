@@ -177,7 +177,7 @@ export const LoginPage: React.FC = () => {
               Agentic Kanban Board
             </h2>
             <p className="mt-3 text-center text-sm text-gray-700">
-              請登入以管理您的 Sessions
+              {t('auth:subtitle')}
             </p>
           </div>
           
