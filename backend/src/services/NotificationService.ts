@@ -209,12 +209,13 @@ $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
       try {
         // 嘗試使用 paplay
         await execAsync('paplay /usr/share/sounds/freedesktop/stereo/complete.oga');
-      } catch {
+      } catch (error) {
+        logger.warn('paplay failed, trying aplay fallback:', error);
         try {
           // 後備：使用 aplay
           await execAsync('aplay /usr/share/sounds/sound-icons/glass-water-1.wav');
-        } catch {
-          logger.warn('No sound player available on Linux');
+        } catch (fallbackError) {
+          logger.warn('Both paplay and aplay failed. No sound player available on Linux:', fallbackError);
         }
       }
     }

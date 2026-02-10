@@ -362,7 +362,7 @@ export class ProcessManager extends EventEmitter {
           message: `任務執行完成：${session.name}`,
           sound: true
         }).catch(err => {
-          logger.warn('Failed to send notification:', err);
+          logger.error('Failed to send notification:', err);
         });
       }
     });
@@ -547,7 +547,7 @@ export class ProcessManager extends EventEmitter {
           message: `任務執行完成：${session.name}`,
           sound: true
         }).catch(err => {
-          logger.warn('Failed to send notification:', err);
+          logger.error('Failed to send notification:', err);
         });
       }
     });
@@ -647,9 +647,9 @@ export class ProcessManager extends EventEmitter {
                 title: 'Agentic Kanban Board',
                 message: `任務執行完成：${session.name}`,
                 sound: true
-              }).catch(err => {
-                logger.warn('Failed to send notification:', err);
-              });
+        }).catch(err => {
+          logger.error('Failed to send notification:', err);
+        });
             }
           }).catch(err => {
             logger.error('Failed to get session for notification:', err);
@@ -728,7 +728,7 @@ export class ProcessManager extends EventEmitter {
                 message: `${session.name}: ${friendlyErrorMessage}`,
                 sound: true
               }).catch(err => {
-                logger.warn('Failed to send error notification:', err);
+                logger.error('Failed to send error notification:', err);
               });
             }
           }).catch(err => {
