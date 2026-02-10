@@ -1,5 +1,5 @@
 {
-  "name": "claude-code-board",
+  "name": "agentic-kanban-board",
   "version": "1.0.0",
   "description": "Claude Code Session Manager - 多開管理與監控系統",
   "main": "backend/dist/server.js",

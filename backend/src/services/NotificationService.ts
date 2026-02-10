@@ -36,7 +36,7 @@ export class NotificationService {
           sound: options.sound !== false, // 預設播放聲音
           wait: options.wait || false,
           timeout: options.timeout || 10,
-          appID: 'Claude Code Board' // Windows 用，會顯示在通知中心
+          appID: 'Agentic Kanban Board' // Windows 用，會顯示在通知中心
         };
 
         // 使用 node-notifier 發送通知
@@ -146,7 +146,7 @@ $template = @"
 $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
 $xml.LoadXml($template)
 $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Claude Code Board").Show($toast)`;
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Agentic Kanban Board").Show($toast)`;
 
     try {
       await execAsync(`powershell -ExecutionPolicy Bypass -Command "${script.replace(/"/g, '\\"').replace(/\n/g, ' ')}"`);
@@ -189,7 +189,7 @@ ${template}
 $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
 $xml.LoadXml($template)
 $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Claude Code Board").Show($toast)`;
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Agentic Kanban Board").Show($toast)`;
 
     const escapedScript = script.replace(/"/g, '\\"').replace(/\n/g, ' ');
     await execAsync(`powershell.exe -Command "${escapedScript}"`);
@@ -209,12 +209,13 @@ $toast = New-Object Windows.UI.Notifications.ToastNotification $xml
       try {
         // 嘗試使用 paplay
         await execAsync('paplay /usr/share/sounds/freedesktop/stereo/complete.oga');
-      } catch {
+      } catch (error) {
+        logger.warn('paplay failed, trying aplay fallback:', error);
         try {
           // 後備：使用 aplay
           await execAsync('aplay /usr/share/sounds/sound-icons/glass-water-1.wav');
-        } catch {
-          logger.warn('No sound player available on Linux');
+        } catch (fallbackError) {
+          logger.warn('Both paplay and aplay failed. No sound player available on Linux:', fallbackError);
         }
       }
     }

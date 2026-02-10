@@ -105,8 +105,8 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/claude-code-board.git
-   cd claude-code-board
+git clone https://github.com/yourusername/agentic-kanban-board.git
+cd agentic-kanban-board
    ```
 
 2. **Install Dependencies**

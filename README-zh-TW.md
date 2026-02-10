@@ -1,4 +1,4 @@
-# Claude Code Board
+# Agentic Kanban Board
 
 > ## ⚠️ 公告：本專案已停止維護
 >
@@ -10,7 +10,7 @@
 
 <div align="center">
 
-![Claude Code Board](assets/banner.png)
+![Agentic Kanban Board](assets/banner.png)
 
 **為 Claude Code CLI 設計的綜合性 Session 管理系統，具備先進的工作流程功能**
 
@@ -28,12 +28,12 @@
 
 ## 🌟 概述
 
-Claude Code Board 是一個強大的網頁版管理系統，專為使用 Claude Code CLI 的開發者設計。它提供直觀的介面來同時管理多個 AI 編程對話，具備工作流程自動化、基於 Agent 的提示管理和智能專案組織等先進功能。
+Agentic Kanban Board 是一個強大的網頁版管理系統，專為使用 Claude Code CLI 的開發者設計。它提供直觀的介面來同時管理多個 AI 編程對話，具備工作流程自動化、基於 Agent 的提示管理和智能專案組織等先進功能。
 
 ![Session List Management](assets/SessionList.png)
 *主控制台展示多個活躍 Session 的狀態和管理界面*
 
-## 🆚 為什麼選擇 Claude Code Board 而不是直接使用 CLI？
+## 🆚 為什麼選擇 Agentic Kanban Board 而不是直接使用 CLI？
 
 ### 增強的 CLI 體驗
 Claude Code CLI 在單一專注的編程對話中表現優異。然而，在管理具有多個上下文的複雜專案時，一些額外的功能變得非常有價值：
@@ -55,7 +55,7 @@ Claude Code CLI 在單一專注的編程對話中表現優異。然而，在管�
 6. 難以同時在同一專案中執行多個對話
 ```
 
-**Claude Code Board 工作流程** 🚀
+**Agentic Kanban Board 工作流程** 🚀
 ```
 1. 直接在網頁介面創建新對話
 2. 一鍵選擇專案目錄和 Agent
@@ -108,8 +108,8 @@ Claude Code CLI 在單一專注的編程對話中表現優異。然而，在管�
 
 1. **複製儲存庫**
    ```bash
-   git clone https://github.com/yourusername/claude-code-board.git
-   cd claude-code-board
+git clone https://github.com/yourusername/agentic-kanban-board.git
+cd agentic-kanban-board
    ```
 
 2. **安裝相依套件**
@@ -297,6 +297,6 @@ VITE_SOCKET_URL=http://localhost:3001
 
 **用 ❤️ 為熱愛 AI 驅動編程的開發者而建**
 
-[⭐ 為此儲存庫加星](https://github.com/yourusername/claude-code-board) • [🐛 回報問題](https://github.com/yourusername/claude-code-board/issues) • [💡 請求功能](https://github.com/yourusername/claude-code-board/issues)
+[⭐ 為此儲存庫加星](https://github.com/yourusername/agentic-kanban-board) • [🐛 回報問題](https://github.com/yourusername/agentic-kanban-board/issues) • [💡 請求功能](https://github.com/yourusername/agentic-kanban-board/issues)
 
 </div>

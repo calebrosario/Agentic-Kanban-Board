@@ -48,7 +48,28 @@ export const LoginPage: React.FC = () => {
     }
     setUsernameError('');
     return true;
+  }, [t]);
+
+  const handleUsernameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUsername(value);
+    if (value || usernameError) {
+      validateUsername(value);
+    }
   }, [usernameError, validateUsername]);
+
+  const validatePassword = useCallback((value: string) => {
+    if (!value) {
+      setPasswordError(t('auth:errors.passwordRequired'));
+      return false;
+    }
+    if (value.length < 6) {
+      setPasswordError(t('auth:errors.passwordMinLength'));
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  }, [t]);
 
   const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
      const value = e.target.value;
@@ -135,18 +156,12 @@ export const LoginPage: React.FC = () => {
               />
             </div>
             <h2 className="mt-6 text-center text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              Claude Code Board
+              Agentic Kanban Board
             </h2>
             <p className="mt-3 text-center text-sm text-gray-700">
               {t('auth:title')}
             </p>
           </div>
-      
-      <div className="max-w-md w-full space-y-8 relative z-10">
-        {/* 登入卡片 - 改善視覺效果和微交互 */}
-        <div 
-          className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl border border-white/20 p-8 transition-all duration-300 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] animate-fade-in"
-        >
 
           <div className="relative z-10">
             <div className="flex justify-center">
@@ -159,10 +174,10 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
             <h2 className="mt-6 text-center text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              Claude Code Board
+              Agentic Kanban Board
             </h2>
             <p className="mt-3 text-center text-sm text-gray-700">
-              請登入以管理您的 Sessions
+              {t('auth:subtitle')}
             </p>
           </div>
           
@@ -206,31 +221,6 @@ export const LoginPage: React.FC = () => {
                     </p>
                   )}
                 </div>
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
-                    required
-                    ref={usernameInputRef}
-                    value={username}
-                    onChange={handleUsernameChange}
-                    onBlur={() => username && validateUsername(username)}
-                    className={`block w-full pl-12 pr-4 py-3 border ${
-                      usernameError ? 'border-red-300 bg-red-50/30' : 'border-gray-200'
-                    } rounded-xl text-gray-900 placeholder-gray-500 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 hover:bg-white/70 focus:bg-white/80`}
-                    placeholder="輸入您的帳號"
-                    aria-invalid={!!usernameError}
-                    aria-describedby={usernameError ? "username-error" : error ? "login-error" : undefined}
-                    aria-label="帳號"
-                  />
-                </div>
-                {usernameError && (
-                  <p id="username-error" className="mt-2 text-sm text-red-600 flex items-center" role="alert">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {usernameError}
-                  </p>
-                )}
               </div>
               
               <div>
@@ -277,42 +267,6 @@ export const LoginPage: React.FC = () => {
                     </p>
                   )}
                 </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={handlePasswordChange}
-                    onBlur={() => password && validatePassword(password)}
-                    className={`block w-full pl-12 pr-12 py-3 border ${
-                      passwordError ? 'border-red-300 bg-red-50/30' : 'border-gray-200'
-                    } rounded-xl text-gray-900 placeholder-gray-500 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 hover:bg-white/70 focus:bg-white/80`}
-                    placeholder="輸入您的密碼"
-                    aria-invalid={!!passwordError}
-                    aria-describedby={passwordError ? "password-error" : error ? "login-error" : undefined}
-                    aria-label="密碼"
-                  />
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center z-10 text-gray-400 hover:text-blue-500 transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/20 rounded-lg h-[44px] w-[44px] -mr-3 justify-end"
-                    aria-label={showPassword ? "隱藏密碼" : "顯示密碼"}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-                {passwordError && (
-                  <p id="password-error" className="mt-2 text-sm text-red-600 flex items-center" role="alert">
-                    <AlertCircle className="h-4 w-4 mr-1" />
-                    {passwordError}
-                  </p>
-                )}
               </div>
               
             <div className="flex items-center justify-between">
