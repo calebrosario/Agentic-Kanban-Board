@@ -4,6 +4,7 @@ import { Lock, User, AlertCircle, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axiosInstance from '../../utils/axiosInstance';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { validateUsername as validateUsernameUtil, validatePassword as validatePasswordUtil } from '../../utils/validation';
 import { useAuth } from '../../contexts/AuthContext';
 import { useI18nContext } from '../../contexts/I18nContext';
 
@@ -34,20 +35,9 @@ export const LoginPage: React.FC = () => {
   }, []);
 
   const validateUsername = useCallback((value: string) => {
-    if (!value) {
-      setUsernameError(t('auth:errors.usernameRequired'));
-      return false;
-    }
-    if (value.length < 3) {
-      setUsernameError(t('auth:errors.usernameMinLength'));
-      return false;
-    }
-    if (value.length > 20) {
-      setUsernameError(t('auth:errors.usernameMaxLength'));
-      return false;
-    }
-    setUsernameError('');
-    return true;
+    const result = validateUsernameUtil(value, t);
+    setUsernameError(result.error);
+    return result.isValid;
   }, [t]);
 
   const handleUsernameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,16 +49,9 @@ export const LoginPage: React.FC = () => {
   }, [usernameError, validateUsername]);
 
   const validatePassword = useCallback((value: string) => {
-    if (!value) {
-      setPasswordError(t('auth:errors.passwordRequired'));
-      return false;
-    }
-    if (value.length < 6) {
-      setPasswordError(t('auth:errors.passwordMinLength'));
-      return false;
-    }
-    setPasswordError('');
-    return true;
+    const result = validatePasswordUtil(value, t);
+    setPasswordError(result.error);
+    return result.isValid;
   }, [t]);
 
   const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
