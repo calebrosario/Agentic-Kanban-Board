@@ -284,7 +284,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Getting Help
 
-- 📚 **Documentation**: Check this README and inline code documentation
+- 📚 **Documentation**: Check this README and [GitHub Wiki](https://github.com/calebrosario/Agentic-Kanban-Board/wiki) for comprehensive guides
 - 🐛 **Bug Reports**: Open an issue on GitHub
 - 💡 **Feature Requests**: Discuss in GitHub Discussions
 
