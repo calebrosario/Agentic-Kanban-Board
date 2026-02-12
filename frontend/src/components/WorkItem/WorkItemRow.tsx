@@ -36,14 +36,14 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleRowClick = (e: React.MouseEvent) => {
-    // 不要在點擊選單區域時導航
+    // Don't navigate when clicking menu area
     if ((e.target as HTMLElement).closest('.menu-area')) {
       return;
     }
     navigate(`/work-items/${workItem.work_item_id}`);
   };
 
-  // 計算選單位置
+  // Calculate menu position
   const getMenuPosition = () => {
     if (!buttonRef.current) return { top: 0, left: 0 };
 
@@ -54,14 +54,14 @@ export const WorkItemRow: React.FC<WorkItemRowProps> = ({
     let left = rect.right - menuWidth;
     let top = rect.bottom + 8;
 
-    // 確保不超出視窗邊界
+    // Ensure menu doesn't exceed viewport boundaries
     if (left < 8) left = 8;
     if (left + menuWidth > viewportWidth - 8) left = viewportWidth - menuWidth - 8;
 
     return { top, left };
   };
 
-  // 點擊外部關閉選單
+  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node) &&

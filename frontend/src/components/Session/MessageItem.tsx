@@ -17,7 +17,7 @@ interface MessageItemProps {
 }
 
 const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming }) => {
-  const { language } = useI18nContext();
+  const { language, t } = useI18nContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showThinking, setShowThinking] = useState(false);
 
@@ -94,19 +94,19 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
             {metadata.toolStatus === 'start' && (
               <div className="flex items-center gap-1.5 text-primary-600">
                 <Loader className="w-3 h-3 animate-spin" />
-                <span>執行中...</span>
+                <span>{t('session.toolUse.executing')}</span>
               </div>
             )}
             {metadata.toolStatus === 'complete' && (
               <div className="flex items-center gap-1.5 text-success-600">
                 <CheckCircle className="w-3 h-3" />
-                <span>已完成</span>
+                <span>{t('session.toolUse.completed')}</span>
               </div>
             )}
             {metadata.toolStatus === 'error' && (
               <div className="flex items-center gap-1.5 text-danger-600">
                 <XCircle className="w-3 h-3" />
-                <span>執行失敗</span>
+                <span>{t('session.toolUse.failed')}</span>
               </div>
             )}
           </div>
@@ -126,7 +126,7 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
               className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-800 transition-colors"
             >
               {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-              <span className="font-medium">參數詳情</span>
+              <span className="font-medium">{t('session.toolUse.parameterDetails')}</span>
             </button>
             {isExpanded && (
               <pre className="mt-1.5 text-xs bg-gray-50 text-gray-700 p-2 rounded-lg overflow-x-auto border border-gray-200 shadow-inner">
@@ -173,7 +173,7 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
             className="flex items-center gap-1.5 text-xs text-purple-700 dark:text-purple-300 hover:underline"
           >
             {showThinking ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-            顯示思考過程
+            {showThinking ? t('session.thinking.hideThinking') : t('session.thinking.showThinking')}
           </button>
           {renderThinking()}
         </div>
@@ -214,16 +214,16 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="font-medium text-xs text-gray-900 dark:text-gray-100 truncate">
                     {(message.type === 'assistant' || message.type === 'claude') && 'Claude'}
-                    {message.type === 'system' && '系統'}
-                    {message.type === 'tool_use' && `🔧 ${message.metadata?.toolName || '工具'}`}
-                    {message.type === 'thinking' && '💭 思考中'}
+                    {message.type === 'system' && t('session.messageTypes.system')}
+                    {message.type === 'tool_use' && `🔧 ${message.metadata?.toolName || t('session.messageTypes.tool')}`}
+                    {message.type === 'thinking' && `💭 ${t('session.thinking.label')}`}
                   </span>
                   
                   {/* 部分訊息指示器 */}
                   {message.metadata?.isPartial && (
                     <div className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 rounded-full">
                       <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">輸入中</span>
+                      <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">{t('session.toolUse.inputting')}</span>
                     </div>
                   )}
                 </div>
@@ -248,7 +248,7 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
               {isStreaming && message.metadata?.isPartial && (
                 <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
                   <Loader className="w-2.5 h-2.5 animate-spin" />
-                  <span>正在輸入...</span>
+                  <span>{t('session.toolUse.inputtingNow')}</span>
                 </div>
               )}
             </div>
@@ -260,8 +260,8 @@ const MessageItemComponent: React.FC<MessageItemProps> = ({ message, isStreaming
             <div className="flex items-start gap-2 justify-end">
               <div className="max-w-[85%] flex flex-col items-end">
                 {/* 標題行 */}
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-xs text-blue-100 font-medium">您</span>
+                  <div className="flex items-center gap-1.5 mb-1">
+                  <span className="text-xs text-blue-100 font-medium">{t('session.messageTypes.user')}</span>
                   <div className="flex items-center">
                     <CheckCircle className="w-2.5 h-2.5 text-emerald-300" />
                   </div>

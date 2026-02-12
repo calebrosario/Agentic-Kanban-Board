@@ -263,5 +263,36 @@
     "end": "End",
     "timeSince": "{time} ago",
     "actions": "Actions"
+  },
+  "toolUse": {
+    "executing": "Executing...",
+    "completed": "Completed",
+    "failed": "Execution failed",
+    "parameterDetails": "Parameter Details",
+    "inputting": "Inputting",
+    "inputtingNow": "Inputting...",
+    "tool": "Tool"
+  },
+  "thinking": {
+    "showThinking": "Show thinking process",
+    "hideThinking": "Hide thinking process",
+    "label": "Thinking"
+  },
+  "messageTypes": {
+    "user": "You",
+    "system": "System",
+    "tool": "Tool"
+  },
+  "languageNames": {
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "websocket": {
+    "connecting": "Connecting to server...",
+    "connectionError": "Connection error: {error}",
+    "disconnected": "Disconnected from server"
   }
+}
 }

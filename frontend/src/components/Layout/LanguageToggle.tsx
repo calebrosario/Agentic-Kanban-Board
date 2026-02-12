@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useI18nContext } from '../../contexts/I18nContext';
 
-const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'zh-CN', name: '简体中文', flag: '🇨🇳' },
-  { code: 'zh-TW', name: '繁體中文', flag: '🇹🇼' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'pt', name: 'Português', flag: '🇧🇷' },
-];
-
 export const LanguageToggle: React.FC = () => {
-  const { language, changeLanguage, isLoading } = useI18nContext();
+  const { language, changeLanguage, isLoading, t } = useI18nContext();
+
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'zh-CN', name: t('session.languageNames.zh-CN'), flag: '🇨🇳' },
+    { code: 'zh-TW', name: t('session.languageNames.zh-TW'), flag: '🇹🇼' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'ja', name: t('session.languageNames.ja'), flag: '🇯🇵' },
+    { code: 'pt', name: t('session.languageNames.pt'), flag: '🇧🇷' },
+  ];
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLanguageChange = async (langCode: string) => {

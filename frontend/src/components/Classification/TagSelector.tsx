@@ -25,25 +25,12 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // 載入標籤
+  // Load tags
   useEffect(() => {
     loadTags();
   }, [tagType]);
 
-  const loadTags = async () => {
-    try {
-      setLoading(true);
-      const allTags = tagType ? await tagApi.getTagsByType(tagType) : await tagApi.getAllTags();
-      setTags(allTags);
-    } catch (error) {
-      console.error('Failed to load tags:', error);
-      toast.error(t('common:classification.tags.loadFailed'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 處理標籤變更
+  // Handle tag change
   const handleTagsChange = async (newTagIds: string[]) => {
     try {
       setSaving(true);
