@@ -112,8 +112,8 @@ class ErrorBoundaryClass extends Component<Props & { t: (key: string) => string 
               </button>
             </div>
 
-            {/* 聯繫支援資訊 */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
+             {/* Contact support info */}
+             <div className="mt-4 pt-4 border-t border-gray-200">
               <p className="text-xs text-gray-500">
                 {t('common:error.boundary.support')}
               </p>
