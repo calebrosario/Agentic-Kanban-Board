@@ -44,21 +44,21 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   const { workItems, fetchWorkItems } = useWorkItemStore();
   const { activeTemplates } = useTaskTemplates();
   
-  // 移除不再使用的 continuableSessions（現在使用 --continue 參數）
+  // Remove unused continuableSessions (now using --continue parameter)
 
-  // 載入工作流程階段和 Work Items
+  // Load workflow stages and Work Items
   useEffect(() => {
     if (isOpen) {
       loadWorkflowStages();
-      fetchWorkItems(); // 載入所有 Work Items
+      fetchWorkItems(); // Load all Work Items
       
-      // 如果有預設的 Work Item ID，確保它被設置並使用其 workspace_path
+      // If there is default Work Item ID, ensure it is set and use its workspace_path
       if (defaultWorkItemId) {
         const workItem = workItems.find(w => w.work_item_id === defaultWorkItemId);
         setFormData(prev => ({ 
           ...prev, 
           work_item_id: defaultWorkItemId,
-          // 使用 Work Item 的 workspace_path，如果沒有則使用預設路徑
+          // Use Work Item's workspace_path, if not then use default path
           workingDir: prev.workingDir || workItem?.workspace_path || ''
         }));
       }
@@ -77,20 +77,20 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
-    // 處理工作流程階段選擇
+    // Handle workflow stage selection
     if (name === 'workflow_stage_id') {
       const stage = workflowStages.find(s => s.stage_id === value);
       setSelectedStage(stage || null);
     }
     
-    // 處理 Work Item 選擇 - 自動更新工作目錄
+    // Handle Work Item selection - auto update working directory
     if (name === 'work_item_id' && value) {
       const selectedWorkItem = workItems.find(w => w.work_item_id === value);
       if (selectedWorkItem?.workspace_path) {
         setFormData(prev => ({
           ...prev,
           [name]: value,
-          workingDir: selectedWorkItem.workspace_path || prev.workingDir // 自動填入 Work Item 的工作區路徑
+          workingDir: selectedWorkItem.workspace_path || prev.workingDir // Auto-fill Work Item's workspace path
         }));
         return;
       }
@@ -296,7 +296,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
 
                   <div>
                     <label htmlFor="work_item_id" className="block text-sm font-medium text-gray-700 mb-1.5">
-                      {t('session.create.workItemLabel', { autoLinked: defaultWorkItemId ? t('session.create.autoLinked') : t('session.create.optional') })}
+                      {defaultWorkItemId ? t('session.create.autoLinked') : t('session.create.optional')}
                     </label>
                     <select
                       id="work_item_id"

@@ -12,7 +12,7 @@ interface MessageInputProps {
 const MessageInput = React.memo(({ 
   onSendMessage, 
   disabled = false, 
-  placeholder = "輸入訊息..."
+  placeholder
 }: MessageInputProps) => {
   const { t } = useI18nContext();
   const [inputMessage, setInputMessage] = useState('');
@@ -26,7 +26,7 @@ const MessageInput = React.memo(({
     setIsSending(true);
     try {
       await onSendMessage(messageContent);
-      setInputMessage(''); // 清空輸入框
+      setInputMessage(''); // Clear input field
     } catch (error) {
       console.error('Send message error:', error);
     } finally {

@@ -33,14 +33,14 @@ export const WorkItemCard: React.FC<WorkItemCardProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // 不要在點擊選單區域時導航
+    // Don't navigate when clicking menu area
     if ((e.target as HTMLElement).closest('.menu-area')) {
       return;
     }
     navigate(`/work-items/${workItem.work_item_id}`);
   };
 
-  // 點擊外部關閉選單
+  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {

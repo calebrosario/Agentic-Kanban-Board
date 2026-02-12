@@ -14,18 +14,20 @@ import { LoginPage } from './components/Auth/LoginPage';
 import { WorkflowStages } from './pages/WorkflowStages';
 import { WorkItemListPage } from './pages/WorkItemListPage';
 import { WorkItemDetailPage } from './pages/WorkItemDetailPage';
-import AgentPromptsPage from './pages/AgentPromptsPage';
-import AgentPromptDetailPage from './pages/AgentPromptDetailPage';
+import { AgentPromptsPage } from './pages/AgentPromptsPage';
+import { AgentPromptDetailPage } from './pages/AgentPromptDetailPage';
 import { GlassDemo } from './pages/GlassDemo';
 import { I18nProvider } from './contexts/I18nContext';
+import { useI18nContext } from './contexts/I18nContext';
 
 function App() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { isConnected, connectionError } = useWebSocket();
-
+  const { t } = useI18nContext();
+  
   // Enable global notification system
   useNotifications();
-
+  
   return (
     <ErrorBoundary>
       <Router>
@@ -33,14 +35,14 @@ function App() {
           <AuthProvider>
             <div className="min-h-screen bg-gray-50 relative">
               <Routes>
-                {/* 登入頁面 */}
+                {/* Login page */}
                 <Route path="/login" element={<LoginPage />} />
                 
-                {/* 受保護的路由 */}
+                {/* Protected routes */}
                 <Route path="/*" element={
                   <ProtectedRoute>
                     <SessionsProvider>
-                      {/* WebSocket 連線狀態提示 - 固定在頂部 */}
+                      {/* WebSocket connection status - fixed at top */}
                       {!isConnected && (
                         <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-50 border-b border-yellow-400 p-4">
                           <div className="flex items-center justify-center">
@@ -49,13 +51,13 @@ function App() {
                             </div>
                             <div className="ml-3">
                               <p className="text-sm text-yellow-700">
-                                {connectionError ? `連線錯誤: ${connectionError.message}` : '正在連線到伺服器...'}
+                                {connectionError ? t('session.websocket.connectionError', { error: connectionError.message }) : t('session.websocket.connecting')}
                               </p>
                             </div>
                           </div>
                         </div>
                       )}
-
+                      
                       <Layout onCreateSession={() => setIsCreateModalOpen(true)}>
                         <ErrorBoundary>
                           <Routes>
@@ -70,19 +72,13 @@ function App() {
                             <Route path="*" element={<Navigate to="/" replace />} />
                           </Routes>
                         </ErrorBoundary>
-
-                        {/* 建立 Session Modal */}
-                        <CreateSessionModal
-                          isOpen={isCreateModalOpen}
-                          onClose={() => setIsCreateModalOpen(false)}
-                        />
                       </Layout>
                     </SessionsProvider>
                   </ProtectedRoute>
                 } />
               </Routes>
-
-              {/* Toast 通知 */}
+              
+              {/* Toast notifications */}
               <Toaster
                 position="top-right"
                 toastOptions={{
@@ -94,7 +90,8 @@ function App() {
                 }}
               />
             </div>
-        </AuthProvider>
+          </AuthProvider>
+        </I18nProvider>
       </Router>
     </ErrorBoundary>
   );
