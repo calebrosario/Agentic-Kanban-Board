@@ -7,34 +7,86 @@
     "ja": "日本語",
     "pt": "Português"
   },
-  "loading": "Cargando...",
+  "layout": {
+    "returnToWorkItem": "Return to Work Item",
+    "returnToList": "Return to list",
+    "fullscreen": "Fullscreen",
+    "close": "Close",
+    "restore": "Restore",
+    "verifying": "Verifying..."
+  },
+  "loading": "Loading...",
   "error": {
     "title": "Error",
-    "retry": "Reintentar",
-    "unknown": "Ocurrió un error desconocido"
+    "retry": "Retry",
+    "unknown": "An unknown error occurred",
+    "boundary": {
+      "title": "Oops! Something went wrong",
+      "description": "The application encountered an unexpected error. Please try reloading the page or return to the home page.",
+      "details": "Error Details:",
+      "stackTrace": "Stack Trace",
+      "goHome": "Go Home",
+      "loadingFailed": "Loading Failed",
+      "support": "If the problem persists, please contact technical support"
+    }
   },
   "actions": {
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "create": "Crear",
-    "search": "Buscar",
-    "filter": "Filtrar",
-    "confirm": "Confirmar",
-    "close": "Cerrar",
-    "back": "Atrás",
-    "next": "Siguiente",
-    "previous": "Anterior"
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "confirm": "Confirm",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "retry": "Retry",
+    "clear": "Clear"
   },
   "status": {
-    "loading": "Cargando",
-    "idle": "Inactivo",
-    "processing": "Procesando",
-    "completed": "Completado",
+    "loading": "Loading",
+    "idle": "Idle",
+    "processing": "Processing",
+    "completed": "Completed",
     "error": "Error",
-    "interrupted": "Interrumpido",
-    "planning": "Planificando",
-    "in_progress": "En progreso"
+    "interrupted": "Interrupted",
+    "planning": "Planning",
+    "in_progress": "In Progress"
+  },
+  "multiSelect": {
+    "placeholder": "Select items...",
+    "search": "Search...",
+    "loading": "Loading...",
+    "noResults": "No matching items found",
+    "createNew": "Create new item",
+    "creating": "Creating...",
+    "create": "Create"
+  },
+  "searchBar": {
+    "placeholder": "Search...",
+    "clear": "Clear search"
+  },
+  "classification": {
+    "tags": {
+      "label": "Tags",
+      "topic": "Topic",
+      "department": "Department",
+      "loadFailed": "Failed to load tags",
+      "updateSuccess": "Tags updated",
+      "updateFailed": "Failed to update tags",
+      "createSuccess": "Tag created",
+      "createFailed": "Failed to create tag"
+    },
+    "projects": {
+      "label": "Project",
+      "loadFailed": "Failed to load projects",
+      "updateSuccess": "Project updated",
+      "updateFailed": "Failed to update project",
+      "createSuccess": "Project created",
+      "createFailed": "Failed to create project"
+    }
   }
 }

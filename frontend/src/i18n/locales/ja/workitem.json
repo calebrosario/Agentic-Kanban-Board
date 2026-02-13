@@ -1,195 +1,195 @@
 {
-  "title": "Work Items",
+  "title": "ワークアイテム",
   "actions": {
-    "add": "Add Work Item",
-    "edit": "Edit",
-    "delete": "Delete",
-    "save": "Save",
-    "cancel": "Cancel",
-    "back": "Back",
-    "create": "Create"
+    "add": "ワークアイテムを追加",
+    "edit": "編集",
+    "delete": "削除",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "back": "戻る",
+    "create": "作成"
   },
   "form": {
-    "title": "Create Work Item",
-    "name": "Title",
-    "nameRequired": "Title *",
-    "namePlaceholder": "Enter work item title",
-    "description": "Description",
-    "descriptionPlaceholder": "What is this work item about?",
-    "status": "Status",
-    "statusPlaceholder": "Choose current status",
-    "workflowStage": "Workflow Stage",
-    "workflowStagePlaceholder": "Link to a workflow stage (optional)",
-    "project": "Project",
-    "projectPlaceholder": "Select a project (optional)",
-    "tags": "Tags",
-    "tagsPlaceholder": "Add tags for organization",
-    "workspacePath": "Working Directory",
-    "workspacePathPlaceholder": "e.g., C:\\Users\\YourName\\Projects\\MyProject",
-    "workspacePathHint": "Set the default working directory for this Work Item. Sessions created will automatically use this path.",
-    "infoHint": "Work Items are containers for organizing related Sessions. You can link to this Work Item when creating a Session, or link existing Sessions later.",
-    "submit": "Create"
+    "title": "ワークアイテムを作成",
+    "name": "タイトル",
+    "nameRequired": "タイトル *",
+    "namePlaceholder": "ワークアイテムのタイトルを入力",
+    "description": "説明",
+    "descriptionPlaceholder": "このワークアイテムは何についてですか？",
+    "status": "ステータス",
+    "statusPlaceholder": "現在のステータスを選択",
+    "workflowStage": "ワークフローステージ",
+    "workflowStagePlaceholder": "ワークフローステージにリンク（オプション）",
+    "project": "プロジェクト",
+    "projectPlaceholder": "プロジェクトを選択（オプション）",
+    "tags": "タグ",
+    "tagsPlaceholder": "整理のためにタグを追加",
+    "workspacePath": "作業ディレクトリ",
+    "workspacePathPlaceholder": "例：C:\\Users\\YourName\\Projects\\MyProject",
+    "workspacePathHint": "このワークアイテムのデフォルトの作業ディレクトリを設定します。作成されたセッションはこのパスを自動的に使用します。",
+    "infoHint": "ワークアイテムは関連セッションを整理するためのコンテナです。セッションの作成時にこのワークアイテムにリンクするか、後で既存のセッションにリンクできます。",
+    "submit": "作成"
   },
   "editDialog": {
-    "title": "Edit Work Item",
-    "currentStatus": "Current status:",
-    "submit": "Save changes"
+    "title": "ワークアイテムを編集",
+    "currentStatus": "現在のステータス：",
+    "submit": "変更を保存"
   },
   "status": {
-    "planning": "Planning",
-    "in_progress": "In Progress",
-    "completed": "Completed",
-    "cancelled": "Cancelled",
-    "planningSet": "Set to planning",
-    "inProgressStarted": "Started execution",
-    "completedMarked": "Marked as complete",
+    "planning": "計画中",
+    "in_progress": "実行中",
+    "completed": "完了",
+    "cancelled": "キャンセル済み",
+    "planningSet": "計画中に設定",
+    "inProgressStarted": "実行を開始",
+    "completedMarked": "完了としてマーク",
     "label": {
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
+      "planning": "計画中",
+      "in_progress": "実行中",
+      "completed": "完了",
+      "cancelled": "キャンセル済み"
     }
   },
   "list": {
-    "title": "All Work Items",
+    "title": "すべてのワークアイテム",
     "filter": {
-      "all": "All",
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
+      "all": "すべて",
+      "planning": "計画中",
+      "in_progress": "実行中",
+      "completed": "完了",
+      "cancelled": "キャンセル済み"
     },
     "search": {
-      "placeholder": "Search Work Items..."
+      "placeholder": "ワークアイテムを検索..."
     },
     "stats": {
-      "total": "Total {count}",
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed"
+      "total": "合計 {count}",
+      "planning": "計画中",
+      "in_progress": "実行中",
+      "completed": "完了"
     },
     "empty": {
-      "noResults": "No work items matching criteria found",
-      "noItems": "No work items yet",
-      "createFirst": "Create first work item"
+      "noResults": "条件に一致するワークアイテムが見つかりません",
+      "noItems": "まだワークアイテムがありません",
+      "createFirst": "最初のワークアイテムを作成"
     },
-    "help": "Work Items helps you organize and track related sessions"
+    "help": "ワークアイテムは関連セッションを整理・追跡するのに役立ちます"
   },
   "detail": {
-    "title": "Work Item Details",
+    "title": "ワークアイテム詳細",
     "actions": {
-      "edit": "Edit",
-      "delete": "Delete",
-      "startExecution": "Start Execution",
-      "markComplete": "Mark Complete"
+      "edit": "編集",
+      "delete": "削除",
+      "startExecution": "実行を開始",
+      "markComplete": "完了としてマーク"
     },
     "tabs": {
-      "overview": "Overview",
-      "sessions": "Sessions"
+      "overview": "概要",
+      "sessions": "セッション"
     },
     "info": {
-      "created": "Created",
-      "updated": "Updated",
-      "status": "Status",
-      "stage": "Workflow Stage",
-      "project": "Project",
-      "tags": "Tags",
-      "noDescription": "No description",
-      "timeInfo": "Time Information",
-      "operationsMenu": "Operations Menu",
-      "createdAt": "Created {time}",
-      "completedAt": "Completed {time}"
+      "created": "作成日時",
+      "updated": "更新日時",
+      "status": "ステータス",
+      "stage": "ワークフローステージ",
+      "project": "プロジェクト",
+      "tags": "タグ",
+      "noDescription": "説明なし",
+      "timeInfo": "時間情報",
+      "operationsMenu": "操作メニュー",
+      "createdAt": "{time}に作成",
+      "completedAt": "{time}に完了"
     },
     "empty": {
-      "title": "No Sessions",
-      "description": "No sessions linked to this work item yet",
-      "createSession": "Create Session",
-      "notFound": "Work item not found",
-      "backToList": "Return to list"
+      "title": "セッションがありません",
+      "description": "このワークアイテムにはまだリンクされているセッションがありません",
+      "createSession": "セッションを作成",
+      "notFound": "ワークアイテムが見つかりません",
+      "backToList": "リストに戻る"
     },
     "timeline": {
-      "created": "Created {time}",
-      "completed": "Completed {time}"
+      "created": "{time}に作成",
+      "completed": "{time}に完了"
     },
     "sessions": {
-      "title": "Sessions ({count})",
-      "searchPlaceholder": "Search sessions...",
-      "noSessions": "No sessions yet",
-      "createFirst": "Create first session",
-      "completedSessions": "{count} completed",
-      "total": "Sessions",
-      "deleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone."
+      "title": "セッション（{count}）",
+      "searchPlaceholder": "セッションを検索...",
+      "noSessions": "まだセッションがありません",
+      "createFirst": "最初のセッションを作成",
+      "completedSessions": "{count}件完了",
+      "total": "セッション",
+      "deleteConfirm": "このセッションを削除してもよろしいですか？この操作は元に戻せません。"
     },
     "devmd": {
-      "title": "Development Log (dev.md)",
-      "notFound": "Work item not found",
-      "backToList": "Return to list",
-      "return": "Return",
-      "sections": "{count} sections",
-      "noSections": "No session sections yet",
-      "autoCreate": "Claude Code will automatically create sections after execution",
-      "notCreated": "dev.md has not been created yet",
-      "reload": "Reload dev.md",
-      "quickNav": "Quick Navigation",
-      "jumpToSection": "Quick jump to session section",
-      "nonStandard": "Non-standard format",
-      "download": "Download dev.md",
-      "quickNavPanel": "Quick Navigation Panel",
-      "devLog": "Development Log"
+      "title": "開発ログ（dev.md）",
+      "notFound": "ワークアイテムが見つかりません",
+      "backToList": "リストに戻る",
+      "return": "戻る",
+      "sections": "{count}個のセクション",
+      "noSections": "まだセッションセクションがありません",
+      "autoCreate": "Claude Codeは実行後に自動的にセクションを作成します",
+      "notCreated": "dev.mdはまだ作成されていません",
+      "reload": "dev.mdを再読み込み",
+      "quickNav": "クイックナビゲーション",
+      "jumpToSection": "セッションセクションへクイックジャンプ",
+      "nonStandard": "非標準フォーマット",
+      "download": "dev.mdをダウンロード",
+      "quickNavPanel": "クイックナビゲーションパネル",
+      "devLog": "開発ログ"
     },
-    "progress": "Progress {progress}%"
+    "progress": "進捗 {progress}%"
   },
   "toasts": {
-    "created": "Work Item created",
-    "updated": "Work Item updated",
-    "deleted": "Work Item deleted",
-    "statusUpdated": "Work Item status updated",
-    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted, but will be unlinked.",
-    "sessionDeleted": "Session deleted",
-    "sessionDeleteFailed": "Failed to delete session",
-    "sessionDeleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone.",
-    "statusUpdatedText": "Status updated",
-    "statusUpdateFailed": "Failed to update status",
-    "devMdLoadFailed": "Failed to load dev.md",
-    "devMdDownloaded": "dev.md downloaded",
-    "workItemDeleted": "Work Item deleted",
-    "workItemDeleteFailed": "Failed to delete Work Item"
+    "created": "ワークアイテムが作成されました",
+    "updated": "ワークアイテムが更新されました",
+    "deleted": "ワークアイテムが削除されました",
+    "statusUpdated": "ワークアイテムのステータスが更新されました",
+    "deleteConfirm": "このワークアイテムを削除してもよろしいですか？関連セッションは削除されませんが、リンクが解除されます。",
+    "sessionDeleted": "セッションが削除されました",
+    "sessionDeleteFailed": "セッションの削除に失敗しました",
+    "sessionDeleteConfirm": "このセッションを削除してもよろしいですか？この操作は元に戻せません。",
+    "statusUpdatedText": "ステータスが更新されました",
+    "statusUpdateFailed": "ステータスの更新に失敗しました",
+    "devMdLoadFailed": "dev.mdの読み込みに失敗しました",
+    "devMdDownloaded": "dev.mdがダウンロードされました",
+    "workItemDeleted": "ワークアイテムが削除されました",
+    "workItemDeleteFailed": "ワークアイテムの削除に失敗しました"
   },
   "errors": {
-    "nameRequired": "Title is required",
-    "createFailed": "Failed to create work item",
-    "updateFailed": "Failed to update work item",
-    "deleteFailed": "Failed to delete work item",
-    "notFound": "Work item not found",
-    "loadFailed": "Failed to load work item"
+    "nameRequired": "タイトルは必須です",
+    "createFailed": "ワークアイテムの作成に失敗しました",
+    "updateFailed": "ワークアイテムの更新に失敗しました",
+    "deleteFailed": "ワークアイテムの削除に失敗しました",
+    "notFound": "ワークアイテムが見つかりません",
+    "loadFailed": "ワークアイテムの読み込みに失敗しました"
   },
   "card": {
     "actions": {
-      "edit": "Edit",
-      "startExecution": "Start Execution",
-      "markComplete": "Mark Complete",
-      "cancel": "Cancel",
-      "delete": "Delete"
+      "edit": "編集",
+      "startExecution": "実行を開始",
+      "markComplete": "完了としてマーク",
+      "cancel": "キャンセル",
+      "delete": "削除"
     },
     "timeline": {
-      "created": "Created {time}",
-      "completed": "Completed {time}"
+      "created": "{time}に作成",
+      "completed": "{time}に完了"
     }
   },
   "row": {
-    "basicInfo": "Basic Information",
-    "description": "Description",
-    "status": "Status",
-    "timeInfo": "Time Information",
-    "operationsMenu": "Operations Menu",
-    "portalMenu": "Portal Menu"
+    "basicInfo": "基本情報",
+    "description": "説明",
+    "status": "ステータス",
+    "timeInfo": "時間情報",
+    "operationsMenu": "操作メニュー",
+    "portalMenu": "ポータルメニュー"
   },
   "sessionStatus": {
-    "processing": "Processing",
-    "completed": "Completed",
-    "error": "Error occurred",
-    "interrupted": "Interrupted",
-    "idle": "Idle",
-    "unknown": "Unknown status"
+    "processing": "処理中",
+    "completed": "完了",
+    "error": "エラーが発生しました",
+    "interrupted": "中断",
+    "idle": "アイドル",
+    "unknown": "不明なステータス"
   }
 }

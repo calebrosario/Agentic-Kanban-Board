@@ -1,75 +1,75 @@
 {
-  "title": "Settings",
+  "title": "Configuracoes",
   "tabs": {
-    "commonPaths": "Common Paths",
-    "taskTemplates": "Task Templates"
+    "commonPaths": "Caminhos Comuns",
+    "taskTemplates": "Modelos de Tarefa"
   },
   "commonPaths": {
-    "title": "Common Paths",
-    "description": "Manage frequently used directories for quick access",
-    "addNew": "Add New",
-    "resetDefault": "Reset to Default",
+    "title": "Caminhos Comuns",
+    "description": "Gerenciar diretorios usados frequentemente para acesso rapido",
+    "addNew": "Adicionar Novo",
+    "resetDefault": "Redefinir para Padrão",
     "empty": {
-      "title": "No common paths yet",
-      "addFirst": "Add first path"
+      "title": "Nenhum caminho comum ainda",
+      "addFirst": "Adicionar primeiro caminho"
     },
     "form": {
-      "label": "Label",
-      "labelPlaceholder": "Path label",
-      "icon": "Icon",
-      "path": "Path",
-      "pathPlaceholder": "C:\\Users\\User",
-      "folder": "Folder",
-      "code": "Code",
-      "home": "Home"
+      "label": "Rotulo",
+      "labelPlaceholder": "Rotulo do caminho",
+      "icon": "Icone",
+      "path": "Caminho",
+      "pathPlaceholder": "C:\\Users\\Usuario",
+      "folder": "Pasta",
+      "code": "Codigo",
+      "home": "Inicio"
     },
     "actions": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "delete": "Delete"
+      "add": "Adicionar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir"
     },
     "errors": {
-      "labelAndPathRequired": "Label and path cannot be empty"
+      "labelAndPathRequired": "Rotulo e caminho nao podem estar vazios"
     }
   },
   "taskTemplates": {
-    "title": "Task Templates",
-    "description": "Manage reusable task templates for quick task creation",
-    "addNew": "Add New",
-    "resetDefault": "Reset to Default",
+    "title": "Modelos de Tarefa",
+    "description": "Gerenciar modelos de tarefa reutilizaveis para criacao rapida de tarefa",
+    "addNew": "Adicionar Novo",
+    "resetDefault": "Redefinir para Padrão",
     "empty": {
-      "title": "No task templates yet",
-      "addFirst": "Add first template"
+      "title": "Nenhum modelo de tarefa ainda",
+      "addFirst": "Adicionar primeiro modelo"
     },
     "form": {
-      "label": "Label",
-      "labelPlaceholder": "e.g., Continue Work",
-      "template": "Template Content",
-      "templatePlaceholder": "Describe the task template content...",
-      "characters": "characters"
+      "label": "Rotulo",
+      "labelPlaceholder": "ex: Continuar Trabalho",
+      "template": "Conteudo do Modelo",
+      "templatePlaceholder": "Descrever o conteudo do modelo de tarefa...",
+      "characters": "caracteres"
     },
     "actions": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "delete": "Delete"
+      "add": "Adicionar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir"
     },
     "badge": {
-      "default": "Default"
+      "default": "Padrão"
     },
     "errors": {
-      "labelAndTemplateRequired": "Label and template content cannot be empty",
-      "cannotDeleteDefault": "Cannot delete default template"
+      "labelAndTemplateRequired": "Rotulo e conteudo do modelo nao podem estar vazios",
+      "cannotDeleteDefault": "Nao e possivel excluir o modelo padrao"
     },
     "confirm": {
-      "resetDefault": "Are you sure you want to reset to default templates? This will delete all custom templates."
+      "resetDefault": "Tem certeza que deseja redefinir para modelos padrao? Isso excluira todos os modelos personalizados."
     }
   },
   "footer": {
-    "autoSync": "Settings are automatically synced to database",
-    "close": "Close"
+    "autoSync": "Configuracoes sao sincronizadas automaticamente com o banco de dados",
+    "close": "Fechar"
   }
 }

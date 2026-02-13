@@ -1,195 +1,195 @@
 {
-  "title": "Work Items",
+  "title": "Itens de Trabalho",
   "actions": {
-    "add": "Add Work Item",
-    "edit": "Edit",
-    "delete": "Delete",
-    "save": "Save",
-    "cancel": "Cancel",
-    "back": "Back",
-    "create": "Create"
+    "add": "Adicionar Item de Trabalho",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "create": "Criar"
   },
   "form": {
-    "title": "Create Work Item",
-    "name": "Title",
-    "nameRequired": "Title *",
-    "namePlaceholder": "Enter work item title",
-    "description": "Description",
-    "descriptionPlaceholder": "What is this work item about?",
+    "title": "Criar Item de Trabalho",
+    "name": "Titulo",
+    "nameRequired": "Titulo *",
+    "namePlaceholder": "Digite o titulo do item de trabalho",
+    "description": "Descricao",
+    "descriptionPlaceholder": "Sobre o que e este item de trabalho?",
     "status": "Status",
-    "statusPlaceholder": "Choose current status",
-    "workflowStage": "Workflow Stage",
-    "workflowStagePlaceholder": "Link to a workflow stage (optional)",
-    "project": "Project",
-    "projectPlaceholder": "Select a project (optional)",
+    "statusPlaceholder": "Escolha o status atual",
+    "workflowStage": "Estagio de Workflow",
+    "workflowStagePlaceholder": "Vincular a um estagio de workflow (opcional)",
+    "project": "Projeto",
+    "projectPlaceholder": "Selecione um projeto (opcional)",
     "tags": "Tags",
-    "tagsPlaceholder": "Add tags for organization",
-    "workspacePath": "Working Directory",
-    "workspacePathPlaceholder": "e.g., C:\\Users\\YourName\\Projects\\MyProject",
-    "workspacePathHint": "Set default working directory for this Work Item. Sessions created will automatically use this path.",
-    "infoHint": "Work Items are containers for organizing related Sessions. You can link to this Work Item when creating a Session, or link existing Sessions later.",
-    "submit": "Create"
+    "tagsPlaceholder": "Adicione tags para organizacao",
+    "workspacePath": "Diretorio de Trabalho",
+    "workspacePathPlaceholder": "ex: C:\\Users\\SeuNome\\Projects\\MeuProjeto",
+    "workspacePathHint": "Defina o diretorio de trabalho padrao para este Item de Trabalho. Sessoes criadas usarao automaticamente este caminho.",
+    "infoHint": "Itens de Trabalho sao contenedores para organizar sessoes relacionadas. Voce pode vincular a este Item de Trabalho ao criar uma Sessao, ou vincular sessoes existentes depois.",
+    "submit": "Criar"
   },
   "editDialog": {
-    "title": "Edit Work Item",
-    "currentStatus": "Current status:",
-    "submit": "Save changes"
+    "title": "Editar Item de Trabalho",
+    "currentStatus": "Status atual:",
+    "submit": "Salvar alteracoes"
   },
   "status": {
-    "planning": "Planning",
-    "in_progress": "In Progress",
-    "completed": "Completed",
-    "cancelled": "Cancelled",
-    "planningSet": "Set to planning",
-    "inProgressStarted": "Started execution",
-    "completedMarked": "Marked as complete",
+    "planning": "Planejamento",
+    "in_progress": "Em Progresso",
+    "completed": "Concluido",
+    "cancelled": "Cancelado",
+    "planningSet": "Definido como planejamento",
+    "inProgressStarted": "Execucao iniciada",
+    "completedMarked": "Marcado como concluido",
     "label": {
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
+      "planning": "Planejamento",
+      "in_progress": "Em Progresso",
+      "completed": "Concluido",
+      "cancelled": "Cancelado"
     }
   },
   "list": {
-    "title": "All Work Items",
+    "title": "Todos os Itens de Trabalho",
     "filter": {
-      "all": "All",
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
+      "all": "Todos",
+      "planning": "Planejamento",
+      "in_progress": "Em Progresso",
+      "completed": "Concluido",
+      "cancelled": "Cancelado"
     },
     "search": {
-      "placeholder": "Search Work Items..."
+      "placeholder": "Pesquisar Itens de Trabalho..."
     },
     "stats": {
       "total": "Total {count}",
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed"
+      "planning": "Planejamento",
+      "in_progress": "Em Progresso",
+      "completed": "Concluido"
     },
     "empty": {
-      "noResults": "No work items matching criteria found",
-      "noItems": "No work items yet",
-      "createFirst": "Create first work item"
+      "noResults": "Nenhum item de trabalho correspondente encontrado",
+      "noItems": "Nenhum item de trabalho ainda",
+      "createFirst": "Criar primeiro item de trabalho"
     },
-    "help": "Work Items helps you organize and track related sessions"
+    "help": "Itens de Trabalho ajudam voce a organizar e rastrear sessoes relacionadas"
   },
   "detail": {
-    "title": "Work Item Details",
+    "title": "Detalhes do Item de Trabalho",
     "actions": {
-      "edit": "Edit",
-      "delete": "Delete",
-      "startExecution": "Start Execution",
-      "markComplete": "Mark Complete"
+      "edit": "Editar",
+      "delete": "Excluir",
+      "startExecution": "Iniciar Execucao",
+      "markComplete": "Marcar como Concluido"
     },
     "tabs": {
-      "overview": "Overview",
-      "sessions": "Sessions"
+      "overview": "Visao Geral",
+      "sessions": "Sessoes"
     },
     "info": {
-      "created": "Created",
-      "updated": "Updated",
+      "created": "Criado",
+      "updated": "Atualizado",
       "status": "Status",
-      "stage": "Workflow Stage",
-      "project": "Project",
+      "stage": "Estagio de Workflow",
+      "project": "Projeto",
       "tags": "Tags",
-      "noDescription": "No description",
-      "timeInfo": "Time Information",
-      "operationsMenu": "Operations Menu",
-      "createdAt": "Created {time}",
-      "completedAt": "Completed {time}"
+      "noDescription": "Sem descricao",
+      "timeInfo": "Informacoes de Tempo",
+      "operationsMenu": "Menu de Operacoes",
+      "createdAt": "Criado {time}",
+      "completedAt": "Concluido {time}"
     },
     "empty": {
-      "title": "No Sessions",
-      "description": "No sessions linked to this work item yet",
-      "createSession": "Create Session",
-      "notFound": "Work item not found",
-      "backToList": "Return to list"
+      "title": "Nenhuma Sessao",
+      "description": "Ainda nao ha sessoes vinculadas a este item de trabalho",
+      "createSession": "Criar Sessao",
+      "notFound": "Item de trabalho nao encontrado",
+      "backToList": "Voltar a lista"
     },
     "timeline": {
-      "created": "Created {time}",
-      "completed": "Completed {time}"
+      "created": "Criado {time}",
+      "completed": "Concluido {time}"
     },
     "sessions": {
-      "title": "Sessions ({count})",
-      "searchPlaceholder": "Search sessions...",
-      "noSessions": "No sessions yet",
-      "createFirst": "Create first session",
-      "completedSessions": "{count} completed",
-      "total": "Sessions",
-      "deleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone."
+      "title": "Sessoes ({count})",
+      "searchPlaceholder": "Pesquisar sessoes...",
+      "noSessions": "Ainda nenhuma sessao",
+      "createFirst": "Criar primeira sessao",
+      "completedSessions": "{count} concluidas",
+      "total": "Sessoes",
+      "deleteConfirm": "Tem certeza que deseja excluir esta Sessao? Esta acao nao pode ser desfeita."
     },
     "devmd": {
-      "title": "Development Log (dev.md)",
-      "notFound": "Work item not found",
-      "backToList": "Return to list",
-      "return": "Return",
-      "sections": "{count} sections",
-      "noSections": "No session sections yet",
-      "autoCreate": "Claude Code will automatically create sections after execution",
-      "notCreated": "dev.md has not been created yet",
-      "reload": "Reload dev.md",
-      "quickNav": "Quick Navigation",
-      "jumpToSection": "Quick jump to session section",
-      "nonStandard": "Non-standard format",
-      "download": "Download dev.md",
-      "quickNavPanel": "Quick Navigation Panel",
-      "devLog": "Development Log"
+      "title": "Log de Desenvolvimento (dev.md)",
+      "notFound": "Item de trabalho nao encontrado",
+      "backToList": "Voltar a lista",
+      "return": "Voltar",
+      "sections": "{count} secoes",
+      "noSections": "Ainda nenhuma secao de sessao",
+      "autoCreate": "Claude Code criara automaticamente secoes apos a execucao",
+      "notCreated": "dev.md ainda nao foi criado",
+      "reload": "Recarregar dev.md",
+      "quickNav": "Navegacao Rapida",
+      "jumpToSection": "Salto rapido para secao de sessao",
+      "nonStandard": "Formato nao padrao",
+      "download": "Baixar dev.md",
+      "quickNavPanel": "Painel de Navegacao Rapida",
+      "devLog": "Log de Desenvolvimento"
     },
-    "progress": "Progress {progress}%"
+    "progress": "Progresso {progress}%"
   },
   "toasts": {
-    "created": "Work Item created",
-    "updated": "Work Item updated",
-    "deleted": "Work Item deleted",
-    "statusUpdated": "Work Item status updated",
-    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted, but will be unlinked.",
-    "sessionDeleted": "Session deleted",
-    "sessionDeleteFailed": "Failed to delete session",
-    "sessionDeleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone.",
-    "statusUpdatedText": "Status updated",
-    "statusUpdateFailed": "Failed to update status",
-    "devMdLoadFailed": "Failed to load dev.md",
-    "devMdDownloaded": "dev.md downloaded",
-    "workItemDeleted": "Work Item deleted",
-    "workItemDeleteFailed": "Failed to delete Work Item"
+    "created": "Item de Trabalho criado",
+    "updated": "Item de Trabalho atualizado",
+    "deleted": "Item de Trabalho excluido",
+    "statusUpdated": "Status do Item de Trabalho atualizado",
+    "deleteConfirm": "Tem certeza que deseja excluir este Item de Trabalho? Sessoes relacionadas nao serao excluidas, mas serao desvinculadas.",
+    "sessionDeleted": "Sessao excluida",
+    "sessionDeleteFailed": "Falha ao excluir sessao",
+    "sessionDeleteConfirm": "Tem certeza que deseja excluir esta Sessao? Esta acao nao pode ser desfeita.",
+    "statusUpdatedText": "Status atualizado",
+    "statusUpdateFailed": "Falha ao atualizar status",
+    "devMdLoadFailed": "Falha ao carregar dev.md",
+    "devMdDownloaded": "dev.md baixado",
+    "workItemDeleted": "Item de Trabalho excluido",
+    "workItemDeleteFailed": "Falha ao excluir Item de Trabalho"
   },
   "errors": {
-    "nameRequired": "Title is required",
-    "createFailed": "Failed to create work item",
-    "updateFailed": "Failed to update work item",
-    "deleteFailed": "Failed to delete work item",
-    "notFound": "Work item not found",
-    "loadFailed": "Failed to load work item"
+    "nameRequired": "Titulo e obrigatorio",
+    "createFailed": "Falha ao criar item de trabalho",
+    "updateFailed": "Falha ao atualizar item de trabalho",
+    "deleteFailed": "Falha ao excluir item de trabalho",
+    "notFound": "Item de trabalho nao encontrado",
+    "loadFailed": "Falha ao carregar item de trabalho"
   },
   "card": {
     "actions": {
-      "edit": "Edit",
-      "startExecution": "Start Execution",
-      "markComplete": "Mark Complete",
-      "cancel": "Cancel",
-      "delete": "Delete"
+      "edit": "Editar",
+      "startExecution": "Iniciar Execucao",
+      "markComplete": "Marcar como Concluido",
+      "cancel": "Cancelar",
+      "delete": "Excluir"
     },
     "timeline": {
-      "created": "Created {time}",
-      "completed": "Completed {time}"
+      "created": "Criado {time}",
+      "completed": "Concluido {time}"
     }
   },
   "row": {
-    "basicInfo": "Basic Information",
-    "description": "Description",
+    "basicInfo": "Informacoes Basicas",
+    "description": "Descricao",
     "status": "Status",
-    "timeInfo": "Time Information",
-    "operationsMenu": "Operations Menu",
-    "portalMenu": "Portal Menu"
+    "timeInfo": "Informacoes de Tempo",
+    "operationsMenu": "Menu de Operacoes",
+    "portalMenu": "Menu do Portal"
   },
   "sessionStatus": {
-    "processing": "Processing",
-    "completed": "Completed",
-    "error": "Error occurred",
-    "interrupted": "Interrupted",
-    "idle": "Idle",
-    "unknown": "Unknown status"
+    "processing": "Processando",
+    "completed": "Concluido",
+    "error": "Ocorreu um erro",
+    "interrupted": "Interrompido",
+    "idle": "Ocioso",
+    "unknown": "Status desconhecido"
   }
 }
