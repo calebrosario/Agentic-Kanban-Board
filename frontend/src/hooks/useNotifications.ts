@@ -8,15 +8,15 @@ export const useNotifications = () => {
 
   const getStatusMessage = useCallback((status: string): string => {
     const statusMap: Record<string, { message: string; icon: string }> = {
-      'processing': { message: '開始處理', icon: '🔄' },
-      'idle': { message: '處理完成', icon: '✅' },
+      'processing': { message: '開始Handle', icon: '🔄' },
+      'idle': { message: 'Handle完成', icon: '✅' },
       'completed': { message: '已完成', icon: '🎉' },
       'error': { message: '發生錯誤', icon: '❌' },
       'interrupted': { message: '已中斷', icon: '⚠️' }
     };
 
     const statusInfo = statusMap[status.toLowerCase()];
-    if (!statusInfo) return `狀態更新: ${status}`;
+    if (!statusInfo) return `狀態Update: ${status}`;
 
     return `${statusInfo.icon} Session ${statusInfo.message}`;
   }, []);

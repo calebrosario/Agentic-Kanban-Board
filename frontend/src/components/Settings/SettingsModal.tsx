@@ -38,7 +38,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const [editingPath, setEditingPath] = useState<CommonPath | null>(null);
 
-  // 當開啟 modal 時重新載入設定
+  // When opening modal, reload settings
   useEffect(() => {
     if (isOpen) {
       reloadSettings();
@@ -119,7 +119,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[99999] p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden sm:mx-auto">
-        {/* 標題 */}
+        {/* Title */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
           <div className="flex items-center space-x-2">
             <Settings className="w-5 h-5 text-gray-600" />
@@ -133,7 +133,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
         </div>
 
-        {/* Tab 導航 */}
+        {/* Tab navigation */}
         <div className="flex border-b border-gray-200 px-4 sm:px-6">
           <button
             onClick={() => setActiveTab('paths')}
@@ -159,7 +159,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
         </div>
 
-        {/* 內容 */}
+        {/* Content */}
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-220px)] sm:max-h-[calc(90vh-260px)]">
           {activeTab === 'paths' && (
             <div>
@@ -184,7 +184,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
 
               <div className="space-y-3">
-                {/* 新增路徑的編輯表單 */}
+                {/* Edit form for adding path */}
                 {isAddingNew && (
                   <div className="border border-green-300 rounded-lg p-3 sm:p-4 bg-green-50">
                     <div className="space-y-3">
@@ -247,7 +247,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 )}
                 
-                {/* 現有路徑列表 */}
+                {/* Existing path list */}
                 {commonPaths.map((path) => (
                   <PathEditor
                     key={path.id}
