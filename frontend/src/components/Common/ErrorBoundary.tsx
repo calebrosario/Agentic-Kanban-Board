@@ -74,7 +74,7 @@ class ErrorBoundaryClass extends Component<Props & { t: (key: string) => string 
               </p>
             </div>
 
-            {/* 錯誤詳情（開發環境顯示） */}
+            {/* 錯誤詳情（開發環境Show） */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-left">
                 <h3 className="text-sm font-medium text-red-800 mb-1">{t('common:error.boundary.details')}</h3>

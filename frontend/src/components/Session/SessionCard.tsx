@@ -26,9 +26,9 @@ interface SessionCardProps {
   onDragStart?: (index: number) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
-  preserveWorkItemContext?: boolean; // 新增：是否保持在 Work Item 上下文中
-  workItemId?: string; // 新增：當前 Work Item ID
-  disableNavigation?: boolean; // 新增：禁用導航連結
+  // New: Keep in Work Item context
+  // New: Current Work Item ID
+  // New: Disable navigation links
 }
 
 export const SessionCard: React.FC<SessionCardProps> = ({
@@ -52,7 +52,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
     switch (session.status) {
       case SessionStatus.IDLE:
-        // 閒置狀態只顯示完成按鈕
+        // Idle state only shows complete button
         buttons.push(
           <Tooltip key="complete" content={t('session.card.actions.titleTooltip')}>
             <button
@@ -90,12 +90,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
       case SessionStatus.COMPLETED:
       case SessionStatus.ERROR:
-        // 已完成和錯誤的 Session 可以直接在聊天介面中繼續對話
-        // 不再需要延續按鈕
+        // Completed and error Sessions can continue conversation in chat interface
+        // No longer need continue button
         break;
 
       case SessionStatus.PROCESSING:
-        // 正在處理中的 Session 可以中斷
+        // Currently processing Sessions can be interrupted
         buttons.push(
           <Tooltip key="interrupt" content={t('session.card.actions.interruptTooltip')}>
             <button
@@ -109,7 +109,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         break;
     }
 
-    // 所有狀態都可以刪除
+    // All states can delete
     buttons.push(
       <Tooltip key="delete" content={t('session.card.actions.deleteTooltip')}>
         <button
@@ -138,9 +138,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         e.dataTransfer.effectAllowed = 'move';
       } : undefined}
       onDragEnd={onDragEnd ? () => onDragEnd() : undefined}>
-      {/* 卡片內容 */}
+      {/* Card content */}
       <div className="p-2">
-        {/* 標題行 - 包含標題和狀態 */}
+        {/* Title row - contains title and status */}
         <div className="flex items-start justify-between gap-2 mb-1">
           {disableNavigation ? (
             <div className="flex-1 min-w-0 group">
@@ -161,7 +161,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             </Link>
           )}
           
-          {/* 狀態指示器 */}
+          {/* Status indicator */}
           <div className="flex items-center gap-1 flex-shrink-0">
             {session.status === SessionStatus.ERROR && (
               <Tooltip content={t('session.card.status.error')}>
@@ -173,7 +173,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-pulse"></div>
               </Tooltip>
             )}
-            {/* Work Item 標籤 */}
+            {/* Work Item tag */}
             {session.work_item_id && (
               <Tooltip content={t('session.card.linked.workItem')}>
                 <span
@@ -245,7 +245,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 {project.name}
               </span>
             ))}
-            {/* 標籤 */}
+            {/* Tags */}
             {session.tags?.map(tag => (
               <span
                 key={tag.tag_id}
@@ -264,7 +264,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         {/* 元資訊行 */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[11px] text-gray-500 gap-1 sm:gap-0">
           <div className="flex items-center gap-3">
-            {/* 訊息數 */}
+            {/* Message count */}
             {session.messageCount !== undefined && (
               <Tooltip content={t('session.card.messageCount', { count: session.messageCount })} side="left">
                 <div className="flex items-center gap-1">
@@ -295,7 +295,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         )}
       </div>
 
-      {/* 操作按鈕 - hover 時顯示，絕對定位 */}
+      {/* Action buttons - show on hover, absolute positioning */}
       <div className="absolute bottom-0 left-0 right-0 px-2 py-1 bg-white/95 backdrop-blur-sm border-t border-gray-100 rounded-b-md opacity-0 group-hover:opacity-100 transition-all duration-200">
         <div className="flex items-center justify-end gap-0.5">
           {getActionButtons()}

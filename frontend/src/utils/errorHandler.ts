@@ -21,11 +21,11 @@ export const getErrorMessage = (error: unknown, defaultMessage = '操作失敗�
     
     // 處理網路錯誤
     if (error.code === 'ECONNABORTED') {
-      return '請求超時，請檢查網路連線';
+      return '請求超時，請Check網路連線';
     }
     
     if (error.code === 'ERR_NETWORK') {
-      return '網路連線失敗，請檢查網路設定';
+      return '網路連線失敗，請Check網路設定';
     }
     
     // 處理 HTTP 狀態碼

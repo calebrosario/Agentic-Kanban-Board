@@ -26,12 +26,13 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onCreateSession }) => {
     sessionsByStatus.interrupted.length + 
     sessionsByStatus.processing.length;
 
+
   return (
     <>
-      {/* 底部導航欄 */}
+      {/* Bottom navigation bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-30">
         <div className="flex items-center justify-center relative">
-          {/* 左側容器 */}
+          {/* Left side container */}
           <div className="flex-1 flex justify-center">
             <Link
               to="/"
@@ -54,7 +55,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ onCreateSession }) => {
             </Link>
           </div>
 
-          {/* 建立按鈕 - 浮動操作按鈕風格，絕對定位置中 */}
+          {/* Create button - floating action button style, absolutely positioned at center */}
           <button
             onClick={onCreateSession}
             className="absolute left-1/2 transform -translate-x-1/2 -top-4 flex items-center justify-center w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors z-10"

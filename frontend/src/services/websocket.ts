@@ -18,7 +18,7 @@ export interface WebSocketMessage {
     isThinking?: boolean;
     thinkingDepth?: number;
     
-    // 檔案操作
+    // File操作
     fileOperation?: 'read' | 'write' | 'edit' | 'delete';
     filePath?: string;
     fileContent?: string;
@@ -67,7 +67,7 @@ export interface WebSocketEvents {
   disconnect: () => void;
   connect_error: (error: Error) => void;
   
-  // 發送的事件
+  // Send的事件
   subscribe: (sessionId: string) => void;
   unsubscribe: (sessionId: string) => void;
 }
@@ -80,13 +80,13 @@ class WebSocketService {
 
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // 如果已經連接，直接返回
+      // If已經連接，直接Return
       if (this.socket?.connected) {
         resolve();
         return;
       }
 
-      // 如果正在連接中，等待連接完成
+      // If正在連接中，等待連接完成
       if (this.isConnecting) {
         const checkConnection = () => {
           if (this.socket?.connected) {
@@ -163,7 +163,7 @@ class WebSocketService {
     this.socket.on('message', (data) => {
       console.log('=== WebSocket 接收 message 事件 ===', data);
       
-      // 檢查資料完整性
+      // Check資料完整性
       if (!data || typeof data !== 'object') {
         console.warn('Invalid message data received:', data);
         return;
@@ -184,7 +184,7 @@ class WebSocketService {
     });
 
     // 註釋掉特定類型的事件處理，避免重複
-    // （因為後端同時發送 message 和特定類型事件，我們只需要處理 message）
+    // （因為後端同時Send message 和特定類型事件，我們只需要處理 message）
     /*
     this.socket.on('assistant', (data) => {
       console.log('=== WebSocket 接收 assistant 事件 ===', data);
@@ -251,7 +251,7 @@ class WebSocketService {
     });
     */
 
-    // output 事件可能需要單獨處理，因為它可能不會通過 message 事件發送
+    // output 事件可能需要單獨處理，因為它可能不會通過 message 事件Send
     this.socket.on('output', (data) => {
       console.log('=== WebSocket 接收 output 事件 ===', data);
       

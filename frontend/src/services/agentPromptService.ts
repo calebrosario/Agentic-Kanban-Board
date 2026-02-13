@@ -17,7 +17,7 @@ export interface ConfigStatus {
 }
 
 export const agentPromptService = {
-  // 取得配置狀態
+  // Get配置狀態
   async getConfig(): Promise<ConfigStatus> {
     const response = await axiosInstance.get<ConfigStatus>('/agent-prompts/config');
     return response.data;
@@ -34,7 +34,7 @@ export const agentPromptService = {
     return response.data;
   },
 
-  // 取得單一 Agent 內容
+  // Get單一 Agent 內容
   async getAgentContent(agentName: string): Promise<AgentDetail | null> {
     try {
       const response = await axiosInstance.get<AgentDetail>(`/agent-prompts/${agentName}`);

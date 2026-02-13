@@ -73,7 +73,7 @@ export const sessionApi = {
     };
   },
 
-  // 刪除 Session
+  // Delete Session
   async deleteSession(sessionId: string): Promise<void> {
     await api.delete(`/sessions/${sessionId}`);
   },
@@ -102,7 +102,7 @@ export const sessionApi = {
     };
   },
 
-  // 發送訊息
+  // Send訊息
   async sendMessage(sessionId: string, content: string): Promise<Message> {
     const response = await api.post(`/sessions/${sessionId}/messages`, { content });
     const msg = response.data;
@@ -188,7 +188,7 @@ export const commonPathApi = {
     return response.data.data;
   },
 
-  // 刪除路徑
+  // Delete路徑
   async deletePath(id: string): Promise<void> {
     await api.delete(`/common-paths/${id}`);
   },
@@ -237,7 +237,7 @@ export const projectApi = {
     return response.data.data;
   },
 
-  // 刪除專案
+  // Delete專案
   async deleteProject(projectId: string): Promise<void> {
     await api.delete(`/projects/${projectId}`);
   },
@@ -300,7 +300,7 @@ export const tagApi = {
     return response.data.data;
   },
 
-  // 刪除標籤
+  // Delete標籤
   async deleteTag(tagId: string): Promise<void> {
     await api.delete(`/tags/${tagId}`);
   },
@@ -350,7 +350,7 @@ export const taskTemplateApi = {
     return response.data.data;
   },
 
-  // 刪除任務模板
+  // Delete任務模板
   async deleteTemplate(id: string): Promise<void> {
     await api.delete(`/task-templates/${id}`);
   },

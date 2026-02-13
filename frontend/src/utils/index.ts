@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// 格式化日期時間
+// Format日期Time
 export function formatDateTime(date: Date | string | number): string {
   try {
     let validDate: Date;
@@ -17,10 +17,10 @@ export function formatDateTime(date: Date | string | number): string {
       validDate = new Date(date);
     }
     
-    // 檢查是否為有效日期
+    // Check是否為有效日期
     if (isNaN(validDate.getTime())) {
       console.warn('Invalid date provided to formatDateTime:', date);
-      return '無效時間';
+      return 'InvalidTime';
     }
     
     return new Intl.DateTimeFormat('zh-TW', {
@@ -33,11 +33,11 @@ export function formatDateTime(date: Date | string | number): string {
     }).format(validDate);
   } catch (error) {
     console.warn('Error formatting date:', date, error);
-    return '無效時間';
+    return 'InvalidTime';
   }
 }
 
-// 格式化相對時間
+// Format相對Time
 export function formatRelativeTime(date: Date | string | number): string {
   try {
     let validDate: Date;
@@ -48,10 +48,10 @@ export function formatRelativeTime(date: Date | string | number): string {
       validDate = new Date(date);
     }
     
-    // 檢查是否為有效日期
+    // Check是否為有效日期
     if (isNaN(validDate.getTime())) {
       console.warn('Invalid date provided to formatRelativeTime:', date);
-      return '無效時間';
+      return 'InvalidTime';
     }
     
     const now = new Date();
@@ -75,11 +75,11 @@ export function formatRelativeTime(date: Date | string | number): string {
     }
   } catch (error) {
     console.warn('Error formatting relative time:', date, error);
-    return '無效時間';
+    return 'InvalidTime';
   }
 }
 
-// 格式化持續時間
+// FormatDurationTime
 export function formatDuration(startTime: Date | string | number, endTime?: Date | string | number): string {
   try {
     let validStartTime: Date;
@@ -101,10 +101,10 @@ export function formatDuration(startTime: Date | string | number, endTime?: Date
       validEndTime = new Date();
     }
     
-    // 檢查是否為有效日期
+    // Check是否為有效日期
     if (isNaN(validStartTime.getTime()) || isNaN(validEndTime.getTime())) {
       console.warn('Invalid date provided to formatDuration:', startTime, endTime);
-      return '無效持續時間';
+      return 'InvalidDurationTime';
     }
     
     const diff = validEndTime.getTime() - validStartTime.getTime();
@@ -122,7 +122,7 @@ export function formatDuration(startTime: Date | string | number, endTime?: Date
     }
   } catch (error) {
     console.warn('Error formatting duration:', startTime, endTime, error);
-    return '無效持續時間';
+    return 'InvalidDurationTime';
   }
 }
 
@@ -205,7 +205,7 @@ export function getStatusText(status: SessionStatus | ProcessStatus): string {
   }
 }
 
-// 格式化檔案大小
+// Format檔案大小
 export function formatFileSize(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB'];
   let size = bytes;
@@ -219,7 +219,7 @@ export function formatFileSize(bytes: number): string {
   return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 }
 
-// 截斷文字
+// Truncate文字
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) {
     return text;
@@ -227,17 +227,17 @@ export function truncateText(text: string, maxLength: number): string {
   return text.slice(0, maxLength) + '...';
 }
 
-// 生成隨機 ID
+// Generate隨機 ID
 export function generateId(): string {
   return Math.random().toString(36).substr(2, 9);
 }
 
-// 延遲函數
+// Delay函數
 export function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// 防抖函數
+// Debounce函數
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
@@ -249,7 +249,7 @@ export function debounce<T extends (...args: any[]) => any>(
   };
 }
 
-// 節流函數
+// Throttle函數
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limit: number
