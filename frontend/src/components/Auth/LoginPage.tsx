@@ -122,7 +122,7 @@ export const LoginPage: React.FC = () => {
      }
    };
 
-  // 載入記住的使用者名稱
+  // Load remembered username
   useEffect(() => {
     const rememberedUsername = localStorage.getItem('rememberedUsername');
     if (rememberedUsername) {

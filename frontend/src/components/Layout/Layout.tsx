@@ -14,17 +14,17 @@ export const Layout: React.FC<LayoutProps> = ({ children, onCreateSession }) => 
   
   return (
     <div className="flex h-screen relative">
-      {/* 側邊欄 - 只在非手機版顯示 */}
+      {/* 側邊欄 - 只在非手機版Show */}
       {!isMobile && <Sidebar onCreateSession={onCreateSession} />}
 
-      {/* 主要內容區域 */}
+      {/* 主要Content區域 */}
       <div className="flex-1 flex flex-col overflow-hidden relative main-content-bg">
         <Header />
         <main className={`flex-1 overflow-auto ${isMobile ? 'pb-16' : ''}`}>
           {children}
         </main>
         
-        {/* 底部導航 - 只在手機版顯示 */}
+        {/* 底部導航 - 只在手機版Show */}
         {isMobile && <MobileNav onCreateSession={onCreateSession} />}
       </div>
     </div>

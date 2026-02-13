@@ -7,12 +7,12 @@
   },
   "navigation": {
     "allSessions": "すべてのセッション",
-    "workItems": "Work Items",
+    "workItems": "ワークアイテム",
     "workflowStages": "ワークフローステージ",
     "agentPrompts": "エージェントプロンプト"
   },
   "actions": {
-    "createSession": "セッション作成",
+    "createSession": "セッションを作成",
     "settings": "設定",
     "logout": "ログアウト"
   }

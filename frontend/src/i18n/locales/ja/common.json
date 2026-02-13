@@ -7,11 +7,28 @@
     "ja": "日本語",
     "pt": "Português"
   },
+  "layout": {
+    "returnToWorkItem": "ワークアイテムに戻る",
+    "returnToList": "リストに戻る",
+    "fullscreen": "全画面表示",
+    "close": "閉じる",
+    "restore": "復元",
+    "verifying": "検証中..."
+  },
   "loading": "読み込み中...",
   "error": {
     "title": "エラー",
     "retry": "再試行",
-    "unknown": "不明なエラーが発生しました"
+    "unknown": "不明なエラーが発生しました",
+    "boundary": {
+      "title": "おっと！何かがおかしいようです",
+      "description": "アプリケーションで予期しないエラーが発生しました。ページを再読み込みするか、ホームページに戻ってください。",
+      "details": "エラー詳細：",
+      "stackTrace": "スタックトレース",
+      "goHome": "ホームに移動",
+      "loadingFailed": "読み込みに失敗しました",
+      "support": "問題が解決しない場合は、技術サポートにお問い合わせください"
+    }
   },
   "actions": {
     "save": "保存",
@@ -25,7 +42,9 @@
     "close": "閉じる",
     "back": "戻る",
     "next": "次へ",
-    "previous": "前へ"
+    "previous": "前へ",
+    "retry": "再試行",
+    "clear": "クリア"
   },
   "status": {
     "loading": "読み込み中",
@@ -36,5 +55,38 @@
     "interrupted": "中断",
     "planning": "計画中",
     "in_progress": "実行中"
+  },
+  "multiSelect": {
+    "placeholder": "項目を選択...",
+    "search": "検索...",
+    "loading": "読み込み中...",
+    "noResults": "一致する項目が見つかりません",
+    "createNew": "新しい項目を作成",
+    "creating": "作成中...",
+    "create": "作成"
+  },
+  "searchBar": {
+    "placeholder": "検索...",
+    "clear": "検索をクリア"
+  },
+  "classification": {
+    "tags": {
+      "label": "タグ",
+      "topic": "トピック",
+      "department": "部門",
+      "loadFailed": "タグの読み込みに失敗しました",
+      "updateSuccess": "タグが更新されました",
+      "updateFailed": "タグの更新に失敗しました",
+      "createSuccess": "タグが作成されました",
+      "createFailed": "タグの作成に失敗しました"
+    },
+    "projects": {
+      "label": "プロジェクト",
+      "loadFailed": "プロジェクトの読み込みに失敗しました",
+      "updateSuccess": "プロジェクトが更新されました",
+      "updateFailed": "プロジェクトの更新に失敗しました",
+      "createSuccess": "プロジェクトが作成されました",
+      "createFailed": "プロジェクトの作成に失敗しました"
+    }
   }
 }

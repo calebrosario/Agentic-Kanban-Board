@@ -24,7 +24,7 @@ export const useSettings = () => {
     }
   };
 
-  // 儲存設定（批量更新）
+  // 儲存設定（批量Update）
   const saveSettings = async (newPaths: CommonPath[]): Promise<boolean> => {
     try {
       // 如果是重新排序，使用 reorder API
@@ -47,7 +47,7 @@ export const useSettings = () => {
     }
   };
 
-  // 重置為預設設定
+  // Reset為預設設定
   const resetToDefault = async (): Promise<boolean> => {
     try {
       const paths = await commonPathApi.resetToDefault();
@@ -56,11 +56,11 @@ export const useSettings = () => {
       // 觸發自定義事件以通知其他元件
       window.dispatchEvent(new Event('settings-updated'));
       
-      toast.success('已重置為預設設定');
+      toast.success('已Reset為預設設定');
       return true;
     } catch (error) {
       console.error('Failed to reset settings:', error);
-      toast.error('重置設定失敗');
+      toast.error('Reset設定失敗');
       return false;
     }
   };
@@ -89,7 +89,7 @@ export const useSettings = () => {
     }
   };
 
-  // 更新常用路徑
+  // Update常用路徑
   const updateCommonPath = async (id: string, updates: Partial<CommonPath>): Promise<boolean> => {
     try {
       const updated = await commonPathApi.updatePath(id, updates);
@@ -101,11 +101,11 @@ export const useSettings = () => {
       // 觸發自定義事件
       window.dispatchEvent(new Event('settings-updated'));
       
-      toast.success('已更新常用路徑');
+      toast.success('已Update常用路徑');
       return true;
     } catch (error) {
       console.error('Failed to update common path:', error);
-      toast.error('更新常用路徑失敗');
+      toast.error('Update常用路徑失敗');
       return false;
     }
   };
@@ -138,7 +138,7 @@ export const useSettings = () => {
     };
   };
 
-  // 初始化載入
+  // Initialize載入
   useEffect(() => {
     loadSettings();
   }, []);

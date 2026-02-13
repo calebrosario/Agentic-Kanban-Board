@@ -30,13 +30,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
   const { t } = useI18nContext();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
-  // 從 localStorage 讀取側邊欄狀態
+  // Read sidebar state from localStorage
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebarCollapsed');
     return saved ? JSON.parse(saved) : false;
   });
 
-  // 切換側邊欄狀態並保存到 localStorage
+  // Toggle sidebar state and save to localStorage
   const toggleSidebar = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
@@ -55,7 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
       "transition-[width] duration-300 ease-in-out",
       isCollapsed ? "w-20" : "w-72"
     )}>
-      {/* 懸浮卡片 */}
+      {/* Floating card */}
       <div className={cn(
         "glass-extreme rounded-2xl flex flex-col border border-white/70 backdrop-blur-2xl bg-white/30 h-full",
         "transition-[margin,background-color,border-color] duration-300 ease-in-out !shadow-none",
@@ -86,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCreateSession }) => {
             )}
           </div>
 
-          {/* 收合/展開按鈕 */}
+          {/* Expand or Collapse/ExpandButton */}
           <button
             onClick={toggleSidebar}
             className={cn(

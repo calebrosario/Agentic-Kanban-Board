@@ -1,75 +1,75 @@
 {
-  "title": "Settings",
+  "title": "設定",
   "tabs": {
-    "commonPaths": "Common Paths",
-    "taskTemplates": "Task Templates"
+    "commonPaths": "一般的なパス",
+    "taskTemplates": "タスクテンプレート"
   },
   "commonPaths": {
-    "title": "Common Paths",
-    "description": "Manage frequently used directories for quick access",
-    "addNew": "Add New",
-    "resetDefault": "Reset to Default",
+    "title": "一般的なパス",
+    "description": "クイックアクセスのために頻繁に使用するディレクトリを管理",
+    "addNew": "新規追加",
+    "resetDefault": "デフォルトにリセット",
     "empty": {
-      "title": "No common paths yet",
-      "addFirst": "Add first path"
+      "title": "まだ一般的なパスがありません",
+      "addFirst": "最初のパスを追加"
     },
     "form": {
-      "label": "Label",
-      "labelPlaceholder": "Path label",
-      "icon": "Icon",
-      "path": "Path",
+      "label": "ラベル",
+      "labelPlaceholder": "パスラベル",
+      "icon": "アイコン",
+      "path": "パス",
       "pathPlaceholder": "C:\\Users\\User",
-      "folder": "Folder",
-      "code": "Code",
-      "home": "Home"
+      "folder": "フォルダ",
+      "code": "コード",
+      "home": "ホーム"
     },
     "actions": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "delete": "Delete"
+      "add": "追加",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "delete": "削除"
     },
     "errors": {
-      "labelAndPathRequired": "Label and path cannot be empty"
+      "labelAndPathRequired": "ラベルとパスを空にできません"
     }
   },
   "taskTemplates": {
-    "title": "Task Templates",
-    "description": "Manage reusable task templates for quick task creation",
-    "addNew": "Add New",
-    "resetDefault": "Reset to Default",
+    "title": "タスクテンプレート",
+    "description": "クイックタスク作成のために再利用可能なタスクテンプレートを管理",
+    "addNew": "新規追加",
+    "resetDefault": "デフォルトにリセット",
     "empty": {
-      "title": "No task templates yet",
-      "addFirst": "Add first template"
+      "title": "まだタスクテンプレートがありません",
+      "addFirst": "最初のテンプレートを追加"
     },
     "form": {
-      "label": "Label",
-      "labelPlaceholder": "e.g., Continue Work",
-      "template": "Template Content",
-      "templatePlaceholder": "Describe the task template content...",
-      "characters": "characters"
+      "label": "ラベル",
+      "labelPlaceholder": "例：作業を続ける",
+      "template": "テンプレート内容",
+      "templatePlaceholder": "タスクテンプレートの内容を説明...",
+      "characters": "文字"
     },
     "actions": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "delete": "Delete"
+      "add": "追加",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "delete": "削除"
     },
     "badge": {
-      "default": "Default"
+      "default": "デフォルト"
     },
     "errors": {
-      "labelAndTemplateRequired": "Label and template content cannot be empty",
-      "cannotDeleteDefault": "Cannot delete default template"
+      "labelAndTemplateRequired": "ラベルとテンプレート内容を空にできません",
+      "cannotDeleteDefault": "デフォルトテンプレートは削除できません"
     },
     "confirm": {
-      "resetDefault": "Are you sure you want to reset to default templates? This will delete all custom templates."
+      "resetDefault": "デフォルトテンプレートにリセットしてもよろしいですか？これにより、すべてのカスタムテンプレートが削除されます。"
     }
   },
   "footer": {
-    "autoSync": "Settings are automatically synced to database",
-    "close": "Close"
+    "autoSync": "設定はデータベースに自動的に同期されます",
+    "close": "閉じる"
   }
 }

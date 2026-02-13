@@ -12,7 +12,7 @@ const axiosInstance: AxiosInstance = axios.create({
 // 請求攔截器
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 從 localStorage 獲取 token
+    // 從 localStorage Get token
     const token = localStorage.getItem('token');
     const tokenExpiry = localStorage.getItem('tokenExpiry');
     

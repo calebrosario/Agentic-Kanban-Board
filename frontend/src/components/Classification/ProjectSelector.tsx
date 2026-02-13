@@ -23,25 +23,12 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // 載入所有專案
+  // Load all projects
   useEffect(() => {
     loadProjects();
   }, []);
 
-  const loadProjects = async () => {
-    try {
-      setLoading(true);
-      const allProjects = await projectApi.getActiveProjects();
-      setProjects(allProjects);
-    } catch (error) {
-      console.error('Failed to load projects:', error);
-      toast.error(t('common:classification.projects.loadFailed'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 處理專案變更
+  // Handle project change
   const handleProjectsChange = async (newProjectIds: string[]) => {
     try {
       setSaving(true);

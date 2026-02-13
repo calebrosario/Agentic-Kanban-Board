@@ -22,7 +22,7 @@ export const useTaskTemplates = () => {
     }
   };
 
-  // 取得啟用的模板
+  // Get啟用的模板
   const getActiveTemplates = () => templates.filter(t => t.is_active);
 
   // 新增模板
@@ -43,7 +43,7 @@ export const useTaskTemplates = () => {
     }
   };
 
-  // 更新模板
+  // Update模板
   const updateTemplate = async (id: string, data: UpdateTaskTemplateRequest): Promise<boolean> => {
     try {
       const updated = await taskTemplateApi.updateTemplate(id, data);
@@ -52,11 +52,11 @@ export const useTaskTemplates = () => {
       // 觸發自定義事件
       window.dispatchEvent(new Event('templates-updated'));
 
-      toast.success('已更新任務模板');
+      toast.success('已Update任務模板');
       return true;
     } catch (error) {
       console.error('Failed to update task template:', error);
-      toast.error('更新任務模板失敗');
+      toast.error('Update任務模板失敗');
       return false;
     }
   };
@@ -101,7 +101,7 @@ export const useTaskTemplates = () => {
     }
   };
 
-  // 重置為預設
+  // Reset為預設
   const resetToDefault = async (): Promise<boolean> => {
     try {
       const defaultTemplates = await taskTemplateApi.resetToDefault();
@@ -110,16 +110,16 @@ export const useTaskTemplates = () => {
       // 觸發自定義事件
       window.dispatchEvent(new Event('templates-updated'));
 
-      toast.success('已重置為預設模板');
+      toast.success('已Reset為預設模板');
       return true;
     } catch (error) {
       console.error('Failed to reset templates:', error);
-      toast.error('重置模板失敗');
+      toast.error('Reset模板失敗');
       return false;
     }
   };
 
-  // 初始化載入
+  // Initialize載入
   useEffect(() => {
     loadTemplates();
   }, []);

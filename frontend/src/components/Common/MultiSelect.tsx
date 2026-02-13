@@ -43,7 +43,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 點擊外部關閉下拉選單
+  // ClickExternalCloseDropdown menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -57,12 +57,12 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 篩選選項
+  // FilterOptions
   const filteredOptions = options.filter(option =>
     option.label.toLowerCase().includes(search.toLowerCase())
   );
 
-  // 獲取已選項目的詳細資訊
+  // 獲取已Options目的詳細資訊
   const selectedOptions = value.map(val => options.find(opt => opt.value === val)).filter(Boolean) as Option[];
 
   const handleSelect = (optionValue: string) => {
@@ -105,7 +105,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         )}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        {/* 已選項目 */}
+        {/* 已Options目 */}
         {selectedOptions.length > 0 ? (
           selectedOptions.map(option => (
             <span
@@ -134,10 +134,10 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         )} />
       </div>
 
-      {/* 下拉選單 */}
+      {/* Dropdown menu */}
       {isOpen && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
-          {/* 搜尋框 */}
+          {/* Search框 */}
           <div className="p-2 border-b border-gray-100">
             <input
               type="text"
@@ -149,7 +149,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
             />
           </div>
 
-          {/* 選項列表 */}
+          {/* OptionsList */}
           <div className="overflow-y-auto" style={{ maxHeight }}>
             {loading ? (
               <div className="px-3 py-8 text-center text-gray-500">
@@ -179,7 +179,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                       )}
                     </div>
 
-                    {/* 選項內容 */}
+                    {/* OptionsContent */}
                     <div className="flex items-center gap-2 flex-1">
                       {option.icon && <span className="text-sm">{option.icon}</span>}
                       <span 

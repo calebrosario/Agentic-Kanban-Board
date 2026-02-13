@@ -63,7 +63,7 @@ export const sortSessions = (sessions: Session[], sortType: SortType): Session[]
           return priorityA - priorityB;
         }
         
-        // 如果狀態相同，按更新時間排序
+        // If狀態相同，按更新Time排序
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
       });
       

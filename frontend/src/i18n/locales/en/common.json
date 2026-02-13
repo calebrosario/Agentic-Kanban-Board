@@ -7,6 +7,14 @@
     "ja": "日本語",
     "pt": "Português"
   },
+  "layout": {
+    "returnToWorkItem": "Return to Work Item",
+    "returnToList": "Return to list",
+    "fullscreen": "Fullscreen",
+    "close": "Close",
+    "restore": "Restore",
+    "verifying": "Verifying..."
+  },
   "loading": "Loading...",
   "error": {
     "title": "Error",

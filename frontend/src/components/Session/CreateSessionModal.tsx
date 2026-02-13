@@ -44,21 +44,21 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   const { workItems, fetchWorkItems } = useWorkItemStore();
   const { activeTemplates } = useTaskTemplates();
   
-  // 移除不再使用的 continuableSessions（現在使用 --continue 參數）
+  // Remove unused continuableSessions (now using --continue parameter)
 
-  // 載入工作流程階段和 Work Items
+  // Load workflow stages and Work Items
   useEffect(() => {
     if (isOpen) {
       loadWorkflowStages();
-      fetchWorkItems(); // 載入所有 Work Items
+      fetchWorkItems(); // Load all Work Items
       
-      // 如果有預設的 Work Item ID，確保它被設置並使用其 workspace_path
+      // If there is default Work Item ID, ensure it is set and use its workspace_path
       if (defaultWorkItemId) {
         const workItem = workItems.find(w => w.work_item_id === defaultWorkItemId);
         setFormData(prev => ({ 
           ...prev, 
           work_item_id: defaultWorkItemId,
-          // 使用 Work Item 的 workspace_path，如果沒有則使用預設路徑
+          // Use Work Item's workspace_path, if not then use default path
           workingDir: prev.workingDir || workItem?.workspace_path || ''
         }));
       }
@@ -67,7 +67,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
 
   const loadWorkflowStages = async () => {
     try {
-      const stages = await workflowStageService.getAllStages(true); // 只載入活躍的階段
+      const stages = await workflowStageService.getAllStages(true); // Load only active stages
       setWorkflowStages(stages);
     } catch (error) {
       console.error('Failed to load workflow stages:', error);
@@ -77,20 +77,20 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
-    // 處理工作流程階段選擇
+    // Handle workflow stage selection
     if (name === 'workflow_stage_id') {
       const stage = workflowStages.find(s => s.stage_id === value);
       setSelectedStage(stage || null);
     }
     
-    // 處理 Work Item 選擇 - 自動更新工作目錄
+    // Handle Work Item selection - auto update working directory
     if (name === 'work_item_id' && value) {
       const selectedWorkItem = workItems.find(w => w.work_item_id === value);
       if (selectedWorkItem?.workspace_path) {
         setFormData(prev => ({
           ...prev,
           [name]: value,
-          workingDir: selectedWorkItem.workspace_path || prev.workingDir // 自動填入 Work Item 的工作區路徑
+          workingDir: selectedWorkItem.workspace_path || prev.workingDir // Auto-fill Work Item's workspace path
         }));
         return;
       }
@@ -137,7 +137,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
 
       toast.success(t('session.create.toasts.created'));
 
-      // 重置表單，但保留 Work Item ID 和預設路徑如果有的話
+      // Reset form, but keep Work Item ID and default path if any
       const workItem = defaultWorkItemId ? workItems.find(w => w.work_item_id === defaultWorkItemId) : null;
       setFormData({
         name: '',
@@ -233,7 +233,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                       />
                     </div>
 
-                    {/* 工作目錄 */}
+                    {/* Working directory */}
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <label htmlFor="workingDir" className="text-sm font-medium text-gray-700">
@@ -242,7 +242,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                         <span className="text-xs text-gray-500">{t('session.create.workingDirHint')}</span>
                       </div>
 
-                      {/* 常用路徑快速選擇 */}
+                      {/* Common path quick selection */}
                       {commonPaths.length > 0 && (
                         <select
                           onChange={(e) => {
@@ -277,7 +277,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                         required
                       />
 
-                      {/* 路徑提示 */}
+                      {/* Path hint */}
                       {formData.workingDir && (
                         <div className="mt-1.5 text-xs text-gray-600">
                           ✓ <span className="font-mono">{formData.workingDir}</span>
@@ -296,7 +296,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
 
                   <div>
                     <label htmlFor="work_item_id" className="block text-sm font-medium text-gray-700 mb-1.5">
-                      {t('session.create.workItemLabel', { autoLinked: defaultWorkItemId ? t('session.create.autoLinked') : t('session.create.optional') })}
+                      {defaultWorkItemId ? t('session.create.autoLinked') : t('session.create.optional')}
                     </label>
                     <select
                       id="work_item_id"
@@ -383,7 +383,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                   </div>
                 </div>
 
-                {/* 進階選項 */}
+                {/* Advanced options */}
                 <div className="glass-card p-4 rounded-lg border border-white/40 bg-white/15">
                   <h3 className="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
                     <ShieldOff className="w-4 h-4 text-orange-600" />
@@ -391,7 +391,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                   </h3>
 
                   <div className="space-y-3">
-                    {/* 繼續對話選項 */}
+                    {/* Continue chat option */}
                     <div className="flex items-center space-x-2.5">
                       <input
                         type="checkbox"
@@ -412,7 +412,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                       </div>
                     )}
 
-                    {/* 跳過權限檢查選項 */}
+                    {/* Skip permission check option */}
                     <div className="flex items-center space-x-2.5">
                       <input
                         type="checkbox"
@@ -436,7 +436,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                 </div>
               </div>
 
-              {/* 右欄：任務描述區域 */}
+              {/* Right column: task description area */}
               <div className="flex flex-col h-full">
                 {/* 任務描述卡片 - 塞滿右側高度 */}
                 <div className="glass-card p-4 rounded-lg border-2 border-green-200/60 bg-white/20 shadow-lg flex flex-col h-full">
@@ -464,13 +464,13 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                         className="w-full h-full px-3 py-2.5 glass-ultra border border-white/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 focus:bg-white/35 bg-white/25 text-gray-800 placeholder-gray-500 leading-relaxed transition-colors duration-150 resize-none flex-1"
                         required
                       />
-                      {/* 字數統計 */}
+                      {/* Character count */}
                       <div className="absolute bottom-2 right-3 text-xs text-gray-500 bg-white/90 px-2 py-1 rounded">
                         {formData.task.length} {t('session.create.characters')}
                       </div>
                     </div>
 
-                    {/* 快速任務模板 */}
+                    {/* Quick task templates */}
                     <div className="mt-2 flex-shrink-0">
                       <div className="text-xs text-gray-600 font-medium mb-1.5">{t('session.create.quickTemplates')}</div>
                       <div className="flex flex-wrap gap-1.5">
@@ -496,7 +496,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
               </div>
             </div>
 
-            {/* 底部按鈕 */}
+            {/* Bottom buttons */}
             <div className="flex space-x-3 pt-4 border-t border-white/20 mt-4">
               <button
                 type="button"

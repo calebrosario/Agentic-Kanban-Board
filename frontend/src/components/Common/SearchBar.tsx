@@ -26,7 +26,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const [searchQuery, setSearchQuery] = useState(defaultValue);
   const debouncedQuery = useDebounce(searchQuery, debounceDelay);
 
-  // 當 debounced 值改變時觸發搜尋
+  // 當 debounced 值改變時觸發Search
   useEffect(() => {
     onSearch(debouncedQuery);
   }, [debouncedQuery, onSearch]);
