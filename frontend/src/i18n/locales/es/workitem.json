@@ -1,0 +1,179 @@
+{
+  "title": "Work Items",
+  "actions": {
+    "add": "Add Work Item",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "create": "Create"
+  },
+  "form": {
+    "title": "Create Work Item",
+    "name": "Title",
+    "nameRequired": "Title *",
+    "namePlaceholder": "Enter Work Item title",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Work Item about?",
+    "status": "Status",
+    "statusPlaceholder": "Select current status",
+    "workflowStage": "Workflow Stage",
+    "workflowStagePlaceholder": "Link to workflow stage (optional)",
+    "project": "Project",
+    "projectPlaceholder": "Select project (optional)",
+    "tags": "Tags",
+    "tagsPlaceholder": "Add tags for organization"
+  },
+  "status": {
+    "planning": "Planning",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "planningSet": "Set as Planning",
+    "inProgressStarted": "Started In Progress",
+    "completedMarked": "Marked as Completed",
+    "label": {
+      "planning": "Planning",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "list": {
+    "title": "All Work Items",
+    "filter": {
+      "all": "All",
+      "planning": "Planning",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "search": {
+      "placeholder": "Search Work Items..."
+    },
+    "stats": {
+      "total": "Total",
+      "planning": "Planning",
+      "in_progress": "In Progress",
+      "completed": "Completed"
+    }
+  },
+  "detail": {
+    "title": "Work Item Details",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "startExecution": "Start Execution",
+      "markComplete": "Mark as Complete"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "sessions": "Sessions"
+    },
+    "info": {
+      "created": "Created at",
+      "updated": "Updated at",
+      "status": "Status",
+      "stage": "Workflow Stage",
+      "project": "Project",
+      "tags": "Tags",
+      "noDescription": "No description",
+      "timeInfo": "Time Information",
+      "operationsMenu": "Operations Menu",
+      "createdAt": "Created at {time}",
+      "completedAt": "Completed at {time}"
+    },
+    "empty": {
+      "title": "No Sessions",
+      "description": "This Work Item has no linked Sessions yet",
+      "createSession": "Create Session",
+      "notFound": "Work Item not found",
+      "backToList": "Back to list"
+    },
+    "timeline": {
+      "created": "Created at {time}",
+      "completed": "Completed at {time}"
+    },
+    "sessions": {
+      "title": "Sessions ({count})",
+      "searchPlaceholder": "Search Sessions...",
+      "noSessions": "No sessions yet",
+      "createFirst": "Create first",
+      "completedSessions": "{count} completed",
+      "total": "Sessions",
+      "deleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone."
+    },
+    "devmd": {
+      "title": "Dev Log (dev.md)",
+      "notFound": "Work Item not found",
+      "backToList": "Back to list",
+      "return": "Return",
+      "sections": "Total {count} sections",
+      "noSections": "No Session summaries yet",
+      "autoCreate": "Claude Code will automatically create sections after running",
+      "notCreated": "dev.md not created yet",
+      "reload": "Reload dev.md",
+      "quickNav": "Quick Navigation",
+      "jumpToSection": "Quick jump to Session summary",
+      "nonStandard": "Non-standard format",
+      "download": "Download dev.md",
+      "quickNavPanel": "Quick Navigation Panel",
+      "devLog": "Dev Log"
+    },
+    "progress": "Progress {progress}%"
+  },
+  "toasts": {
+    "created": "Work Item created",
+    "updated": "Work Item updated",
+    "deleted": "Work Item deleted",
+    "statusUpdated": "Work Item status updated",
+    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted, but will be unlinked.",
+    "sessionDeleted": "Session deleted",
+    "sessionDeleteFailed": "Failed to delete Session",
+    "sessionDeleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone.",
+    "statusUpdatedText": "Status updated",
+    "statusUpdateFailed": "Failed to update status",
+    "devMdLoadFailed": "Failed to load dev.md",
+    "devMdDownloaded": "dev.md downloaded",
+    "workItemDeleted": "Work Item deleted",
+    "workItemDeleteFailed": "Failed to delete Work Item"
+  },
+  "errors": {
+    "nameRequired": "Title is required",
+    "createFailed": "Failed to create Work Item",
+    "updateFailed": "Failed to update Work Item",
+    "deleteFailed": "Failed to delete Work Item",
+    "notFound": "Work Item not found",
+    "loadFailed": "Failed to load Work Item"
+  },
+  "card": {
+    "actions": {
+      "edit": "Edit",
+      "startExecution": "Start Execution",
+      "markComplete": "Mark Complete",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "timeline": {
+      "created": "Created at {time}",
+      "completed": "Completed at {time}"
+    }
+  },
+  "row": {
+    "basicInfo": "Basic Information",
+    "description": "Description",
+    "status": "Status",
+    "timeInfo": "Time Information",
+    "operationsMenu": "Operations Menu",
+    "portalMenu": "Portal Menu"
+  },
+  "sessionStatus": {
+    "processing": "Processing",
+    "completed": "Completed",
+    "error": "Error occurred",
+    "interrupted": "Interrupted",
+    "idle": "Idle",
+    "unknown": "Unknown"
+  }
+}

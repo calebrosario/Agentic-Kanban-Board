@@ -1,0 +1,131 @@
+{
+  "title": "Workflow Stages",
+  "stages": "Stages",
+  "agentPrompts": {
+    "title": "Agent Prompts Library",
+    "header": {
+      "libraryTitle": "Agent Prompts Library",
+      "settings": "Settings"
+    },
+    "loading": "Loading...",
+    "error": {
+      "loadFailed": "Failed to load",
+      "pathRequired": "Please enter a path",
+      "saveFailed": "Failed to save settings",
+      "configFailed": "Failed to configure"
+    },
+    "empty": {
+      "noAgents": "No agent files found in directory",
+      "pathNotConfigured": "Claude agents path not configured yet",
+      "checkPath": "Please verify the path is configured correctly",
+      "pleaseConfigure": "Please configure Claude agents path first",
+      "defaultLocation": "Usually located at"
+    },
+    "agentList": {
+      "count": "Total {count}",
+      "viewDetails": "Click to view details",
+      "settings": "Settings"
+    },
+    "settings": {
+      "title": "Agent Directory Settings",
+      "currentPath": "Current path:",
+      "notConfigured": "Claude agents path not configured yet",
+      "configured": "Currently configured:",
+      "path": "Claude Agents Path",
+      "placeholder": "e.g., C:\\Users\\User\\.claude\\agents",
+      "pathHint": "Directory containing agent prompt files",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "agentCard": {
+      "viewDetails": "View details",
+      "iconLabel": "agent file",
+      "status": {
+        "available": "Available"
+        },
+      "sections": {
+        "description": "Description",
+        "status": "Status"
+      }
+    },
+    "agentDetail": {
+      "loading": "Loading...",
+      "error": {
+        "notFound": "Agent not found: {name}",
+        "loadFailed": "Failed to load agent details"
+        },
+      "header": {
+        "backButton": "Back to list"
+        },
+      "title": "Agent Name",
+      "fileName": "Agent File",
+      "copyContent": {
+        "button": "Copy Content",
+        "copied": "Copied!",
+        "notCopied": "Copy Content"
+        },
+      "sections": {
+        "title": "Section title and actions",
+        "description": "Description",
+        "status": "Status",
+        "tools": "Tools",
+        "promptContent": "Prompt Content",
+        "promptTitle": "Prompt Content"
+        },
+      "empty": {
+        "noDescription": "No description",
+        "noTools": "No tools",
+        "noPromptContent": "No prompt content"
+        },
+      "actions": {
+        "backToList": "Back to list",
+        "featureNotImplemented": "Feature not yet implemented: {feature}",
+        "workflowFeature": "Workflow Feature"
+        }
+    }
+  },
+  "actions": {
+    "add": "Add Stage",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "form": {
+    "name": "Stage Name",
+    "nameRequired": "Stage Name *",
+    "namePlaceholder": "e.g., Code Review, Bug Fix",
+    "agent": "Agent",
+    "agentPlaceholder": "Select Agent (optional)",
+    "color": "Color",
+    "colorPlaceholder": "Select color for visual identification",
+    "prompt": "Custom Prompt",
+    "promptPlaceholder": "Add additional instructions (optional)",
+    "suggestedTasks": "Suggested Tasks",
+    "suggestedTasksPlaceholder": "e.g., Check authentication module"
+  },
+  "status": {
+    "planning": "Planning",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "empty": {
+    "title": "No Workflow Stages",
+    "description": "Create workflow stages to organize your development process",
+    "createButton": "Add Stage"
+  },
+  "toasts": {
+    "created": "Workflow stage created successfully",
+    "updated": "Workflow stage updated successfully",
+    "deleted": "Workflow stage deleted",
+    "loadFailed": "Failed to load workflow stages",
+    "deleteFailed": "Failed to delete workflow stage",
+    "updateFailed": "Failed to update workflow stage"
+  },
+  "errors": {
+    "nameRequired": "Stage name is required",
+    "agentNotFound": "Agent file not found",
+    "saveFailed": "Failed to save workflow stage"
+  }
+}
