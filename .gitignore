@@ -142,4 +142,4 @@ cucumber.js
 test.html
 *.tsbuildinfo
 
-docker/
+docker/translate-i18n.ts

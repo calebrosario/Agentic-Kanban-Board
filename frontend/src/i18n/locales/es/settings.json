@@ -1,75 +1,75 @@
 {
-  "title": "Settings",
+  "title": "Ajustes",
   "tabs": {
-    "commonPaths": "Common Paths",
-    "taskTemplates": "Task Templates"
+    "commonPaths": "Caminos comunes",
+    "taskTemplates": "Plantillas de tareas"
   },
   "commonPaths": {
-    "title": "Common Paths",
-    "description": "Manage frequently used directories for quick access",
-    "addNew": "Add New",
-    "resetDefault": "Reset to Default",
+    "title": "Caminos comunes",
+    "description": "Gestionar directorios de uso frecuente para un acceso rápido",
+    "addNew": "Añadir nuevo",
+    "resetDefault": "Restablecer a la forma predeterminada ",
     "empty": {
-      "title": "No common paths yet",
-      "addFirst": "Add first path"
+      "title": "Aún no hay rutas comunes",
+      "addFirst": "Añadir primera ruta"
     },
     "form": {
-      "label": "Label",
-      "labelPlaceholder": "Path label",
-      "icon": "Icon",
-      "path": "Path",
+      "label": "Etiqueta",
+      "labelPlaceholder": "Etiqueta de ruta",
+      "icon": "Ícono",
+      "path": "Ruta",
       "pathPlaceholder": "C:\\Users\\User",
-      "folder": "Folder",
-      "code": "Code",
-      "home": "Home"
+      "folder": "Carpeta",
+      "code": "Código",
+      "home": "Inicio"
     },
     "actions": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "delete": "Delete"
+      "add": "Añadir",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar"
     },
     "errors": {
-      "labelAndPathRequired": "Label and path cannot be empty"
+      "labelAndPathRequired": "La etiqueta no puede estar vacía."
     }
   },
   "taskTemplates": {
-    "title": "Task Templates",
-    "description": "Manage reusable task templates for quick task creation",
-    "addNew": "Add New",
-    "resetDefault": "Reset to Default",
+    "title": "Plantillas de tareas",
+    "description": "Gestionar plantillas de tareas reutilizables para la creación rápida de tareas",
+    "addNew": "Añadir nuevo",
+    "resetDefault": "Restablecer a la forma predeterminada ",
     "empty": {
-      "title": "No task templates yet",
-      "addFirst": "Add first template"
+      "title": "Aún no hay ninguna plantilla",
+      "addFirst": "Mi primer plantilla"
     },
     "form": {
-      "label": "Label",
-      "labelPlaceholder": "e.g., Continue Work",
-      "template": "Template Content",
-      "templatePlaceholder": "Describe the task template content...",
-      "characters": "characters"
+      "label": "Etiqueta",
+      "labelPlaceholder": "por ejemplo, continuar el trabajo",
+      "template": "Contenido de la plantilla",
+      "templatePlaceholder": "Describe el contenido de la plantilla de tareas...",
+      "characters": "caracteres"
     },
     "actions": {
-      "add": "Add",
-      "save": "Save",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "delete": "Delete"
+      "add": "Añadir",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar"
     },
     "badge": {
-      "default": "Default"
+      "default": "Predeterminado"
     },
     "errors": {
-      "labelAndTemplateRequired": "Label and template content cannot be empty",
-      "cannotDeleteDefault": "Cannot delete default template"
+      "labelAndTemplateRequired": "El contenido de la etiqueta y la plantilla no puede estar vacío",
+      "cannotDeleteDefault": "No se puede eliminar la plantilla predeterminada."
     },
     "confirm": {
-      "resetDefault": "Are you sure you want to reset to default templates? This will delete all custom templates."
+      "resetDefault": "¿Está seguro de que desea restablecer las plantillas predeterminadas? Esto eliminará todas las plantillas personalizadas."
     }
   },
   "footer": {
-    "autoSync": "Settings are automatically synced to database",
-    "close": "Close"
+    "autoSync": "Los ajustes se sincronizan automáticamente con la base de datos",
+    "close": "Cerrar"
   }
 }

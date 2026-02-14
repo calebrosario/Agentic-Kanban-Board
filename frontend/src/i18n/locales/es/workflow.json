@@ -1,166 +1,162 @@
 {
-  "title": "Workflow Stages",
-  "stages": "Stages",
+  "title": "Catálogo de Etapas",
+  "stages": "Etapas",
   "agentPrompts": {
-    "title": "Agent Prompt Library",
+    "title": "Biblioteca de mensajes del agente",
     "header": {
-      "libraryTitle": "Agent Prompt Library",
-      "settings": "Settings"
+      "libraryTitle": "Biblioteca de mensajes del agente",
+      "settings": "Ajustes"
     },
-    "loading": "Loading...",
+    "loading": "Cargando...",
     "error": {
-      "loadFailed": "Failed to load",
-      "pathRequired": "Please enter agent path",
-      "saveFailed": "Failed to save configuration",
-      "configFailed": "Configuration failed"
+      "loadFailed": "Error al cargar",
+      "pathRequired": "Por favor, introduzca la ruta del agente",
+      "saveFailed": "Error al guardar configuración",
+      "configFailed": "Error en la configuración"
     },
     "empty": {
-      "noAgents": "No agent files found",
-      "pathNotConfigured": "Agent path not yet configured",
-      "checkPath": "Please verify agent path configuration is correct",
-      "pleaseConfigure": "Please configure Claude agents path first",
-      "defaultLocation": "Usually located at"
+      "noAgents": "No se han encontrado archivos de agente",
+      "pathNotConfigured": "La ruta del agente aún no está configurada",
+      "checkPath": "Verifique que la configuración de la ruta del agente sea correcta",
+      "pleaseConfigure": "Configure primero la ruta de los agentes de Claude",
+      "defaultLocation": "Por lo general, se encuentra en"
     },
     "agentList": {
-      "count": "Total {count}",
-      "settings": "Settings"
+      "count": "Total Count = {0}",
+      "settings": "Ajustes"
     },
     "settings": {
-      "title": "Agent Directory Settings",
-      "currentPath": "Current path:",
-      "notConfigured": "Agent path not yet configured",
-      "configured": "Currently configured:",
-      "path": "~/.claude/agents",
-      "placeholder": "e.g., C:\\Users\\YourName\\.claude\\agents",
-      "pathHint": "Directory containing agent prompt files (.md)",
-      "save": "Save",
-      "cancel": "Cancel"
+      "title": "Configuración del directorio de agentes",
+      "currentPath": "Ruta actual",
+      "notConfigured": "La ruta del agente aún no está configurada",
+      "configured": "Registros actualmente configurados:",
+      "path": "~/.claude/agentes",
+      "placeholder": "por ejemplo, C:\\Users\\YourName\\.claude\\agents",
+      "pathHint": "Directorio que contiene archivos de solicitud de agente (.md)",
+      "save": "Guardar",
+      "cancel": "Cancelar"
     },
     "agentCard": {
-      "viewDetails": "View details",
-      "iconLabel": "agent file",
+      "viewDetails": "Ver detalles",
+      "iconLabel": "archivo de agente",
       "status": {
-        "available": "Available"
+        "available": "Disponible"
       },
       "sections": {
-        "description": "Description",
-        "status": "Status"
+        "description": "Descripción",
+        "status": "Estado"
       }
     },
     "agentDetail": {
-      "loading": "Loading...",
+      "loading": "Cargando...",
       "error": {
-        "notFound": "Agent not found: {name}",
-        "loadFailed": "Failed to load agent detail"
+        "notFound": "Agente no encontrado: {name}",
+        "loadFailed": "Fallo al cargar el detalle del agente"
       },
       "header": {
-        "backButton": "Back to list"
+        "backButton": "Volver al listado"
       },
-      "title": "Agent Name",
-      "fileName": "Agent file",
+      "title": "Nombre del agente",
+      "fileName": "Archivo del agente",
       "copyContent": {
-        "button": "Copy content",
-        "copied": "Copied!",
-        "notCopied": "Copy content"
+        "button": "Copiar contenido",
+        "copied": "¡Copiado!",
+        "notCopied": "Copiar contenido"
       },
       "sections": {
-        "title": "Section Title and Actions",
-        "description": "Description",
-        "status": "Status",
-        "tools": "Tools",
-        "promptContent": "Prompt Content",
-        "promptTitle": "Prompt Content"
+        "title": "Título de la sección y acciones",
+        "description": "Descripción",
+        "status": "Estado",
+        "tools": "Herramientas",
+        "promptContent": "Contenido del aviso",
+        "promptTitle": "Contenido del aviso"
       },
       "empty": {
-        "noDescription": "No description",
-        "noTools": "No tools",
-        "noPromptContent": "No prompt content"
+        "noDescription": "Sin descripción",
+        "noTools": "Sin herramientas",
+        "noPromptContent": "Sin contenido de aviso"
       },
       "actions": {
-        "backToList": "Back to list",
-        "featureNotImplemented": "Feature not yet implemented: {feature}",
-        "workflowFeature": "Workflow feature"
+        "backToList": "Volver al listado",
+        "featureNotImplemented": "Función aún no implementada: {feature}",
+        "workflowFeature": "Función de flujo de trabajo"
       }
     }
   },
   "actions": {
-    "add": "Add Stage",
-    "edit": "Edit",
-    "delete": "Delete",
-    "save": "Save",
-    "saveChanges": "Save Changes",
-    "editWorkflow": "Edit Workflow Stage",
-    "viewMode": "View Mode",
-    "compactMode": "Compact View",
-    "allTasks": "All suggested tasks:",
-    "showMore": "Show +{{count}} more",
-    "edit": "Edit",
-    "viewMode": "View Mode",
-    "compactMode": "Compact View",
-    "noSuggestedTasks": "No suggested tasks",
-    "edit": "Edit",
-    "cancel": "Cancel"
+    "add": "Añadir etapa",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "saveChanges": "Guardar cambios",
+    "editWorkflow": "Editar etapa de flujo de trabajo",
+    "viewMode": "Modo de visualización",
+    "compactMode": "Vista compacta",
+    "allTasks": "Todas las tareas sugeridas:",
+    "showMore": "Mostrar +{{count}} más",
+    "noSuggestedTasks": "Sin tareas sugeridas",
+    "cancel": "Cancelar"
   },
-  "confirmDelete": "Are you sure you want to delete this workflow stage?",
+  "confirmDelete": "¿Está seguro de que desea eliminar este flujo de trabajo?",
   "form": {
-    "name": "Stage Name",
-    "nameRequired": "Stage Name *",
-    "namePlaceholder": "e.g., Code Review, Bug Fixing",
-    "description": "Description",
-    "descriptionPlaceholder": "Brief description of this stage's purpose",
-    "agent": "Agent",
-    "agentPlaceholder": "Select an agent (optional)",
+    "name": "Nombre de la etapa",
+    "nameRequired": "Nombre de la etapa",
+    "namePlaceholder": "por ejemplo, revisión de código, corrección de errores",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Breve descripción del propósito de esta etapa",
+    "agent": "Agente",
+    "agentPlaceholder": "Selecciona un agente (opcional)",
     "color": "Color",
-    "colorPlaceholder": "Choose a color for visual identification",
-    "prompt": "Custom Prompt",
-    "promptPlaceholder": "Add additional instructions (optional)",
-    "promptSource": "Prompt Source *",
-    "customPrompt": "Custom Prompt",
-    "useAgent": "Use Agent",
-    "agentNotConfigured": "(Please configure Agent path first)",
-    "systemPrompt": "System Prompt *",
-    "systemPromptPlaceholder": "Define AI Agent behavior and role in this stage...",
-    "selectAgent": "Select an Agent...",
-    "usingAgentPrompt": "Will use prompt from {agent}.md",
-    "checkAgentConfig": "Check Agent Configuration",
-    "useCustomPrompt": "Use Custom Prompt",
-    "suggestedTasks": "Suggested Tasks",
-    "suggestedTasksPlaceholder": "Enter suggested task...",
-    "addSuggestedTask": "+ Add Suggested Task"
+    "colorPlaceholder": "Elige un color para la identificación visual",
+    "prompt": "Mensaje personalizado",
+    "promptPlaceholder": "Instrucciones adicionales (opcional):",
+    "promptSource": "Fuente del aviso *",
+    "customPrompt": "Mensaje personalizado",
+    "useAgent": "Uso - Agente",
+    "agentNotConfigured": "(Configure primero la ruta del agente)",
+    "systemPrompt": "Por ejemplo, el mensaje",
+    "systemPromptPlaceholder": "Definir el comportamiento y el papel del agente de IA en esta etapa...",
+    "selectAgent": "Seleccione un Agente",
+    "usingAgentPrompt": "Usará el mensaje de {agent}.md",
+    "checkAgentConfig": "Comprobar la configuración del agente",
+    "useCustomPrompt": "Usar mensaje personalizado",
+    "suggestedTasks": "Tareas sugeridas",
+    "suggestedTasksPlaceholder": "Introducir tarea sugerida...",
+    "addSuggestedTask": "+ Añadir tarea sugerida"
   },
   "stageList": {
-    "status": "Status",
-    "planning": "Planning",
-    "inProgress": "In Progress",
-    "completed": "Completed",
-    "cancelled": "Cancelled",
-    "active": "Active",
-    "inactive": "Inactive",
-    "usingAgent": "Using Agent",
-    "usingCustomPrompt": "Using Custom Prompt"
+    "status": "Sincronizar el estado de confirmación de la reserva con el pedido Woo correspondiente",
+    "planning": "Planificación",
+    "inProgress": "En progreso",
+    "completed": "Completado",
+    "cancelled": "Cancelada",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "usingAgent": "Uso del agente",
+    "usingCustomPrompt": "Uso del mensaje personalizado"
   },
   "status": {
-    "planning": "Planning",
-    "in_progress": "In Progress",
-    "completed": "Completed",
-    "cancelled": "Cancelled"
+    "planning": "Planificación",
+    "in_progress": "En progreso",
+    "completed": "Completado",
+    "cancelled": "Cancelada"
   },
   "empty": {
-    "title": "No Workflow Stages",
-    "description": "Create workflow stages to organize your development process",
-    "createButton": "Add Stage"
+    "title": "Catalogo de Etapas",
+    "description": "Cree etapas de flujo de trabajo para organizar su proceso de desarrollo",
+    "createButton": "Añadir etapa"
   },
   "toasts": {
-    "created": "Workflow stage created successfully",
-    "updated": "Workflow stage updated successfully",
-    "deleted": "Workflow stage deleted",
-    "loadFailed": "Failed to load workflow stages",
-    "deleteFailed": "Failed to delete workflow stage",
-    "updateFailed": "Failed to update workflow stage"
+    "created": "Etapa de flujo de trabajo creada con éxito",
+    "updated": "Etapa actualizada correctamente",
+    "deleted": "Etapa de flujo de trabajo eliminada",
+    "loadFailed": "Error al cargar las etapas del flujo de trabajo",
+    "deleteFailed": "Error al eliminar la etapa del flujo de trabajo",
+    "updateFailed": "Error al actualizar la etapa del flujo de trabajo"
   },
   "errors": {
-    "nameRequired": "Stage name is required",
-    "agentNotFound": "Agent file not found",
-    "saveFailed": "Failed to save workflow stage"
+    "nameRequired": "El nombre del escenario es obligatorio",
+    "agentNotFound": "Archivo de agente no encontrado",
+    "saveFailed": "Error al guardar la etapa del flujo de trabajo"
   }
 }

@@ -1,195 +1,195 @@
 {
-  "title": "Work Items",
+  "title": "Elementos de trabajo",
   "actions": {
-    "add": "Add Work Item",
-    "edit": "Edit",
-    "delete": "Delete",
-    "save": "Save",
-    "cancel": "Cancel",
-    "back": "Back",
-    "create": "Create"
+    "add": "Añadir elemento de trabajo",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "back": "Atrás",
+    "create": "Crear"
   },
   "form": {
-    "title": "Create Work Item",
-    "name": "Title",
-    "nameRequired": "Title *",
-    "namePlaceholder": "Enter work item title",
-    "description": "Description",
-    "descriptionPlaceholder": "What is this work item about?",
-    "status": "Status",
-    "statusPlaceholder": "Choose current status",
-    "workflowStage": "Workflow Stage",
-    "workflowStagePlaceholder": "Link to a workflow stage (optional)",
-    "project": "Project",
-    "projectPlaceholder": "Select a project (optional)",
-    "tags": "Tags",
-    "tagsPlaceholder": "Add tags for organization",
-    "workspacePath": "Working Directory",
-    "workspacePathPlaceholder": "e.g., C:\\Users\\YourName\\Projects\\MyProject",
-    "workspacePathHint": "Set the default working directory for this Work Item. Sessions created will automatically use this path.",
-    "infoHint": "Work Items are containers for organizing related Sessions. You can link to this Work Item when creating a Session, or link existing Sessions later.",
-    "submit": "Create"
+    "title": "Crear elemento de trabajo",
+    "name": "Título",
+    "nameRequired": "Título *",
+    "namePlaceholder": "Ingresa el título del elemento",
+    "description": "Descripción",
+    "descriptionPlaceholder": "¿Por qué?",
+    "status": "Estado",
+    "statusPlaceholder": "Elige el estado actual",
+    "workflowStage": "Etapa de flujo de trabajo",
+    "workflowStagePlaceholder": "Enlace a una etapa de flujo de trabajo (opcional)",
+    "project": "Proyecto",
+    "projectPlaceholder": "Selecciona un proyecto (opcional)",
+    "tags": "Etiquetas",
+    "tagsPlaceholder": "Añadir etiquetas para la organización",
+    "workspacePath": "Carpeta de trabajo",
+    "workspacePathPlaceholder": "por ejemplo, C:\\Users\\YourName\\Projects\\MyProject",
+    "workspacePathHint": "Establezca el directorio de trabajo predeterminado para este elemento de trabajo. Las sesiones creadas utilizarán automáticamente esta ruta.",
+    "infoHint": "Los elementos de trabajo son contenedores para organizar sesiones relacionadas. Puede vincular a este elemento de trabajo al crear una sesión o vincular sesiones existentes más adelante.",
+    "submit": "Crear"
   },
   "editDialog": {
-    "title": "Edit Work Item",
-    "currentStatus": "Current status:",
-    "submit": "Save changes"
+    "title": "Editar elemento de trabajo",
+    "currentStatus": "Estado actual:",
+    "submit": "Guardar cambios"
   },
   "status": {
-    "planning": "Planning",
-    "in_progress": "In Progress",
-    "completed": "Completed",
-    "cancelled": "Cancelled",
-    "planningSet": "Set to planning",
-    "inProgressStarted": "Started execution",
-    "completedMarked": "Marked as complete",
+    "planning": "Planificación",
+    "in_progress": "En progreso",
+    "completed": "Completado",
+    "cancelled": "Cancelada",
+    "planningSet": "Establecer en planificación",
+    "inProgressStarted": "Ejecución iniciada",
+    "completedMarked": "Marcado como completo",
     "label": {
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
+      "planning": "Planificación",
+      "in_progress": "En progreso",
+      "completed": "Completado",
+      "cancelled": "Cancelada"
     }
   },
   "list": {
-    "title": "All Work Items",
+    "title": "Todos los elementos de trabajo",
     "filter": {
-      "all": "All",
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
+      "all": "Todos",
+      "planning": "Planificación",
+      "in_progress": "En progreso",
+      "completed": "Completado",
+      "cancelled": "Cancelada"
     },
     "search": {
-      "placeholder": "Search Work Items..."
+      "placeholder": "Buscar elementos de trabajo..."
     },
     "stats": {
       "total": "Total {count}",
-      "planning": "Planning",
-      "in_progress": "In Progress",
-      "completed": "Completed"
+      "planning": "Planificación",
+      "in_progress": "En progreso",
+      "completed": "Completado"
     },
     "empty": {
-      "noResults": "No work items matching criteria found",
-      "noItems": "No work items yet",
-      "createFirst": "Create first work item"
+      "noResults": "No se han encontrado elementos de trabajo que coincidan con los criterios",
+      "noItems": "Aún no hay elementos de trabajo",
+      "createFirst": "Crear primer elemento de trabajo"
     },
-    "help": "Work Items helps you organize and track related sessions"
+    "help": "Los elementos de trabajo le ayudan a organizar y realizar un seguimiento de las sesiones relacionadas"
   },
   "detail": {
-    "title": "Work Item Details",
+    "title": "Detalles del elemento de trabajo",
     "actions": {
-      "edit": "Edit",
-      "delete": "Delete",
-      "startExecution": "Start Execution",
-      "markComplete": "Mark Complete"
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "startExecution": "Comenzar ejecución",
+      "markComplete": "Marcar como completo"
     },
     "tabs": {
-      "overview": "Overview",
-      "sessions": "Sessions"
+      "overview": "Resumen",
+      "sessions": "Sesiones"
     },
     "info": {
-      "created": "Created",
-      "updated": "Updated",
-      "status": "Status",
-      "stage": "Workflow Stage",
-      "project": "Project",
-      "tags": "Tags",
-      "noDescription": "No description",
-      "timeInfo": "Time Information",
-      "operationsMenu": "Operations Menu",
-      "createdAt": "Created {time}",
-      "completedAt": "Completed {time}"
+      "created": "Creado",
+      "updated": "Actualizado",
+      "status": "Estado",
+      "stage": "Etapa de flujo de trabajo",
+      "project": "Proyecto",
+      "tags": "Etiquetas",
+      "noDescription": "Sin descripción",
+      "timeInfo": "Información de tiempo",
+      "operationsMenu": "Menú de operaciones",
+      "createdAt": "Creado {time}",
+      "completedAt": "Completado {time}"
     },
     "empty": {
-      "title": "No Sessions",
-      "description": "No sessions linked to this work item yet",
-      "createSession": "Create Session",
-      "notFound": "Work item not found",
-      "backToList": "Return to list"
+      "title": "No hay sesiones",
+      "description": "Aún no hay sesiones vinculadas a este elemento de trabajo",
+      "createSession": "Crear Sesión",
+      "notFound": "Elemento de trabajo no encontrado",
+      "backToList": "Regresar a la lista"
     },
     "timeline": {
-      "created": "Created {time}",
-      "completed": "Completed {time}"
+      "created": "Creado",
+      "completed": "Completado"
     },
     "sessions": {
-      "title": "Sessions ({count})",
-      "searchPlaceholder": "Search sessions...",
-      "noSessions": "No sessions yet",
-      "createFirst": "Create first session",
-      "completedSessions": "{count} completed",
-      "total": "Sessions",
-      "deleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone."
+      "title": "Sesiones ({count})",
+      "searchPlaceholder": "Buscar sesiones",
+      "noSessions": "No hay sesiones",
+      "createFirst": "Crear primera sesión",
+      "completedSessions": "{count} completadas",
+      "total": "Sesiones",
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar esta sesión? Esta acción no se puede deshacer."
     },
     "devmd": {
-      "title": "Development Log (dev.md)",
-      "notFound": "Work item not found",
-      "backToList": "Return to list",
-      "return": "Return",
-      "sections": "{count} sections",
-      "noSections": "No session sections yet",
-      "autoCreate": "Claude Code will automatically create sections after execution",
-      "notCreated": "dev.md has not been created yet",
-      "reload": "Reload dev.md",
-      "quickNav": "Quick Navigation",
-      "jumpToSection": "Quick jump to session section",
-      "nonStandard": "Non-standard format",
-      "download": "Download dev.md",
-      "quickNavPanel": "Quick Navigation Panel",
-      "devLog": "Development Log"
+      "title": "Registro de desarrollo (dev.md)",
+      "notFound": "Elemento de trabajo no encontrado",
+      "backToList": "Regresar a la lista",
+      "return": "Volver",
+      "sections": "{count} secciones",
+      "noSections": "Todavía no hay secciones de sesión",
+      "autoCreate": "Claude Code creará automáticamente secciones después de la ejecución",
+      "notCreated": "dev.md aún no se ha creado",
+      "reload": "Volver a cargar dev.md",
+      "quickNav": "Navegación rápida",
+      "jumpToSection": "Salto rápido a la sección de sesión",
+      "nonStandard": "sí (no se ha usado el modelo)",
+      "download": "Descargar dev.md",
+      "quickNavPanel": "Panel de navegación rápida",
+      "devLog": "Registro de desarrollo"
     },
-    "progress": "Progress {progress}%"
+    "progress": "Progreso {progress}%"
   },
   "toasts": {
-    "created": "Work Item created",
-    "updated": "Work Item updated",
-    "deleted": "Work Item deleted",
-    "statusUpdated": "Work Item status updated",
-    "deleteConfirm": "Are you sure you want to delete this Work Item? Related Sessions will not be deleted, but will be unlinked.",
-    "sessionDeleted": "Session deleted",
-    "sessionDeleteFailed": "Failed to delete session",
-    "sessionDeleteConfirm": "Are you sure you want to delete this Session? This action cannot be undone.",
-    "statusUpdatedText": "Status updated",
-    "statusUpdateFailed": "Failed to update status",
-    "devMdLoadFailed": "Failed to load dev.md",
-    "devMdDownloaded": "dev.md downloaded",
-    "workItemDeleted": "Work Item deleted",
-    "workItemDeleteFailed": "Failed to delete Work Item"
+    "created": "Elemento de trabajo creado",
+    "updated": "Elemento de trabajo actualizado",
+    "deleted": "Elemento de trabajo eliminado",
+    "statusUpdated": "Estado del elemento de trabajo actualizado",
+    "deleteConfirm": "¿Está seguro de que desea eliminar este elemento de trabajo? Las sesiones relacionadas no se eliminarán, sino que se desvincularán.",
+    "sessionDeleted": "No se ha eliminado ninguna sesión.",
+    "sessionDeleteFailed": "Error al eliminar la sesión",
+    "sessionDeleteConfirm": "¿Estás seguro de que quieres eliminar esta sesión? Esta acción no se puede deshacer.",
+    "statusUpdatedText": "Estado actualizado",
+    "statusUpdateFailed": "Error al actualizar el estado",
+    "devMdLoadFailed": "Error al cargar dev.md",
+    "devMdDownloaded": "dev.md descargado",
+    "workItemDeleted": "Elemento de trabajo eliminado",
+    "workItemDeleteFailed": "Error al eliminar el elemento de trabajo"
   },
   "errors": {
-    "nameRequired": "Title is required",
-    "createFailed": "Failed to create work item",
-    "updateFailed": "Failed to update work item",
-    "deleteFailed": "Failed to delete work item",
-    "notFound": "Work item not found",
-    "loadFailed": "Failed to load work item"
+    "nameRequired": "Se necesita un título",
+    "createFailed": "No se ha podido crear el elemento de trabajo",
+    "updateFailed": "No se pudo actualizar el elemento de trabajo",
+    "deleteFailed": "Error al eliminar el elemento de trabajo",
+    "notFound": "Elemento de trabajo no encontrado",
+    "loadFailed": "No se ha podido cargar el elemento de trabajo"
   },
   "card": {
     "actions": {
-      "edit": "Edit",
-      "startExecution": "Start Execution",
-      "markComplete": "Mark Complete",
-      "cancel": "Cancel",
-      "delete": "Delete"
+      "edit": "Editar",
+      "startExecution": "Comenzar ejecución",
+      "markComplete": "Marcar como completo",
+      "cancel": "Cancelar",
+      "delete": "Eliminar"
     },
     "timeline": {
-      "created": "Created {time}",
-      "completed": "Completed {time}"
+      "created": "Creado",
+      "completed": "Completado"
     }
   },
   "row": {
-    "basicInfo": "Basic Information",
-    "description": "Description",
-    "status": "Status",
-    "timeInfo": "Time Information",
-    "operationsMenu": "Operations Menu",
-    "portalMenu": "Portal Menu"
+    "basicInfo": "Información básica",
+    "description": "Descripción",
+    "status": "Estado",
+    "timeInfo": "Información de tiempo",
+    "operationsMenu": "Menú de operaciones",
+    "portalMenu": "Menú del Portal"
   },
   "sessionStatus": {
-    "processing": "Processing",
-    "completed": "Completed",
-    "error": "Error occurred",
-    "interrupted": "Interrupted",
-    "idle": "Idle",
-    "unknown": "Unknown status"
+    "processing": "Procesando",
+    "completed": "Completado",
+    "error": "Ha ocurrido un error",
+    "interrupted": "Interrumpido",
+    "idle": "Inactivo",
+    "unknown": "Estado desconocido"
   }
 }

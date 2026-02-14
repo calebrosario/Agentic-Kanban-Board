@@ -1,19 +1,19 @@
 {
-  "title": "Agentic Kanban Board",
-  "subtitle": "Session Manager",
+  "title": "Tablero Kanban Agentic",
+  "subtitle": "Administrador de sesiones",
   "sidebar": {
-    "collapse": "Collapse sidebar",
-    "expand": "Expand sidebar"
+    "collapse": "Contraer la barra lateral",
+    "expand": "Ampliar la barra lateral"
   },
   "navigation": {
-    "allSessions": "All Sessions",
-    "workItems": "Work Items",
-    "workflowStages": "Workflow Stages",
-    "agentPrompts": "Agent Prompts"
+    "allSessions": "Todas las sesiones",
+    "workItems": "Elementos de trabajo",
+    "workflowStages": "Catálogo de Etapas",
+    "agentPrompts": "Indicaciones del agente"
   },
   "actions": {
-    "createSession": "Create Session",
-    "settings": "Settings",
-    "logout": "Logout"
+    "createSession": "Crear Sesión",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión"
   }
 }
