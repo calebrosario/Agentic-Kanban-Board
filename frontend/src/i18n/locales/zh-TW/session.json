@@ -1,0 +1,129 @@
+{
+  "create": {
+    "title": "建立新 Session",
+    "name": "Session 名稱",
+    "nameRequired": "Session 名稱 *",
+    "namePlaceholder": "輸入您的編碼任務的描述性名稱",
+    "workingDir": "工作目錄",
+    "workingDirRequired": "工作目錄 *",
+    "workingDirPlaceholder": "選擇或輸入您的專案目錄",
+    "workflowStage": "工作流程階段",
+    "workflowStagePlaceholder": "選擇工作流程階段以獲得專門的 AI 行為",
+    "workItem": "Work Item",
+    "workItemPlaceholder": "連結到 Work Item 以便於組織（可選）",
+    "agent": "Agent",
+    "agentPlaceholder": "選擇 Agent 以獲得領域專業知識（可選）",
+    "template": "範本",
+    "templatePlaceholder": "或使用快速範本開始",
+    "templates": {
+      "codeReview": "程式碼審查",
+      "bugFixing": "錯誤修正",
+      "featureDev": "功能開發",
+      "documentation": "文件編寫",
+      "custom": "自訂"
+    },
+    "createButton": "建立 Session",
+    "cancelButton": "取消",
+    "errors": {
+      "nameRequired": "Session 名稱為必填",
+      "dirRequired": "工作目錄為必填"
+    }
+  },
+  "list": {
+    "title": "Sessions",
+    "empty": {
+      "title": "尚無 Sessions",
+      "description": "建立您的第一個 Session 以開始",
+      "createButton": "建立 Session"
+    },
+    "columns": {
+      "idle": "閒置",
+      "processing": "處理中",
+      "completed": "已完成",
+      "error": "錯誤",
+      "interrupted": "已中斷"
+    }
+  },
+  "detail": {
+    "title": "Session",
+    "actions": {
+      "complete": "標記為完成",
+      "interrupt": "中斷執行",
+      "resume": "繼續",
+      "delete": "刪除",
+      "returnToWorkItem": "返回 Work Item"
+    },
+    "status": {
+      "markedComplete": "Session 已標記為完成",
+      "interrupted": "Session 已中斷",
+      "resumed": "Session 已繼續",
+      "deleted": "Session 已刪除"
+    },
+    "messages": {
+      "title": "訊息",
+      "filter": "顯示/隱藏訊息類型",
+      "all": "顯示全部",
+      "user": "使用者訊息",
+      "assistant": "Claude 回應",
+      "toolUse": "工具使用",
+      "thinking": "思考中",
+      "show": "顯示",
+      "hide": "隱藏"
+    },
+    "input": {
+      "placeholder": "輸入訊息...",
+      "send": "傳送",
+      "retry": "重試"
+    },
+    "empty": {
+      "title": "尚無訊息",
+      "description": "此對話中尚無訊息"
+    }
+  },
+  "languageNames": {
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "ui": {
+    "modalTitle": "New Session",
+    "nameLabel": "Session Name",
+    "leftColumn": "Basic Settings & Links",
+    "rightColumn": "Task Description",
+    "prefill": "Quick create based on {{baseSessionName}}",
+    "previousConversation": "previous conversation",
+    "prefillDesc": "Basic settings have been pre-filled, please adjust task content and select an appropriate agent",
+    "prefillInfo": "Prefill Information",
+    "basicSettings": "Basic Settings",
+    "sessionName": "Session Name",
+    "workingDir": "Working Directory",
+    "selectCommonPath": "-- Select Common Path --",
+    "commonPath": "Common Path",
+    "quickSelect": "Quick Select",
+    "pathInput": "Path Input",
+    "pathHint": "Path hint",
+    "workItemLink": "Work Item Association",
+    "selectWorkItem": "Select Work Item",
+    "optional": "(optional)",
+    "noWorkItem": "Don't link to Work Item",
+    "workItemInfo": "Work Item Info",
+    "workflowStage": "Workflow Stage",
+    "selectStage": "Select stage (optional)",
+    "noStage": "Don't use workflow stage",
+    "suggestedTasks": "Suggested Tasks",
+    "advancedOptions": "Advanced Options",
+    "continueChat": "Continue recent conversation",
+    "continueChatDesc": "Will use Claude Code's --continue parameter to continue the recent conversation",
+    "skipPermissions": "Dangerous: Skip permission checks",
+    "skipPermissionsWarning": "Warning: This will allow Claude Code to execute operations without permission confirmation, which may cause unexpected changes to your system. Use only in fully trusted environments.",
+    "taskDescription": "Task Description",
+    "taskContent": "Task Content",
+    "charCount": "character count",
+    "quickTemplates": "Quick Templates",
+    "cancel": "Cancel",
+    "create": "Create Session",
+    "fullTaskDesc": "Please describe your requirements in detail...\\ne.g., Implement user login with form validation and error handling\\nor: Refactor existing API to improve performance and add error logging\\nor: Analyze and fix current performance issues, focusing on loading speed",
+    "creating": "Creating..."
+  }
+}

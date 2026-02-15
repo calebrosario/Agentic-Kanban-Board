@@ -1,0 +1,75 @@
+{
+  "title": "Configuracoes",
+  "tabs": {
+    "commonPaths": "Caminhos Comuns",
+    "taskTemplates": "Modelos de Tarefa"
+  },
+  "commonPaths": {
+    "title": "Caminhos Comuns",
+    "description": "Gerenciar diretorios usados frequentemente para acesso rapido",
+    "addNew": "Adicionar Novo",
+    "resetDefault": "Redefinir para Padrão",
+    "empty": {
+      "title": "Nenhum caminho comum ainda",
+      "addFirst": "Adicionar primeiro caminho"
+    },
+    "form": {
+      "label": "Rotulo",
+      "labelPlaceholder": "Rotulo do caminho",
+      "icon": "Icone",
+      "path": "Caminho",
+      "pathPlaceholder": "C:\\Users\\Usuario",
+      "folder": "Pasta",
+      "code": "Codigo",
+      "home": "Inicio"
+    },
+    "actions": {
+      "add": "Adicionar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir"
+    },
+    "errors": {
+      "labelAndPathRequired": "Rotulo e caminho nao podem estar vazios"
+    }
+  },
+  "taskTemplates": {
+    "title": "Modelos de Tarefa",
+    "description": "Gerenciar modelos de tarefa reutilizaveis para criacao rapida de tarefa",
+    "addNew": "Adicionar Novo",
+    "resetDefault": "Redefinir para Padrão",
+    "empty": {
+      "title": "Nenhum modelo de tarefa ainda",
+      "addFirst": "Adicionar primeiro modelo"
+    },
+    "form": {
+      "label": "Rotulo",
+      "labelPlaceholder": "ex: Continuar Trabalho",
+      "template": "Conteudo do Modelo",
+      "templatePlaceholder": "Descrever o conteudo do modelo de tarefa...",
+      "characters": "caracteres"
+    },
+    "actions": {
+      "add": "Adicionar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir"
+    },
+    "badge": {
+      "default": "Padrão"
+    },
+    "errors": {
+      "labelAndTemplateRequired": "Rotulo e conteudo do modelo nao podem estar vazios",
+      "cannotDeleteDefault": "Nao e possivel excluir o modelo padrao"
+    },
+    "confirm": {
+      "resetDefault": "Tem certeza que deseja redefinir para modelos padrao? Isso excluira todos os modelos personalizados."
+    }
+  },
+  "footer": {
+    "autoSync": "Configuracoes sao sincronizadas automaticamente com o banco de dados",
+    "close": "Fechar"
+  }
+}

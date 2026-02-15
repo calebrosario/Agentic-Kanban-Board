@@ -1,0 +1,92 @@
+{
+  "language": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "es": "Español",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "layout": {
+    "returnToWorkItem": "Voltar ao Item de Trabalho",
+    "returnToList": "Voltar à lista",
+    "fullscreen": "Tela Cheia",
+    "close": "Fechar",
+    "restore": "Restaurar",
+    "verifying": "Verificando..."
+  },
+  "loading": "Carregando...",
+  "error": {
+    "title": "Erro",
+    "retry": "Tentar Novamente",
+    "unknown": "Ocorreu um erro desconhecido",
+    "boundary": {
+      "title": "Opa! Algo deu errado",
+      "description": "O aplicativo encontrou um erro inesperado. Por favor, tente recarregar a página ou voltar à página inicial.",
+      "details": "Detalhes do Erro:",
+      "stackTrace": "Rastreamento de Pilha",
+      "goHome": "Ir para Início",
+      "loadingFailed": "Falha ao Carregar",
+      "support": "Se o problema persistir, por favor contate o suporte técnico"
+    }
+  },
+  "actions": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "confirm": "Confirmar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "retry": "Tentar Novamente",
+    "clear": "Limpar"
+  },
+  "status": {
+    "loading": "Carregando",
+    "idle": "Ocioso",
+    "processing": "Processando",
+    "completed": "Concluído",
+    "error": "Erro",
+    "interrupted": "Interrompido",
+    "planning": "Planejamento",
+    "in_progress": "Em Progresso"
+  },
+  "multiSelect": {
+    "placeholder": "Selecione itens...",
+    "search": "Pesquisar...",
+    "loading": "Carregando...",
+    "noResults": "Nenhum item correspondente encontrado",
+    "createNew": "Criar novo item",
+    "creating": "Criando...",
+    "create": "Criar"
+  },
+  "searchBar": {
+    "placeholder": "Pesquisar...",
+    "clear": "Limpar pesquisa"
+  },
+  "classification": {
+    "tags": {
+      "label": "Tags",
+      "topic": "Tópico",
+      "department": "Departamento",
+      "loadFailed": "Falha ao carregar tags",
+      "updateSuccess": "Tags atualizadas",
+      "updateFailed": "Falha ao atualizar tags",
+      "createSuccess": "Tag criada",
+      "createFailed": "Falha ao criar tag"
+    },
+    "projects": {
+      "label": "Projeto",
+      "loadFailed": "Falha ao carregar projetos",
+      "updateSuccess": "Projeto atualizado",
+      "updateFailed": "Falha ao atualizar projeto",
+      "createSuccess": "Projeto criado",
+      "createFailed": "Falha ao criar projeto"
+    }
+  }
+}

@@ -1,0 +1,297 @@
+{
+  "create": {
+    "title": "Create New Session",
+    "name": "Session Name",
+    "nameRequired": "Session Name *",
+    "namePlaceholder": "Enter a descriptive name for your coding task",
+    "namePlaceholderExample": "e.g., Implement user login",
+    "workingDir": "Working Directory",
+    "workingDirRequired": "Working Directory *",
+    "workflowStage": "Workflow Stage",
+    "workflowStagePlaceholder": "Choose a workflow stage for specialized AI behavior",
+    "workItem": "Work Item",
+    "workItemPlaceholder": "Link to a work item for organization (optional)",
+    "agent": "Agent",
+    "agentPlaceholder": "Select an agent for domain-specific expertise (optional)",
+    "template": "Template",
+    "templatePlaceholder": "Or start with a quick template",
+    "templates": {
+      "codeReview": "Code Review",
+      "bugFixing": "Bug Fixing",
+      "featureDev": "Feature Development",
+      "documentation": "Documentation",
+      "custom": "Custom"
+    },
+    "createButton": "Create Session",
+    "cancelButton": "Cancel",
+    "creating": "Creating...",
+    "basicSettings": "Basic Settings",
+    "workingDirHint": "Select from common paths or type directly",
+    "selectCommonPath": "-- Select Common Path --",
+    "workingDirPlaceholder": "e.g., C:\\Projects\\MyApp",
+    "workItemAssociation": "Work Item Association",
+    "autoLinked": "(auto-linked)",
+    "optional": "(optional)",
+    "noWorkItem": "Don't link to Work Item",
+    "workItemInfo": "Work Item Info",
+    "noDescription": "No description",
+    "workflowStageLabel": "Select stage (optional)",
+    "noWorkflowStage": "Don't use workflow stage",
+    "suggestedTasks": "Suggested Tasks",
+    "advancedOptions": "Advanced Options",
+    "continueChat": "Continue recent conversation",
+    "continueChatHint": "Will use Claude Code's --continue parameter to continue the recent conversation",
+    "dangerouslySkipPermissions": "Dangerous: Skip permission checks",
+    "dangerouslySkipPermissionsWarning": "Warning: This will allow Claude Code to execute operations without permission confirmation, which may cause unexpected changes to your system. Use only in fully trusted environments.",
+    "taskDescription": "Task Description",
+    "required": "Required",
+    "taskContent": "Task Content",
+    "taskPlaceholder": "Please describe your requirements in detail...\\ne.g., Implement user login with form validation and error handling\\nor: Refactor existing API to improve performance and add error logging\\nor: Analyze and fix current performance issues, focusing on loading speed",
+    "characters": "characters",
+    "quickTemplates": "Quick Templates",
+    "prefillTitle": "Quick create based on \"{{baseSessionName}}\"",
+    "prefillPreviousConversation": "previous conversation",
+    "prefillDescription": "Basic settings have been pre-filled, please adjust the task content and select an appropriate agent",
+    "errors": {
+      "nameRequired": "Session name is required",
+      "dirRequired": "Working directory is required",
+      "taskRequired": "Task description is required"
+    },
+    "toasts": {
+      "created": "Session created",
+      "createFailed": "Failed to create session"
+    }
+  },
+  "list": {
+    "title": "Sessions",
+    "empty": {
+      "title": "No Sessions",
+      "description": "Create your first session to get started",
+      "createButton": "Create Session"
+    },
+    "noSessions": "No sessions",
+    "noSessionsCreated": "No sessions created yet",
+    "searchPlaceholder": "Search...",
+    "createButton": "Create",
+    "mobileSortSelector": "Mobile sort selector",
+    "reload": "Reload",
+    "columns": {
+      "idle": "Idle ({count})",
+      "processing": "Processing ({count})",
+      "completed": "Completed ({count})",
+      "error": "Error ({count})",
+      "interrupted": "Interrupted ({count})"
+    },
+    "tabs": {
+      "processing": "Processing",
+      "idle": "Idle",
+      "completed": "Completed"
+    },
+    "dragAndDrop": {
+      "dragging": "Dragging session...",
+      "dropToCreateNew": "Drop here to create a new session",
+      "dropToContinue": "Drop here to continue this session",
+      "keepContext": "Keep in Work Item context",
+      "preserveNav": "Preserve navigation link"
+    },
+    "confirmDelete": "Are you sure you want to delete this session? This action cannot be undone.",
+    "error": {
+      "reload": "Failed to reload sessions",
+      "unknown": "An unknown error occurred",
+      "cantDelete": "Cannot delete this session while it's running. Stop it first."
+    },
+    "status": {
+      "markedComplete": "Session marked as complete",
+      "interrupted": "Session interrupted",
+      "resumed": "Session resumed",
+      "deleted": "Session deleted"
+    }
+  },
+  "detail": {
+    "title": "Session",
+    "actions": {
+      "complete": "Mark as Complete",
+      "interrupt": "Interrupt",
+      "resume": "Resume",
+      "delete": "Delete",
+      "returnToWorkItem": "Return to Work Item",
+      "classification": "Classification management",
+      "export": "Export conversation",
+      "quickStart": "Quick start based on this conversation",
+      "interruptExecution": "Interrupt execution",
+      "markComplete": "Mark as complete",
+      "resumeSession": "Resume Session",
+      "deleteSession": "Delete Session",
+      "backToList": "Return to sessions list"
+    },
+    "status": {
+      "markedComplete": "Session marked as complete",
+      "interrupted": "Session interrupted",
+      "resumed": "Session resumed",
+      "deleted": "Session deleted"
+    },
+    "messages": {
+      "title": "Messages",
+      "filter": "Show / Hide Message Types",
+      "all": "Show All",
+      "user": "User Messages",
+      "assistant": "Assistant Responses",
+      "toolUse": "Tool Use",
+      "thinking": "Thinking",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "input": {
+      "placeholder": "Type a message...",
+      "send": "Send",
+      "retry": "Retry"
+    },
+    "empty": {
+      "title": "No Messages",
+      "description": "No messages in this conversation yet"
+    },
+    "loading": "Loading session details...",
+    "notFound": "Session does not exist",
+    "error": {
+      "unknownError": "Unknown error during execution",
+      "errorType": "Error type: {type}",
+      "details": "Details: {details}",
+      "exitCode": "Exit code: {code}",
+      "errorMessage": "Error message:",
+      "noMessagesToExport": "No messages to export",
+      "exported": "Messages exported",
+      "newSessionCreated": "New session created",
+      "prefillTask": "Based on the context of the previous conversation, please read dev.md and related project files first.\n\nNew task:",
+      "newTask": "New task"
+    }
+  },
+  "filter": {
+    "title": "Message Filter",
+    "showFilter": "Show Filter",
+    "hideFilter": "Hide Filter",
+    "types": {
+      "user": "User Messages",
+      "assistant": "Claude Responses",
+      "system": "System Messages",
+      "toolUse": "Tool Use",
+      "thinking": "Thinking Process",
+      "output": "Output Results",
+      "error": "Error Messages",
+      "allTypes": "All Message Types",
+      "hidden": "Hidden {count}",
+      "showAll": "Show All",
+      "hideAll": "Hide All",
+      "reset": "Reset to Default",
+      "messages": "messages",
+      "typesHidden": "{count} message types hidden",
+      "allShown": "Showing all message types",
+      "defaultHidden": "(default hidden)",
+      "quickActions": "Quick Actions",
+      "messageTypes": "Message Type Selection",
+      "summary": "Summary",
+      "showAllButton": "Show All",
+      "hideAllButton": "Hide All",
+      "resetButton": "Reset"
+    }
+  },
+  "card": {
+    "title": "Session Card",
+    "actions": {
+      "complete": "Complete",
+      "interrupt": "Interrupt",
+      "resume": "Resume",
+      "delete": "Delete",
+      "titleTooltip": "Mark session as complete",
+      "interruptTooltip": "Interrupt this session",
+      "resumeTooltip": "Resume this session",
+      "deleteTooltip": "Delete this session"
+    },
+    "status": {
+      "error": "Error occurred",
+      "processing": "Processing"
+    },
+    "linked": {
+      "workItem": "Linked to Work Item",
+      "workflowStage": "Workflow Stage"
+    },
+    "messageCount": "{count} messages",
+    "dragAndDrop": {
+      "dragging": "Dragging session...",
+      "dropToCreateNew": "Drop here to create a new session",
+      "dropToContinue": "Drop here to continue this session",
+      "keepContext": "Keep in Work Item context",
+      "preserveNav": "Preserve navigation link"
+    },
+    "context": {
+      "preserveContextLabel": "Keep in Work Item context",
+      "preserveContextDescription": "Stay within the Work Item context",
+      "preserveNavLabel": "Preserve navigation link",
+      "preserveNavDescription": "Maintain connection to parent Work Item"
+    }
+  },
+  "chat": {
+    "loading": "Loading conversation history...",
+    "error": "Failed to load messages",
+    "retry": "Retry",
+    "sendError": "Failed to send message",
+    "sessionStopped": "Session stopped, cannot send new messages",
+    "loadingMore": "Loading more messages...",
+    "loadEarlier": "Load earlier messages",
+    "noMessages": "No messages to display",
+    "messagesFiltered": "{count} messages filtered out",
+    "adjustFilter": "Click the message filter button in the top right to adjust settings",
+    "startConversation": "Start a new conversation",
+    "sendMessageHint": "Send a message to Claude Code to start interacting"
+  },
+  "input": {
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "sendWithTooltip": "Send message",
+    "retry": "Retry",
+    "retryWithTooltip": "Retry last message",
+    "processing": "Processing...",
+    "cancel": "Cancel",
+    "cancelWithTooltip": "Cancel sending",
+    "interrupt": "Interrupt",
+    "interruptWithTooltip": "Interrupt message sending",
+    "deleteWithTooltip": "Delete this session",
+    "navigateToWorkItem": "Return to Work Item",
+    "expand": "Expand to see full message history",
+    "collapse": "Collapse",
+    "messages": "Messages",
+    "start": "Start",
+    "end": "End",
+    "timeSince": "{time} ago",
+    "actions": "Actions"
+  },
+  "toolUse": {
+    "executing": "Executing...",
+    "completed": "Completed",
+    "failed": "Execution failed",
+    "parameterDetails": "Parameter Details",
+    "inputting": "Inputting",
+    "inputtingNow": "Inputting...",
+    "tool": "Tool"
+  },
+  "thinking": {
+    "showThinking": "Show thinking process",
+    "hideThinking": "Hide thinking process",
+    "label": "Thinking"
+  },
+  "messageTypes": {
+    "user": "You",
+    "system": "System",
+    "tool": "Tool"
+  },
+  "languageNames": {
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "websocket": {
+    "connecting": "Connecting to server...",
+    "connectionError": "Connection error: {error}",
+    "disconnected": "Disconnected from server"
+  }
+}

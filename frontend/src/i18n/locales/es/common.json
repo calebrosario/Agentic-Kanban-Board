@@ -1,0 +1,92 @@
+{
+  "language": {
+    "en": "Inglés",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "es": "Español",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "layout": {
+    "returnToWorkItem": "Volver al elemento de trabajo",
+    "returnToList": "Volver a la lista",
+    "fullscreen": "Pantalla completa",
+    "close": "Cerrar",
+    "restore": "Restaurar",
+    "verifying": "Verificando..."
+  },
+  "loading": "Cargando...",
+  "error": {
+    "title": "Error",
+    "retry": "Reintentar",
+    "unknown": "Se ha producido un error desconocido",
+    "boundary": {
+      "title": "Oops! Algo salió mal",
+      "description": "La aplicación ha encontrado un error inesperado. Intenta volver a cargar la página o vuelve a la página de inicio.",
+      "details": "Detalles del error:",
+      "stackTrace": "Stack Trace",
+      "goHome": "Ve a Inicio",
+      "loadingFailed": "Error de carga",
+      "support": "Si el problema persiste, contáctese con Soporte."
+    }
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtro",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "retry": "Reintentar",
+    "clear": "Borrar"
+  },
+  "status": {
+    "loading": "Cargando",
+    "idle": "Inactivo",
+    "processing": "Procesando",
+    "completed": "Completado",
+    "error": "Error",
+    "interrupted": "Estado",
+    "planning": "Planificación",
+    "in_progress": "En progreso"
+  },
+  "multiSelect": {
+    "placeholder": "Seleccionar los elementos...",
+    "search": "Buscar...",
+    "loading": "Cargando...",
+    "noResults": "No se encontraron elementos coincidentes",
+    "createNew": "Crear nuevo",
+    "creating": "Creando...",
+    "create": "Crear"
+  },
+  "searchBar": {
+    "placeholder": "Buscar...",
+    "clear": "Borrar búsqueda"
+  },
+  "classification": {
+    "tags": {
+      "label": "Etiquetas",
+      "topic": "Tema",
+      "department": "Departamento",
+      "loadFailed": "Error al cargar etiquetas",
+      "updateSuccess": "Etiquetas actualizadas.",
+      "updateFailed": "Error al actualizar etiquetas",
+      "createSuccess": "Etiqueta creada",
+      "createFailed": "Error al crear etiqueta"
+    },
+    "projects": {
+      "label": "Proyecto",
+      "loadFailed": "Error al cargar proyectos",
+      "updateSuccess": "Proyecto actualizado.",
+      "updateFailed": "Error al actualizar proyecto",
+      "createSuccess": "Proyecto creado",
+      "createFailed": "Error al crear proyecto"
+    }
+  }
+}
