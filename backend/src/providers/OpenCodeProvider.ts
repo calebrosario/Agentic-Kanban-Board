@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events';
+import { spawn, ChildProcess } from 'child_process';
+import { Readable } from 'stream';
 import { IToolProvider } from './IToolProvider';
 import {
   ToolType,
@@ -25,6 +27,36 @@ import {
  * - Handle oh-my-opencode agent orchestration events
  * - Emit standardized StreamEvent objects
  */
+
+interface OpenCodeProcess {
+  sessionId: string;
+  toolSessionId?: string;
+  process: ChildProcess;
+  status: 'idle' | 'processing' | 'error' | 'completed';
+  workingDirectory: string;
+  lastActivityTime: Date;
+  startTime: Date;
+  streamBuffer: string[];
+}
+
+interface OpenCodeJSONLLine {
+  type: 'content' | 'tool_use' | 'thinking' | 'status' | 'agent' | 'background_task' | 'todo' | 'error';
+  role?: 'user' | 'assistant' | 'system' | 'tool';
+  content?: string;
+  tool_name?: string;
+  tool_input?: any;
+  tool_result?: any;
+  status?: string;
+  agent?: string;
+  agent_action?: 'start' | 'complete';
+  background_task_id?: string;
+  background_task_status?: string;
+  todo_action?: 'update' | 'add' | 'complete';
+  todo_items?: any[];
+  error?: string;
+  timestamp?: string;
+}
+
 export class OpenCodeProvider extends EventEmitter implements IToolProvider {
   readonly id = ToolType.OPENCODE;
   readonly displayName = 'OpenCode (with oh-my-opencode)';
@@ -65,13 +97,12 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
   };
 
   private config: OpenCodeProviderConfig;
-  private processes: Map<string, any> = new Map();
+  private processes: Map<string, OpenCodeProcess> = new Map();
   private initialized: boolean = false;
 
   constructor() {
     super();
 
-    // Default configuration
     this.config = {
       executable: 'opencode',
       timeout: 3600000,
@@ -126,73 +157,334 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
   async createSession(options: SessionOptions): Promise<any> {
     const sessionId = options.title.replace(/\s+/g, '-').toLowerCase() + '-' + Date.now();
 
-    // Create session tracking
-    this.processes.set(sessionId, {
-      sessionId,
-      status: 'idle',
-      workingDirectory: options.workingDirectory,
-      commandArgs: [],
-      lastActivityTime: new Date()
+    try {
+      const opencodeProcess = await this.spawnOpenCodeProcess(
+        sessionId,
+        options.workingDirectory,
+        options.agentId,
+        options.systemPrompt
+      );
+
+      this.processes.set(sessionId, opencodeProcess);
+
+      this.emit('processStarted', { sessionId, pid: opencodeProcess.process.pid });
+
+      if (options.task) {
+        this.emit('statusUpdate', { sessionId, status: 'processing' });
+      } else {
+        this.emit('statusUpdate', { sessionId, status: 'idle' });
+      }
+
+      console.log(`OpenCode session created successfully`, { sessionId });
+
+      // Execute initial task if provided
+      if (options.task) {
+        setImmediate(async () => {
+          try {
+            await this.sendInput(sessionId, options.task!);
+          } catch (error: any) {
+            console.error(`Failed to execute initial task for ${sessionId}:`, error);
+            this.emit('error', {
+              sessionId,
+              error: error.message || 'Failed to execute initial task',
+              timestamp: new Date()
+            });
+          }
+        });
+      }
+
+      return {
+        sessionId,
+        toolSessionId: opencodeProcess.toolSessionId,
+        status: options.task ? 'processing' : 'idle'
+      };
+    } catch (error: any) {
+      console.error(`Failed to create OpenCode session:`, error);
+      throw new Error(`Failed to create OpenCode session: ${error.message}`);
+    }
+  }
+
+  private async spawnOpenCodeProcess(
+    sessionId: string,
+    workingDirectory: string,
+    agentId?: string,
+    systemPrompt?: string
+  ): Promise<OpenCodeProcess> {
+    const args = [
+      '--format', 'json',
+      '--dir', workingDirectory
+    ];
+
+    if (this.config.model) {
+      args.push('--model', this.config.model);
+    }
+
+    if (agentId) {
+      args.push('--agent', agentId);
+    }
+
+    console.log(`Spawning OpenCode process`, { executable: this.config.executable, args });
+
+    const childProcess = spawn(this.config.executable!, args, {
+      cwd: workingDirectory,
+      env: {
+        ...process.env,
+        NODE_ENV: 'production'
+      }
     });
 
-    this.emit('processStarted', { sessionId, pid: Date.now() });
+    const opencodeProcess: OpenCodeProcess = {
+      sessionId,
+      process: childProcess,
+      status: 'idle',
+      workingDirectory,
+      lastActivityTime: new Date(),
+      startTime: new Date(),
+      streamBuffer: []
+    };
 
-    if (options.task) {
-      this.emit('statusUpdate', { sessionId, status: 'processing' });
-    } else {
-      this.emit('statusUpdate', { sessionId, status: 'idle' });
-    }
+    this.setupStreamParsing(childProcess, sessionId);
 
-    console.log(`OpenCode session created successfully`, { sessionId });
+    childProcess.on('exit', (code: number | null, signal: string | null) => {
+      console.log(`OpenCode process exited`, { sessionId, code, signal });
+      this.processes.delete(sessionId);
+      this.emit('processStopped', { sessionId, exitCode: code });
+    });
 
-    // Execute initial task if provided
-    if (options.task) {
-      setImmediate(async () => {
-        try {
-          await this.sendInput(sessionId, options.task!);
-        } catch (error: any) {
-          console.error(`Failed to execute initial task for ${sessionId}:`, error);
-          this.emit('error', {
-            sessionId,
-            error: error.message || 'Failed to execute initial task',
-            timestamp: new Date()
+    childProcess.on('error', (error: Error) => {
+      console.error(`OpenCode process error`, { sessionId, error });
+      this.emit('error', {
+        sessionId,
+        error: error.message,
+        timestamp: new Date()
+      });
+    });
+
+    return opencodeProcess;
+  }
+
+  private setupStreamParsing(process: ChildProcess, sessionId: string): void {
+    let buffer = '';
+
+    const handleLine = (line: string) => {
+      if (!line.trim()) return;
+
+      try {
+        const data: OpenCodeJSONLLine = JSON.parse(line);
+        this.processJSONLLine(data, sessionId);
+      } catch (error) {
+        console.error(`Failed to parse JSONL line:`, { line, error });
+      }
+    };
+
+    process.stdout?.on('data', (chunk) => {
+      buffer += chunk.toString();
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        handleLine(line);
+      }
+    });
+
+    process.stderr?.on('data', (chunk) => {
+      const text = chunk.toString();
+      console.error(`OpenCode stderr:`, { sessionId, text });
+    });
+  }
+
+  private processJSONLLine(data: OpenCodeJSONLLine, sessionId: string): void {
+    const timestamp = data.timestamp ? new Date(data.timestamp) : new Date();
+
+    switch (data.type) {
+      case 'content':
+        if (data.role) {
+          this.emit('delta', {
+            type: 'delta' as any,
+            role: data.role,
+            content: data.content || '',
+            timestamp
           });
         }
-      });
-    }
+        break;
 
-    return {
-      sessionId,
-      toolSessionId: null, // Will be set by OpenCode CLI
-      status: options.task ? 'processing' : 'idle'
-    };
+      case 'tool_use':
+        this.emit('delta', {
+          type: 'tool_call' as any,
+          role: data.role || 'assistant',
+          content: data.content,
+          metadata: {
+            toolName: data.tool_name,
+            toolInput: data.tool_input,
+            toolId: data.tool_name
+          },
+          timestamp
+        });
+        break;
+
+      case 'thinking':
+        this.emit('delta', {
+          type: 'thinking' as any,
+          role: 'assistant',
+          content: data.content,
+          timestamp
+        });
+        break;
+
+      case 'status':
+        if (data.status) {
+          this.emit('statusUpdate', { sessionId, status: data.status });
+          const processInfo = this.processes.get(sessionId);
+          if (processInfo) {
+            processInfo.status = data.status as any;
+            processInfo.lastActivityTime = new Date();
+          }
+        }
+        break;
+
+      case 'agent':
+        if (data.agent && data.agent_action) {
+          const agentAction = data.agent_action === 'start' ? 'agent_start' : 'agent_complete';
+          this.emit('delta', {
+            type: 'status' as any,
+            role: 'system',
+            content: `Agent ${data.agent} ${data.agent_action === 'start' ? 'started' : 'completed'}`,
+            data: {
+              agent: data.agent,
+              action: agentAction
+            },
+            timestamp
+          });
+        }
+        break;
+
+      case 'background_task':
+        if (data.background_task_id && data.background_task_status) {
+          const bgAction = data.background_task_status === 'started' ? 'background_task_start' : 'background_task_complete';
+          this.emit('delta', {
+            type: 'status' as any,
+            role: 'system',
+            content: `Background task ${data.background_task_id} ${data.background_task_status}`,
+            data: {
+              taskId: data.background_task_id,
+              status: bgAction
+            },
+            timestamp
+          });
+        }
+        break;
+
+      case 'todo':
+        if (data.todo_action) {
+          this.emit('delta', {
+            type: 'status' as any,
+            role: 'system',
+            content: `Todo ${data.todo_action}`,
+            data: {
+              action: data.todo_action,
+              items: data.todo_items
+            },
+            timestamp
+          });
+        }
+        break;
+
+      case 'error':
+        console.error(`OpenCode error:`, { sessionId, error: data.error });
+        this.emit('error', {
+          sessionId,
+          error: data.error || 'Unknown error',
+          timestamp
+        });
+        break;
+
+      default:
+        console.log(`Unknown JSONL type:`, { type: data.type, data });
+    }
   }
 
   async resumeSession(context: ResumeContext): Promise<any> {
     const sessionId = context.previousSessionId + '-resume-' + Date.now();
 
-    const processInfo = this.processes.get(sessionId);
-    if (!processInfo) {
-      this.processes.set(sessionId, {
+    try {
+      const opencodeProcess = await this.spawnOpenCodeResumeProcess(
         sessionId,
+        context.previousSessionId,
+        context.workingDirectory || process.cwd()
+      );
+
+      this.processes.set(sessionId, opencodeProcess);
+
+      this.emit('processStarted', { sessionId, pid: opencodeProcess.process.pid });
+      this.emit('statusUpdate', { sessionId, status: 'idle' });
+
+      console.log(`OpenCode session resumed`, { sessionId, previousSessionId: context.previousSessionId });
+
+      return {
+        sessionId,
+        toolSessionId: opencodeProcess.toolSessionId,
         status: 'idle',
-        workingDirectory: context.workingDirectory || process.cwd(),
-        commandArgs: [],
-        lastActivityTime: new Date()
-      });
+        continueChat: context.continueChat || false
+      };
+    } catch (error: any) {
+      console.error(`Failed to resume OpenCode session:`, error);
+      throw new Error(`Failed to resume OpenCode session: ${error.message}`);
+    }
+  }
+
+  private async spawnOpenCodeResumeProcess(
+    sessionId: string,
+    previousSessionId: string,
+    workingDirectory: string
+  ): Promise<OpenCodeProcess> {
+    const args = [
+      '--format', 'json',
+      '--dir', workingDirectory,
+      '--continue'
+    ];
+
+    if (this.config.model) {
+      args.push('--model', this.config.model);
     }
 
-    this.emit('processStarted', { sessionId, pid: Date.now() });
-    this.emit('statusUpdate', { sessionId, status: 'idle' });
+    console.log(`Spawning OpenCode resume process`, { executable: this.config.executable, args });
 
-    console.log(`OpenCode session resumed`, { sessionId, previousSessionId: context.previousSessionId });
+    const childProcess = spawn(this.config.executable!, args, {
+      cwd: workingDirectory,
+      env: {
+        ...process.env,
+        NODE_ENV: 'production'
+      }
+    });
 
-    return {
+    const opencodeProcess: OpenCodeProcess = {
       sessionId,
-      toolSessionId: null,
+      process: childProcess,
       status: 'idle',
-      continueChat: context.continueChat || false
+      workingDirectory,
+      lastActivityTime: new Date(),
+      startTime: new Date(),
+      streamBuffer: []
     };
+
+    this.setupStreamParsing(childProcess, sessionId);
+
+    childProcess.on('exit', (code: number | null, signal: string | null) => {
+      console.log(`OpenCode process exited`, { sessionId, code, signal });
+      this.processes.delete(sessionId);
+      this.emit('processStopped', { sessionId, exitCode: code });
+    });
+
+    childProcess.on('error', (error: Error) => {
+      console.error(`OpenCode process error`, { sessionId, error });
+      this.emit('error', {
+        sessionId,
+        error: error.message,
+        timestamp: new Date()
+      });
+    });
+
+    return opencodeProcess;
   }
 
   async* continueSession(sessionId: string, input: string): AsyncIterable<StreamEvent> {
@@ -267,9 +559,36 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
   }
 
   async sendInput(sessionId: string, input: string): Promise<void> {
+    const processInfo = this.processes.get(sessionId);
+    if (!processInfo) {
+      throw new Error(`Session ${sessionId} not found`);
+    }
+
+    const { process } = processInfo;
+
+    if (!process.stdin) {
+      throw new Error(`Process stdin not available for session ${sessionId}`);
+    }
+
     console.log(`Sending input to OpenCode session ${sessionId}:`, { input: input.slice(0, 100) + '...' });
-    // TODO: Implement actual opencode CLI spawn and input handling
-    // This will be implemented in Phase 2.2
+
+    return new Promise((resolve, reject) => {
+      if (process.stdin) {
+        process.stdin.write(input + '\n', (error) => {
+          if (error) {
+            console.error(`Failed to send input to session ${sessionId}:`, error);
+            reject(error);
+          } else {
+            processInfo.lastActivityTime = new Date();
+            if (processInfo.status === 'idle') {
+              processInfo.status = 'processing';
+              this.emit('statusUpdate', { sessionId, status: 'processing' });
+            }
+            resolve();
+          }
+        });
+      }
+    });
   }
 
   async interrupt(sessionId: string): Promise<void> {
@@ -279,8 +598,28 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
       return;
     }
 
-    // TODO: Implement process interruption
-    // This will be implemented in Phase 2.2
+    const { process } = processInfo;
+
+    console.log(`Interrupting session ${sessionId}`);
+
+    try {
+      process.kill('SIGINT');
+
+      await new Promise<void>((resolve) => {
+        const timeout = setTimeout(() => {
+          console.warn(`Session ${sessionId} did not exit gracefully, forcing termination`);
+          process.kill('SIGKILL');
+          resolve();
+        }, 5000);
+
+        process.once('exit', () => {
+          clearTimeout(timeout);
+          resolve();
+        });
+      });
+    } catch (error) {
+      console.error(`Error interrupting session ${sessionId}:`, error);
+    }
 
     this.processes.delete(sessionId);
     this.emit('processInterrupted', { sessionId });
@@ -296,13 +635,33 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
       return;
     }
 
-    // TODO: Implement process cleanup
-    // This will be implemented in Phase 2.2
+    const { process } = processInfo;
+
+    console.log(`Closing session ${sessionId}`);
+
+    try {
+      process.stdin?.end();
+
+      await new Promise<void>((resolve) => {
+        const timeout = setTimeout(() => {
+          console.warn(`Session ${sessionId} did not exit gracefully, forcing termination`);
+          process.kill('SIGKILL');
+          resolve();
+        }, 10000);
+
+        process.once('exit', () => {
+          clearTimeout(timeout);
+          resolve();
+        });
+      });
+    } catch (error) {
+      console.error(`Error closing session ${sessionId}:`, error);
+    }
 
     this.processes.delete(sessionId);
     this.emit('processStopped', { sessionId });
 
-    console.log(`Closing session ${sessionId}`);
+    console.log(`Session closed: ${sessionId}`);
   }
 
   async getSessionStatus(sessionId: string): Promise<string> {
