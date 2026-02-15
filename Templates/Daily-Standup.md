@@ -1,0 +1,27 @@
+# {{date:YYYY-MM-DD}} Daily Standup
+
+## Yesterday
+- [ ] {{yesterday_task_1}}
+- [ ] {{yesterday_task_2}}
+- [ ] {{yesterday_task_3}}
+
+## Today
+- [ ] {{today_task_1}}
+- [ ] {{today_task_2}}
+- [ ] {{today_task_3}}
+
+## Blockers
+{{blockers}}
+
+## Notes
+{{notes}}
+
+## Related PRs/Issues
+- #123 - Issue description
+- !456 - PR description
+
+## Tags
+#daily #standup
+
+---
+Date: {{date:YYYY-MM-DD}}
