@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
 import { Readable } from 'stream';
+import { readdir, readFile, access } from 'fs/promises';
+import { join } from 'path';
+import { existsSync } from 'fs';
 import { IToolProvider } from './IToolProvider';
 import {
   ToolType,
@@ -8,7 +11,8 @@ import {
   ResumeContext,
   StreamEvent,
   ToolCapabilities,
-  OpenCodeProviderConfig
+  OpenCodeProviderConfig,
+  Agent
 } from '../types/provider.types';
 import { OpenCodeStreamParser } from '../parsers/OpenCodeStreamParser';
 
@@ -407,61 +411,147 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     };
   }
 
-  async loadAgents(agentsPath: string): Promise<any[]> {
-    // Placeholder implementation - will load oh-my-opencode agents from ~/.config/opencode/agents/
-    // Returns both built-in agents (Build, Plan, General, Explore)
-    // and oh-my-opencode agents (Sisyphus, Prometheus, Oracle, Librarian, etc.)
-
+  async loadAgents(agentsPath: string): Promise<Agent[]> {
     console.log(`Loading agents from ${agentsPath}`);
 
+    const agents: Agent[] = [];
+
+    try {
+      const dirExists = existsSync(agentsPath);
+      if (!dirExists) {
+        console.warn(`Agents directory does not exist: ${agentsPath}, using default agents`);
+        return this.getDefaultAgents();
+      }
+
+      const files = await readdir(agentsPath);
+      const skillFiles = files.filter(f => f.endsWith('.md') || f.endsWith('.SKILL.md'));
+
+      console.log(`Found ${skillFiles.length} agent files in ${agentsPath}`);
+
+      for (const file of skillFiles) {
+        const filePath = join(agentsPath, file);
+
+        try {
+          const content = await readFile(filePath, 'utf-8');
+          const agent = this.parseAgentFile(content, file);
+
+          if (agent) {
+            agents.push(agent);
+          }
+        } catch (error) {
+          console.error(`Failed to load agent from ${file}:`, error);
+        }
+      }
+
+      if (agents.length === 0) {
+        console.warn(`No agents loaded from ${agentsPath}, using default agents`);
+        return this.getDefaultAgents();
+      }
+
+      console.log(`Successfully loaded ${agents.length} agents`);
+
+      return agents;
+    } catch (error) {
+      console.error(`Failed to load agents from ${agentsPath}:`, error);
+      return this.getDefaultAgents();
+    }
+  }
+
+  private parseAgentFile(content: string, filename: string): Agent | null {
+    const agentId = filename.replace('.md', '').replace('.SKILL', '');
+
+    const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+    let name = agentId;
+    let description: string | undefined;
+    let systemPrompt: string | undefined;
+    let temperature: number | undefined;
+
+    if (frontmatterMatch) {
+      const frontmatter = frontmatterMatch[1];
+
+      const nameMatch = frontmatter.match(/^name:\s*(.+)$/m);
+      if (nameMatch) {
+        name = nameMatch[1].trim();
+      }
+
+      const descMatch = frontmatter.match(/^description:\s*(.+)$/m);
+      if (descMatch) {
+        description = descMatch[1].trim();
+      }
+
+      const tempMatch = frontmatter.match(/^temperature:\s*(.+)$/m);
+      if (tempMatch) {
+        const tempValue = parseFloat(tempMatch[1]);
+        if (!isNaN(tempValue)) {
+          temperature = tempValue;
+        }
+      }
+    }
+
+    const contentWithoutFrontmatter = content.replace(/^---\s*\n[\s\S]*?\n---/, '');
+
+    if (contentWithoutFrontmatter.trim()) {
+      systemPrompt = contentWithoutFrontmatter.trim();
+    }
+
+    return {
+      id: agentId,
+      name,
+      description,
+      systemPrompt,
+      temperature
+    };
+  }
+
+  private getDefaultAgents(): Agent[] {
     return [
       {
         id: 'sisyphus',
         name: 'Sisyphus',
         description: 'Main orchestrator - delegates to other agents based on task type',
-        model: 'zai-coding-plan/glm-4.7',
+        systemPrompt: 'Sisyphus is the main orchestrator agent that delegates to other specialized agents based on task complexity and requirements.',
         temperature: 0.1
       },
       {
         id: 'prometheus',
         name: 'Prometheus',
         description: 'Strategic planning agent - creates detailed implementation plans',
-        model: 'zai-coding-plan/glm-4.7',
+        systemPrompt: 'Prometheus specializes in strategic planning and creates detailed implementation plans.',
         temperature: 0.1
       },
       {
         id: 'oracle',
         name: 'Oracle',
         description: 'Debugging and architecture consultation - analyzes complex problems',
-        model: 'zai-coding-plan/glm-5',
+        systemPrompt: 'Oracle provides debugging and architecture consultation for complex problems.',
         temperature: 0.1
       },
       {
         id: 'librarian',
         name: 'Librarian',
         description: 'Codebase researcher - searches docs, GitHub, OSS implementations',
-        model: 'zai-coding-plan/glm-4.6',
+        systemPrompt: 'Librarian is a codebase researcher that searches documentation, GitHub, and OSS implementations.',
         temperature: 0.1
       },
       {
         id: 'explore',
         name: 'Explore',
         description: 'Fast codebase grep - finds patterns and implementations',
-        model: 'xai/grok-4-1-fast',
+        systemPrompt: 'Explore is a fast codebase grep agent that finds patterns and implementations.',
         temperature: 0.1
       },
       {
         id: 'metis',
         name: 'Metis',
         description: 'Pre-planning analysis - identifies ambiguities and AI failure points',
-        model: 'zai-coding-plan/glm-4.7',
+        systemPrompt: 'Metis performs pre-planning analysis to identify ambiguities and AI failure points.',
         temperature: 0.3
       },
       {
         id: 'momus',
         name: 'Momus',
         description: 'Plan validation - evaluates work plans for clarity and completeness',
-        model: 'zai-coding-plan/glm-5',
+        systemPrompt: 'Momus validates work plans for clarity, verifiability, and completeness.',
         temperature: 0.1
       }
     ];
