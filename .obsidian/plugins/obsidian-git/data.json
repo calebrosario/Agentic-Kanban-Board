@@ -1,0 +1,26 @@
+# Obsidian Git Plugin Configuration
+# This plugin automatically commits and pushes changes to git
+
+# Auto commit on file change
+autoCommitMessage: "vault backup: {{date}}"
+
+# Auto push on commit
+autoPush: true
+
+# Commit on file change
+commitOnFileChange: true
+
+# Auto pull on startup
+autoPullOnStartup: true
+
+# Show status bar
+showStatusBar: true
+
+# Commit message template
+commitMessage: "vault backup: {{date:YYYY-MM-DD HH:mm:ss}}"
+
+# Pull before push
+pullBeforePush: true
+
+# Disable on mobile (optional)
+disableOnMobile: false

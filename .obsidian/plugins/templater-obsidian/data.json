@@ -1,0 +1,25 @@
+{
+  "templates_folder": "Templates",
+  "templates": [
+    {
+      "name": "ADR",
+      "path": "Templates/ADR.md"
+    },
+    {
+      "name": "Runbook", 
+      "path": "Templates/Runbook.md"
+    },
+    {
+      "name": "Project",
+      "path": "Templates/Project-Setup.md"
+    },
+    {
+      "name": "Daily Standup",
+      "path": "Templates/Daily-Standup.md"
+    },
+    {
+      "name": "Postmortem",
+      "path": "Templates/Postmortem.md"
+    }
+  ]
+}
