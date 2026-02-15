@@ -1,0 +1,75 @@
+{
+  "title": "設定",
+  "tabs": {
+    "commonPaths": "一般的なパス",
+    "taskTemplates": "タスクテンプレート"
+  },
+  "commonPaths": {
+    "title": "一般的なパス",
+    "description": "クイックアクセスのために頻繁に使用するディレクトリを管理",
+    "addNew": "新規追加",
+    "resetDefault": "デフォルトにリセット",
+    "empty": {
+      "title": "まだ一般的なパスがありません",
+      "addFirst": "最初のパスを追加"
+    },
+    "form": {
+      "label": "ラベル",
+      "labelPlaceholder": "パスラベル",
+      "icon": "アイコン",
+      "path": "パス",
+      "pathPlaceholder": "C:\\Users\\User",
+      "folder": "フォルダ",
+      "code": "コード",
+      "home": "ホーム"
+    },
+    "actions": {
+      "add": "追加",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "delete": "削除"
+    },
+    "errors": {
+      "labelAndPathRequired": "ラベルとパスを空にできません"
+    }
+  },
+  "taskTemplates": {
+    "title": "タスクテンプレート",
+    "description": "クイックタスク作成のために再利用可能なタスクテンプレートを管理",
+    "addNew": "新規追加",
+    "resetDefault": "デフォルトにリセット",
+    "empty": {
+      "title": "まだタスクテンプレートがありません",
+      "addFirst": "最初のテンプレートを追加"
+    },
+    "form": {
+      "label": "ラベル",
+      "labelPlaceholder": "例：作業を続ける",
+      "template": "テンプレート内容",
+      "templatePlaceholder": "タスクテンプレートの内容を説明...",
+      "characters": "文字"
+    },
+    "actions": {
+      "add": "追加",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "delete": "削除"
+    },
+    "badge": {
+      "default": "デフォルト"
+    },
+    "errors": {
+      "labelAndTemplateRequired": "ラベルとテンプレート内容を空にできません",
+      "cannotDeleteDefault": "デフォルトテンプレートは削除できません"
+    },
+    "confirm": {
+      "resetDefault": "デフォルトテンプレートにリセットしてもよろしいですか？これにより、すべてのカスタムテンプレートが削除されます。"
+    }
+  },
+  "footer": {
+    "autoSync": "設定はデータベースに自動的に同期されます",
+    "close": "閉じる"
+  }
+}

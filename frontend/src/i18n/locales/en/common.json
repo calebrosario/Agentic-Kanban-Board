@@ -1,0 +1,92 @@
+{
+  "language": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
+    "es": "Español",
+    "ja": "日本語",
+    "pt": "Português"
+  },
+  "layout": {
+    "returnToWorkItem": "Return to Work Item",
+    "returnToList": "Return to list",
+    "fullscreen": "Fullscreen",
+    "close": "Close",
+    "restore": "Restore",
+    "verifying": "Verifying..."
+  },
+  "loading": "Loading...",
+  "error": {
+    "title": "Error",
+    "retry": "Retry",
+    "unknown": "An unknown error occurred",
+    "boundary": {
+      "title": "Oops! Something went wrong",
+      "description": "The application encountered an unexpected error. Please try reloading the page or return to the home page.",
+      "details": "Error Details:",
+      "stackTrace": "Stack Trace",
+      "goHome": "Go Home",
+      "loadingFailed": "Loading Failed",
+      "support": "If the problem persists, please contact technical support"
+    }
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "confirm": "Confirm",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "retry": "Retry",
+    "clear": "Clear"
+  },
+  "status": {
+    "loading": "Loading",
+    "idle": "Idle",
+    "processing": "Processing",
+    "completed": "Completed",
+    "error": "Error",
+    "interrupted": "Interrupted",
+    "planning": "Planning",
+    "in_progress": "In Progress"
+  },
+  "multiSelect": {
+    "placeholder": "Select items...",
+    "search": "Search...",
+    "loading": "Loading...",
+    "noResults": "No matching items found",
+    "createNew": "Create new item",
+    "creating": "Creating...",
+    "create": "Create"
+  },
+  "searchBar": {
+    "placeholder": "Search...",
+    "clear": "Clear search"
+  },
+  "classification": {
+    "tags": {
+      "label": "Tags",
+      "topic": "Topic",
+      "department": "Department",
+      "loadFailed": "Failed to load tags",
+      "updateSuccess": "Tags updated",
+      "updateFailed": "Failed to update tags",
+      "createSuccess": "Tag created",
+      "createFailed": "Failed to create tag"
+    },
+    "projects": {
+      "label": "Project",
+      "loadFailed": "Failed to load projects",
+      "updateSuccess": "Project updated",
+      "updateFailed": "Failed to update project",
+      "createSuccess": "Project created",
+      "createFailed": "Failed to create project"
+    }
+  }
+}

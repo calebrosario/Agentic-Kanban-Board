@@ -1,0 +1,75 @@
+{
+  "title": "設定",
+  "tabs": {
+    "commonPaths": "常用路徑",
+    "taskTemplates": "任務模板"
+  },
+  "commonPaths": {
+    "title": "常用路徑",
+    "description": "管理常用目錄以便快速存取",
+    "addNew": "新增",
+    "resetDefault": "重置預設",
+    "empty": {
+      "title": "尚無常用路徑",
+      "addFirst": "新增第一個路徑"
+    },
+    "form": {
+      "label": "標籤",
+      "labelPlaceholder": "路徑標籤",
+      "icon": "圖示",
+      "path": "路徑",
+      "pathPlaceholder": "C:\\Users\\User",
+      "folder": "資料夾",
+      "code": "程式碼",
+      "home": "家目錄"
+    },
+    "actions": {
+      "add": "新增",
+      "save": "儲存",
+      "cancel": "取消",
+      "edit": "編輯",
+      "delete": "刪除"
+    },
+    "errors": {
+      "labelAndPathRequired": "標籤和路徑不能為空"
+    }
+  },
+  "taskTemplates": {
+    "title": "任務模板",
+    "description": "管理可重複使用的任務模板以便快速建立任務",
+    "addNew": "新增",
+    "resetDefault": "重置預設",
+    "empty": {
+      "title": "尚無任務模板",
+      "addFirst": "新增第一個模板"
+    },
+    "form": {
+      "label": "標籤",
+      "labelPlaceholder": "例如：繼續工作",
+      "template": "模板內容",
+      "templatePlaceholder": "請描述任務模板的內容...",
+      "characters": "字元"
+    },
+    "actions": {
+      "add": "新增",
+      "save": "儲存",
+      "cancel": "取消",
+      "edit": "編輯",
+      "delete": "刪除"
+    },
+    "badge": {
+      "default": "預設"
+    },
+    "errors": {
+      "labelAndTemplateRequired": "標籤和模板內容不能為空",
+      "cannotDeleteDefault": "無法刪除預設模板"
+    },
+    "confirm": {
+      "resetDefault": "確定要重置為預設模板嗎？這將刪除所有自訂模板。"
+    }
+  },
+  "footer": {
+    "autoSync": "設定會自動同步到資料庫",
+    "close": "關閉"
+  }
+}

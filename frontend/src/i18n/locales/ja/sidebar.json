@@ -1,0 +1,19 @@
+{
+  "title": "Agentic Kanban Board",
+  "subtitle": "セッションマネージャー",
+  "sidebar": {
+    "collapse": "サイドバーを折りたたむ",
+    "expand": "サイドバーを展開"
+  },
+  "navigation": {
+    "allSessions": "すべてのセッション",
+    "workItems": "ワークアイテム",
+    "workflowStages": "ワークフローステージ",
+    "agentPrompts": "エージェントプロンプト"
+  },
+  "actions": {
+    "createSession": "セッションを作成",
+    "settings": "設定",
+    "logout": "ログアウト"
+  }
+}
