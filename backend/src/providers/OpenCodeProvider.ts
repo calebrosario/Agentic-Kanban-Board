@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
-import { Readable } from 'stream';
-import { readdir, readFile, access } from 'fs/promises';
+import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { IToolProvider } from './IToolProvider';
@@ -10,11 +9,18 @@ import {
   SessionOptions,
   ResumeContext,
   StreamEvent,
+  StreamEventType,
   ToolCapabilities,
   OpenCodeProviderConfig,
   Agent
 } from '../types/provider.types';
 import { OpenCodeStreamParser } from '../parsers/OpenCodeStreamParser';
+
+const DEFAULT_TIMEOUT_MS = 3600000;
+const INTERRUPT_TIMEOUT_MS = 5000;
+const CLOSE_TIMEOUT_MS = 10000;
+
+type ProcessStatus = 'idle' | 'processing' | 'error' | 'completed';
 
 interface OpenCodeProcess {
   sessionId: string;
@@ -75,7 +81,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
 
     this.config = {
       executable: 'opencode',
-      timeout: 3600000,
+      timeout: DEFAULT_TIMEOUT_MS,
       configDir: '~/.config/opencode/',
       configPath: '~/.config/opencode/opencode.json',
       model: 'anthropic/claude-sonnet-4-20250514',
@@ -217,7 +223,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
           this.emit('statusUpdate', { sessionId, status: event.data.status });
           const processInfo = this.processes.get(sessionId);
           if (processInfo) {
-            processInfo.status = event.data.status as any;
+            processInfo.status = status as ProcessStatus;
             processInfo.lastActivityTime = new Date();
           }
         }
@@ -348,7 +354,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
           this.emit('statusUpdate', { sessionId, status: event.data.status });
           const processInfo = this.processes.get(sessionId);
           if (processInfo) {
-            processInfo.status = event.data.status as any;
+            processInfo.status = status as ProcessStatus;
             processInfo.lastActivityTime = new Date();
           }
         }
@@ -404,7 +410,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     await this.sendInput(sessionId, input);
 
     yield {
-      type: 'status' as any,
+      type: 'status' as StreamEventType,
       role: 'system',
       content: 'Input sent to OpenCode',
       timestamp: new Date()
