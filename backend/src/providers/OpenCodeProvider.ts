@@ -128,6 +128,8 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
 
     await Promise.all(stopPromises);
     this.initialized = false;
+    this.eventListeners.clear();
+
     console.log('OpenCodeProvider shutdown complete');
   }
 
@@ -213,15 +215,13 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     const parser = new OpenCodeStreamParser({ sessionId });
 
     parser.on('event', (event: StreamEvent) => {
-      if (event.type === 'delta') {
-        this.emit('delta', event);
-      } else if (event.type === 'tool_call') {
-        this.emit('delta', event);
-      } else if (event.type === 'thinking') {
+      const deltaEventTypes = [StreamEventType.DELTA, StreamEventType.TOOL_CALL, StreamEventType.THINKING];
+      if (deltaEventTypes.includes(event.type)) {
         this.emit('delta', event);
       } else if (event.type === 'status') {
         if (event.data?.status) {
-          this.emit('statusUpdate', { sessionId, status: event.data.status });
+          const status = event.data.status;
+          this.emit('statusUpdate', { sessionId, status });
           const processInfo = this.processes.get(sessionId);
           if (processInfo) {
             processInfo.status = status as ProcessStatus;
@@ -344,15 +344,13 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     const parser = new OpenCodeStreamParser({ sessionId });
 
     parser.on('event', (event: StreamEvent) => {
-      if (event.type === 'delta') {
-        this.emit('delta', event);
-      } else if (event.type === 'tool_call') {
-        this.emit('delta', event);
-      } else if (event.type === 'thinking') {
+      const deltaEventTypes = [StreamEventType.DELTA, StreamEventType.TOOL_CALL, StreamEventType.THINKING];
+      if (deltaEventTypes.includes(event.type)) {
         this.emit('delta', event);
       } else if (event.type === 'status') {
         if (event.data?.status) {
-          this.emit('statusUpdate', { sessionId, status: event.data.status });
+          const status = event.data.status;
+          this.emit('statusUpdate', { sessionId, status });
           const processInfo = this.processes.get(sessionId);
           if (processInfo) {
             processInfo.status = status as ProcessStatus;
@@ -616,7 +614,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
           console.warn(`Session ${sessionId} did not exit gracefully, forcing termination`);
           process.kill('SIGKILL');
           resolve();
-        }, 5000);
+        }, INTERRUPT_TIMEOUT_MS);
 
         process.once('exit', () => {
           clearTimeout(timeout);
@@ -653,7 +651,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
           console.warn(`Session ${sessionId} did not exit gracefully, forcing termination`);
           process.kill('SIGKILL');
           resolve();
-        }, 10000);
+        }, CLOSE_TIMEOUT_MS);
 
         process.once('exit', () => {
           clearTimeout(timeout);
