@@ -74,6 +74,7 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
 
   private config: OpenCodeProviderConfig;
   private processes: Map<string, OpenCodeProcess> = new Map();
+  private eventListeners: Map<string, Function> = new Map();
   private initialized: boolean = false;
 
   constructor() {
