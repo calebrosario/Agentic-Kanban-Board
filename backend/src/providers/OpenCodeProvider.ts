@@ -10,23 +10,7 @@ import {
   ToolCapabilities,
   OpenCodeProviderConfig
 } from '../types/provider.types';
-
-/**
- * OpenCodeProvider - Provider implementation for OpenCode CLI with oh-my-opencode plugin
- *
- * OpenCode is a local CLI tool with oh-my-opencode plugin providing:
- * - 11 specialized AI agents (Sisyphus, Prometheus, Oracle, etc.)
- * - Agent orchestration and delegation
- * - Background task execution
- * - LSP/AST tool integration
- * - MCP server integration
- *
- * Integration Approach:
- * - Spawn opencode CLI with --format json flag
- * - Parse JSONL streaming output
- * - Handle oh-my-opencode agent orchestration events
- * - Emit standardized StreamEvent objects
- */
+import { OpenCodeStreamParser } from '../parsers/OpenCodeStreamParser';
 
 interface OpenCodeProcess {
   sessionId: string;
@@ -36,25 +20,7 @@ interface OpenCodeProcess {
   workingDirectory: string;
   lastActivityTime: Date;
   startTime: Date;
-  streamBuffer: string[];
-}
-
-interface OpenCodeJSONLLine {
-  type: 'content' | 'tool_use' | 'thinking' | 'status' | 'agent' | 'background_task' | 'todo' | 'error';
-  role?: 'user' | 'assistant' | 'system' | 'tool';
-  content?: string;
-  tool_name?: string;
-  tool_input?: any;
-  tool_result?: any;
-  status?: string;
-  agent?: string;
-  agent_action?: 'start' | 'complete';
-  background_task_id?: string;
-  background_task_status?: string;
-  todo_action?: 'update' | 'add' | 'complete';
-  todo_items?: any[];
-  error?: string;
-  timestamp?: string;
+  parser?: OpenCodeStreamParser;
 }
 
 export class OpenCodeProvider extends EventEmitter implements IToolProvider {
@@ -233,6 +199,42 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
       }
     });
 
+    const parser = new OpenCodeStreamParser({ sessionId });
+
+    parser.on('event', (event: StreamEvent) => {
+      if (event.type === 'delta') {
+        this.emit('delta', event);
+      } else if (event.type === 'tool_call') {
+        this.emit('delta', event);
+      } else if (event.type === 'thinking') {
+        this.emit('delta', event);
+      } else if (event.type === 'status') {
+        if (event.data?.status) {
+          this.emit('statusUpdate', { sessionId, status: event.data.status });
+          const processInfo = this.processes.get(sessionId);
+          if (processInfo) {
+            processInfo.status = event.data.status as any;
+            processInfo.lastActivityTime = new Date();
+          }
+        }
+      } else if (event.type === 'error') {
+        this.emit('error', {
+          sessionId,
+          error: event.content || 'Unknown error',
+          timestamp: event.timestamp
+        });
+      }
+    });
+
+    parser.on('error', (error: any) => {
+      console.error(`Parser error for session ${sessionId}:`, error);
+      this.emit('error', {
+        sessionId,
+        error: error.error || 'Parser error',
+        timestamp: new Date()
+      });
+    });
+
     const opencodeProcess: OpenCodeProcess = {
       sessionId,
       process: childProcess,
@@ -240,10 +242,10 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
       workingDirectory,
       lastActivityTime: new Date(),
       startTime: new Date(),
-      streamBuffer: []
+      parser
     };
 
-    this.setupStreamParsing(childProcess, sessionId);
+    this.setupStreamParsing(childProcess, sessionId, parser);
 
     childProcess.on('exit', (code: number | null, signal: string | null) => {
       console.log(`OpenCode process exited`, { sessionId, code, signal });
@@ -263,144 +265,15 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     return opencodeProcess;
   }
 
-  private setupStreamParsing(process: ChildProcess, sessionId: string): void {
-    let buffer = '';
-
-    const handleLine = (line: string) => {
-      if (!line.trim()) return;
-
-      try {
-        const data: OpenCodeJSONLLine = JSON.parse(line);
-        this.processJSONLLine(data, sessionId);
-      } catch (error) {
-        console.error(`Failed to parse JSONL line:`, { line, error });
-      }
-    };
-
+  private setupStreamParsing(process: ChildProcess, sessionId: string, parser: OpenCodeStreamParser): void {
     process.stdout?.on('data', (chunk) => {
-      buffer += chunk.toString();
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-
-      for (const line of lines) {
-        handleLine(line);
-      }
+      parser.parse(chunk.toString());
     });
 
     process.stderr?.on('data', (chunk) => {
       const text = chunk.toString();
       console.error(`OpenCode stderr:`, { sessionId, text });
     });
-  }
-
-  private processJSONLLine(data: OpenCodeJSONLLine, sessionId: string): void {
-    const timestamp = data.timestamp ? new Date(data.timestamp) : new Date();
-
-    switch (data.type) {
-      case 'content':
-        if (data.role) {
-          this.emit('delta', {
-            type: 'delta' as any,
-            role: data.role,
-            content: data.content || '',
-            timestamp
-          });
-        }
-        break;
-
-      case 'tool_use':
-        this.emit('delta', {
-          type: 'tool_call' as any,
-          role: data.role || 'assistant',
-          content: data.content,
-          metadata: {
-            toolName: data.tool_name,
-            toolInput: data.tool_input,
-            toolId: data.tool_name
-          },
-          timestamp
-        });
-        break;
-
-      case 'thinking':
-        this.emit('delta', {
-          type: 'thinking' as any,
-          role: 'assistant',
-          content: data.content,
-          timestamp
-        });
-        break;
-
-      case 'status':
-        if (data.status) {
-          this.emit('statusUpdate', { sessionId, status: data.status });
-          const processInfo = this.processes.get(sessionId);
-          if (processInfo) {
-            processInfo.status = data.status as any;
-            processInfo.lastActivityTime = new Date();
-          }
-        }
-        break;
-
-      case 'agent':
-        if (data.agent && data.agent_action) {
-          const agentAction = data.agent_action === 'start' ? 'agent_start' : 'agent_complete';
-          this.emit('delta', {
-            type: 'status' as any,
-            role: 'system',
-            content: `Agent ${data.agent} ${data.agent_action === 'start' ? 'started' : 'completed'}`,
-            data: {
-              agent: data.agent,
-              action: agentAction
-            },
-            timestamp
-          });
-        }
-        break;
-
-      case 'background_task':
-        if (data.background_task_id && data.background_task_status) {
-          const bgAction = data.background_task_status === 'started' ? 'background_task_start' : 'background_task_complete';
-          this.emit('delta', {
-            type: 'status' as any,
-            role: 'system',
-            content: `Background task ${data.background_task_id} ${data.background_task_status}`,
-            data: {
-              taskId: data.background_task_id,
-              status: bgAction
-            },
-            timestamp
-          });
-        }
-        break;
-
-      case 'todo':
-        if (data.todo_action) {
-          this.emit('delta', {
-            type: 'status' as any,
-            role: 'system',
-            content: `Todo ${data.todo_action}`,
-            data: {
-              action: data.todo_action,
-              items: data.todo_items
-            },
-            timestamp
-          });
-        }
-        break;
-
-      case 'error':
-        console.error(`OpenCode error:`, { sessionId, error: data.error });
-        this.emit('error', {
-          sessionId,
-          error: data.error || 'Unknown error',
-          timestamp
-        });
-        break;
-
-      default:
-        console.log(`Unknown JSONL type:`, { type: data.type, data });
-    }
   }
 
   async resumeSession(context: ResumeContext): Promise<any> {
@@ -457,6 +330,42 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
       }
     });
 
+    const parser = new OpenCodeStreamParser({ sessionId });
+
+    parser.on('event', (event: StreamEvent) => {
+      if (event.type === 'delta') {
+        this.emit('delta', event);
+      } else if (event.type === 'tool_call') {
+        this.emit('delta', event);
+      } else if (event.type === 'thinking') {
+        this.emit('delta', event);
+      } else if (event.type === 'status') {
+        if (event.data?.status) {
+          this.emit('statusUpdate', { sessionId, status: event.data.status });
+          const processInfo = this.processes.get(sessionId);
+          if (processInfo) {
+            processInfo.status = event.data.status as any;
+            processInfo.lastActivityTime = new Date();
+          }
+        }
+      } else if (event.type === 'error') {
+        this.emit('error', {
+          sessionId,
+          error: event.content || 'Unknown error',
+          timestamp: event.timestamp
+        });
+      }
+    });
+
+    parser.on('error', (error: any) => {
+      console.error(`Parser error for session ${sessionId}:`, error);
+      this.emit('error', {
+        sessionId,
+        error: error.error || 'Parser error',
+        timestamp: new Date()
+      });
+    });
+
     const opencodeProcess: OpenCodeProcess = {
       sessionId,
       process: childProcess,
@@ -464,10 +373,10 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
       workingDirectory,
       lastActivityTime: new Date(),
       startTime: new Date(),
-      streamBuffer: []
+      parser
     };
 
-    this.setupStreamParsing(childProcess, sessionId);
+    this.setupStreamParsing(childProcess, sessionId, parser);
 
     childProcess.on('exit', (code: number | null, signal: string | null) => {
       console.log(`OpenCode process exited`, { sessionId, code, signal });
