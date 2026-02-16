@@ -22,7 +22,7 @@ const CLOSE_TIMEOUT_MS = 10000;
 
 type ProcessStatus = 'idle' | 'processing' | 'error' | 'completed';
 
-interface OpenCodeProcess {
+export interface OpenCodeProcess {
   sessionId: string;
   toolSessionId?: string;
   process: ChildProcess;
@@ -90,6 +90,11 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     };
   }
 
+  /**
+   * Initialize the OpenCode provider with the specified configuration
+   * @param config - Configuration options for the OpenCode provider
+   * @throws Error if provider is already initialized (logs warning instead)
+   */
   async initialize(config: OpenCodeProviderConfig): Promise<void> {
     if (this.initialized) {
       console.log('OpenCodeProvider already initialized');
@@ -117,6 +122,10 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     console.log('OpenCodeProvider initialized successfully', { config: this.config });
   }
 
+  /**
+   * Shutdown the OpenCode provider and clean up all active sessions
+   * @throws Error if any session fails to stop gracefully (logged, doesn't reject)
+   */
   async shutdown(): Promise<void> {
     console.log('Shutting down OpenCodeProvider...');
 
@@ -128,11 +137,19 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
 
     await Promise.all(stopPromises);
     this.initialized = false;
+
+    // Clean up event listeners to prevent memory leaks
     this.eventListeners.clear();
 
     console.log('OpenCodeProvider shutdown complete');
   }
 
+  /**
+   * Create a new OpenCode session with the specified options
+   * @param options - Session configuration including title, working directory, agent ID, and optional task
+   * @returns Session object containing sessionId, toolSessionId, and initial status
+   * @throws Error if session creation fails
+   */
   async createSession(options: SessionOptions): Promise<any> {
     const sessionId = options.title.replace(/\s+/g, '-').toLowerCase() + '-' + Date.now();
 
@@ -166,7 +183,8 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
             this.emit('error', {
               sessionId,
               error: error.message || 'Failed to execute initial task',
-              timestamp: new Date()
+              timestamp: new Date(),
+              source: 'opencode_provider'
             });
           }
         });
@@ -287,6 +305,12 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     });
   }
 
+  /**
+   * Resume a previously existing OpenCode session
+   * @param context - Resume context including previous session ID and working directory
+   * @returns Session object containing sessionId, toolSessionId, and initial status
+   * @throws Error if session resumption fails
+   */
   async resumeSession(context: ResumeContext): Promise<any> {
     const sessionId = context.previousSessionId + '-resume-' + Date.now();
 
@@ -405,6 +429,13 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     return opencodeProcess;
   }
 
+  /**
+   * Continue an existing session with new input
+   * @param sessionId - The session to continue
+   * @param input - The input to send to the session
+   * @yields Stream events including status updates and responses
+   * @throws Error if session not found or input fails
+   */
   async* continueSession(sessionId: string, input: string): AsyncIterable<StreamEvent> {
     await this.sendInput(sessionId, input);
 
@@ -416,6 +447,11 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     };
   }
 
+  /**
+   * Load agent configurations from the specified directory
+   * @param agentsPath - Path to the directory containing agent configuration files
+   * @returns Array of loaded agents, or default agents if directory doesn't exist
+   */
   async loadAgents(agentsPath: string): Promise<Agent[]> {
     console.log(`Loading agents from ${agentsPath}`);
 
@@ -562,6 +598,12 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     ];
   }
 
+  /**
+   * Send input to an active OpenCode session
+   * @param sessionId - The session to send input to
+   * @param input - The input string to send
+   * @throws Error if session not found or stdin not available
+   */
   async sendInput(sessionId: string, input: string): Promise<void> {
     const processInfo = this.processes.get(sessionId);
     if (!processInfo) {
@@ -595,6 +637,10 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     });
   }
 
+  /**
+   * Interrupt a running session by sending SIGINT
+   * @param sessionId - The session to interrupt
+   */
   async interrupt(sessionId: string): Promise<void> {
     const processInfo = this.processes.get(sessionId);
     if (!processInfo) {
@@ -632,6 +678,10 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     console.log(`Session interrupted: ${sessionId}`);
   }
 
+  /**
+   * Close a session gracefully by ending stdin and waiting for exit
+   * @param sessionId - The session to close
+   */
   async closeSession(sessionId: string): Promise<void> {
     const processInfo = this.processes.get(sessionId);
     if (!processInfo) {
@@ -668,6 +718,11 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     console.log(`Session closed: ${sessionId}`);
   }
 
+  /**
+   * Get the current status of a session
+   * @param sessionId - The session to query
+   * @returns Session status or 'not_found' if session doesn't exist
+   */
   async getSessionStatus(sessionId: string): Promise<string> {
     const processInfo = this.processes.get(sessionId);
     if (!processInfo) {
@@ -676,6 +731,11 @@ export class OpenCodeProvider extends EventEmitter implements IToolProvider {
     return processInfo.status;
   }
 
+  /**
+   * Get metrics for a session (not supported in spawn mode)
+   * @param sessionId - The session to query
+   * @returns Always null as OpenCode CLI doesn't provide metrics in spawn mode
+   */
   async getSessionMetrics(sessionId: string): Promise<any | null> {
     // OpenCode CLI doesn't provide metrics in spawn mode
     return null;
