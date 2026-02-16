@@ -9,6 +9,14 @@ export interface ClaudeConfig {
   timeout: number;
 }
 
+export interface OpenCodeConfig {
+  executable: string;
+  configDir: string;
+  configPath: string;
+  model: string;
+  enabled: boolean;
+}
+
 export interface SecurityConfig {
   allowedDirs: string[];
 }
@@ -24,6 +32,7 @@ export interface EnvConfig {
   databasePath: string;
   auth: AuthConfig;
   claude: ClaudeConfig;
+  opencode: OpenCodeConfig;
   logLevel: 'error' | 'warn' | 'info' | 'debug';
   security: SecurityConfig;
   process: ProcessConfig;
@@ -47,6 +56,15 @@ export const getEnvConfig = (): EnvConfig => {
     claude: {
       executable: process.env.CLAUDE_EXECUTABLE || 'claude',
       timeout: parseInt(process.env.CLAUDE_TIMEOUT || '300000', 10)
+    },
+
+    // OpenCode 設定 (with oh-my-opencode support)
+    opencode: {
+      executable: process.env.OPENCODE_EXECUTABLE || 'opencode',
+      configDir: process.env.OPENCODE_CONFIG_DIR || '~/.config/opencode/',
+      configPath: process.env.OPENCODE_CONFIG || '~/.config/opencode/opencode.json',
+      model: process.env.OPENCODE_MODEL || 'anthropic/claude-sonnet-4-20250514',
+      enabled: process.env.OH_MY_OPENCODE_ENABLED !== 'false'
     },
     
     // 日誌設定

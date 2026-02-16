@@ -191,8 +191,11 @@ export interface ClaudeProviderConfig {
  * OpenCode-specific configuration
  */
 export interface OpenCodeProviderConfig {
-  apiKey?: string;
-  baseUrl?: string;
+  executable?: string;
+  configDir?: string;
+  configPath?: string;
+  model?: string;
+  enabled?: boolean;
   timeout?: number;
 }
 

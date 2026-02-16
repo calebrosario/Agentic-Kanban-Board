@@ -6,7 +6,7 @@ export interface Session {
   status: SessionStatus;
   continueChat: boolean;
   previousSessionId?: string;
-  claudeSessionId?: string; // Claude Code 的實際 session ID
+  toolSessionId?: string; // Tool provider's actual session ID (e.g., Claude Code, OpenCode)
   processId?: number;
   dangerouslySkipPermissions?: boolean;
   lastUserMessage?: string; // 最後用戶發送的訊息

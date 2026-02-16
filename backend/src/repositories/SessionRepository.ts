@@ -9,7 +9,7 @@ interface SessionRow {
   status: string;
   continue_chat: number;
   previous_session_id?: string;
-  claude_session_id?: string;
+  tool_session_id?: string;
   process_id?: number;
   dangerously_skip_permissions?: number;
   last_user_message?: string;
@@ -40,7 +40,7 @@ export class SessionRepository {
       status: row.status as SessionStatus,
       continueChat: Boolean(row.continue_chat),
       previousSessionId: row.previous_session_id,
-      claudeSessionId: row.claude_session_id,
+      toolSessionId: row.tool_session_id,
       processId: row.process_id,
       dangerouslySkipPermissions: Boolean(row.dangerously_skip_permissions),
       lastUserMessage: row.last_user_message,
@@ -65,7 +65,7 @@ export class SessionRepository {
       session.status,
       session.continueChat ? 1 : 0,
       session.previousSessionId,
-      session.claudeSessionId,
+      session.toolSessionId,
       session.processId,
       session.dangerouslySkipPermissions ? 1 : 0,
       session.lastUserMessage,
@@ -84,7 +84,7 @@ export class SessionRepository {
     const sql = `
       INSERT INTO sessions (
         session_id, name, working_dir, task, status, continue_chat,
-        previous_session_id, claude_session_id, process_id, dangerously_skip_permissions,
+        previous_session_id, tool_session_id, process_id, dangerously_skip_permissions,
         last_user_message, message_count, workflow_stage_id, work_item_id,
         error, created_at, updated_at, completed_at, deleted_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -106,7 +106,7 @@ export class SessionRepository {
     const sql = `
       UPDATE sessions SET
         name = ?, working_dir = ?, task = ?, status = ?, continue_chat = ?,
-        previous_session_id = ?, claude_session_id = ?, process_id = ?, dangerously_skip_permissions = ?,
+        previous_session_id = ?, tool_session_id = ?, process_id = ?, dangerously_skip_permissions = ?,
         last_user_message = ?, message_count = ?, workflow_stage_id = ?, work_item_id = ?,
         error = ?, updated_at = ?, completed_at = ?, deleted_at = ?
       WHERE session_id = ?
@@ -119,7 +119,7 @@ export class SessionRepository {
       session.status,
       session.continueChat ? 1 : 0,
       session.previousSessionId,
-      session.claudeSessionId,
+      session.toolSessionId,
       session.processId,
       session.dangerouslySkipPermissions ? 1 : 0,
       session.lastUserMessage,
@@ -150,82 +150,7 @@ export class SessionRepository {
     const row = await this.db.get<SessionRow>(sql, [sessionId]);
     return row ? this.mapRowToSession(row) : null;
   }
-  
-  async getSessionById(sessionId: string): Promise<Session | null> {
-    return this.findById(sessionId);
-  }
-  
-  async findAll(includeDeleted: boolean = false): Promise<Session[]> {
-    const sql = includeDeleted 
-      ? `SELECT * FROM sessions ORDER BY status, sort_order, created_at DESC`
-      : `SELECT * FROM sessions WHERE deleted_at IS NULL ORDER BY status, sort_order, created_at DESC`;
-    
-    const rows = await this.db.all<SessionRow>(sql);
-    return rows.map(row => this.mapRowToSession(row));
-  }
-  
-  async findByStatus(status: SessionStatus): Promise<Session[]> {
-    const sql = `
-      SELECT * FROM sessions 
-      WHERE status = ? AND deleted_at IS NULL 
-      ORDER BY sort_order, created_at DESC
-    `;
-    
-    const rows = await this.db.all<SessionRow>(sql, [status]);
-    return rows.map(row => this.mapRowToSession(row));
-  }
-  
-  async delete(sessionId: string): Promise<void> {
-    // Hard delete - completely remove from database
-    await this.db.beginTransaction();
-    
-    try {
-      // Delete related messages first
-      await this.db.run(`DELETE FROM messages WHERE session_id = ?`, [sessionId]);
-      
-      // Delete status history
-      await this.db.run(`DELETE FROM session_status_history WHERE session_id = ?`, [sessionId]);
-      
-      // Delete session
-      await this.db.run(`DELETE FROM sessions WHERE session_id = ?`, [sessionId]);
-      
-      await this.db.commit();
-    } catch (error) {
-      await this.db.rollback();
-      throw error;
-    }
-  }
-  
-  async softDelete(sessionId: string): Promise<void> {
-    const now = new Date();
-    const sql = `
-      UPDATE sessions SET 
-        deleted_at = ?, 
-        updated_at = ? 
-      WHERE session_id = ?
-    `;
-    
-    await this.db.run(sql, [now.toISOString(), now.toISOString(), sessionId]);
-    
-    // Record status history
-    const session = await this.findById(sessionId);
-    if (session) {
-      await this.recordStatusHistory(sessionId, session.status, 'deleted', 'soft_delete');
-    }
-  }
-  
-  async restore(sessionId: string): Promise<void> {
-    const now = new Date();
-    const sql = `
-      UPDATE sessions SET 
-        deleted_at = NULL, 
-        updated_at = ? 
-      WHERE session_id = ?
-    `;
-    
-    await this.db.run(sql, [now.toISOString(), sessionId]);
-  }
-  
+
   async findByWorkItem(workItemId: string): Promise<Session[]> {
     const sql = `
       SELECT * FROM sessions 
@@ -314,21 +239,34 @@ export class SessionRepository {
   }
 
   // Claude Session ID management
-  async updateClaudeSessionId(sessionId: string, claudeSessionId: string): Promise<void> {
+  async updateToolSessionId(sessionId: string, toolSessionId: string): Promise<void> {
     const sql = `
       UPDATE sessions SET 
-        claude_session_id = ?, 
+        tool_session_id = ?, 
         updated_at = ?
       WHERE session_id = ?
     `;
-    
-    await this.db.run(sql, [claudeSessionId, new Date().toISOString(), sessionId]);
+
+    await this.db.run(sql, [toolSessionId, new Date().toISOString(), sessionId]);
+  }
+
+  async findByToolSessionId(toolSessionId: string): Promise<Session | null> {
+    const sql = `
+      SELECT * FROM sessions 
+      WHERE tool_session_id = ? 
+      AND deleted_at IS NULL 
+      ORDER BY created_at DESC 
+      LIMIT 1
+    `;
+
+    const row = await this.db.get<SessionRow>(sql, [toolSessionId]);
+    return row ? this.mapRowToSession(row) : null;
   }
 
   async findByClaudeSessionId(claudeSessionId: string): Promise<Session | null> {
     const sql = `
       SELECT * FROM sessions 
-      WHERE claude_session_id = ? 
+      WHERE tool_session_id = ? 
       AND deleted_at IS NULL 
       ORDER BY created_at DESC 
       LIMIT 1
