@@ -69,13 +69,29 @@ class ProviderFactory {
     return this.registry.has(toolType);
   }
 
-  /**
-   * Clear all provider instances (useful for testing or hot reloading)
-   */
-  static clearInstances(): void {
-    for (const instance of this.instances.values()) {
-      instance.removeAllListeners();
+/**
+ * Register all available providers
+ */
+export function registerProviders(): void {
+  ProviderFactory.register(
+    ToolType.CLAUDE,
+    () => new ClaudeProvider(true)
+  );
+
+  ProviderFactory.register(
+    ToolType.OPENCODE,
+    () => new OpenCodeProvider()
+  );
+
+  // CursorProvider can be imported dynamically when needed
+  ProviderFactory.register(
+    ToolType.CURSOR,
+    () => {
+      const { CursorProvider } = require('./CursorProvider');
+      return new CursorProvider();
     }
+  );
+}
     this.instances.clear();
   }
 

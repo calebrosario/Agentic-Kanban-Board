@@ -1,3 +1,5 @@
+import { EventEmitter } from 'events';
+
 /**
  * Core Provider Types
  *
@@ -175,6 +177,35 @@ export interface ProviderConfig {
 
   // Allow future providers
   [key: string]: any;
+}
+
+/**
+ * Core provider interface that all tool providers must implement
+ * Defines the contract for session management, agent loading, and stream handling
+ */
+export interface IToolProvider extends EventEmitter {
+  readonly id: ToolType;
+  readonly name: string;
+  readonly displayName: string;
+
+  // Lifecycle
+  initialize(config: ProviderConfig): Promise<void>;
+  shutdown(): Promise<void>;
+
+  // Session Management
+  createSession(options: SessionOptions): Promise<ToolSession>;
+  resumeSession(context: ResumeContext): Promise<ToolSession>;
+  continueSession(sessionId: string, input: string): AsyncIterable<StreamEvent>;
+
+  // Agent Management
+  loadAgents(agentsPath: string): Promise<Agent[]>;
+
+  // Stream Handling
+  sendInput(sessionId: string, input: string): Promise<void>;
+  interrupt(sessionId: string): Promise<void>;
+  closeSession(sessionId: string): Promise<void>;
+  getSessionStatus(sessionId: string): Promise<string>;
+  getSessionMetrics(sessionId: string): Promise<any | null>;
 }
 
 /**
