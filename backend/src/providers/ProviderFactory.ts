@@ -70,11 +70,14 @@ class ProviderFactory {
   }
 
   /**
-   * Clear all provider instances (useful for testing or hot reloading)
+   * Clear all provider instances
+   * Useful for testing or hot reloading
    */
   static clearInstances(): void {
     for (const instance of this.instances.values()) {
-      instance.removeAllListeners();
+      if (instance.removeAllListeners) {
+        instance.removeAllListeners();
+      }
     }
     this.instances.clear();
   }
@@ -88,6 +91,44 @@ class ProviderFactory {
   static getInstance(toolType: ToolType): IToolProvider | undefined {
     return this.instances.get(toolType);
   }
+}
+
+/**
+ * Register all available providers
+ * Should be called at application startup
+ */
+export function registerProviders(): void {
+  // ClaudeProvider - static import
+  const { ClaudeProvider } = require('./ClaudeProvider');
+  ProviderFactory.register(
+    ToolType.CLAUDE,
+    () => new ClaudeProvider(true)
+  );
+
+  // OpenCodeProvider - static import
+  const { OpenCodeProvider } = require('./OpenCodeProvider');
+  ProviderFactory.register(
+    ToolType.OPENCODE,
+    () => new OpenCodeProvider()
+  );
+
+  // CursorProvider - dynamic import to avoid circular dependencies
+  ProviderFactory.register(
+    ToolType.CURSOR,
+    () => {
+      const { CursorProvider } = require('./CursorProvider');
+      return new CursorProvider();
+    }
+  );
+
+  // KiloCodeProvider - dynamic import to avoid circular dependencies
+  ProviderFactory.register(
+    ToolType.KILOCODE,
+    () => {
+      const { KiloCodeProvider } = require('./KiloCodeProvider');
+      return new KiloCodeProvider();
+    }
+  );
 }
 
 export default ProviderFactory;

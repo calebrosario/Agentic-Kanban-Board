@@ -1,3 +1,5 @@
+import { EventEmitter } from 'events';
+
 /**
  * Core Provider Types
  *
@@ -72,8 +74,8 @@ export interface StreamEvent {
   // Optional metadata for tool calls
   metadata?: {
     toolName?: string;
-    toolInput?: any;
-    toolOutput?: any;
+    toolInput?: unknown;
+    toolOutput?: unknown;
     toolId?: string;
     fileOperation?: 'read' | 'write' | 'edit' | 'delete' | 'list' | 'search';
     filePath?: string;
@@ -88,7 +90,7 @@ export interface StreamEvent {
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
   };
 }
 
@@ -152,14 +154,15 @@ export interface ToolSession {
   isActive: boolean;
 
   // Provider-specific session data
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 
   // Methods
   sendInput(input: string): Promise<void>;
   interrupt(): Promise<void>;
   close(): Promise<void>;
-  on(event: string, callback: (...args: any[]) => void): void;
-  off(event: string, callback?: (...args: any[]) => void): void;
+  on(event: string, callback: (...args: unknown[]) => void): void;
+  off(event: string, callback?: (...args: unknown[]) => void): void;
+  removeAllListeners(): void;
 }
 
 /**
@@ -175,6 +178,35 @@ export interface ProviderConfig {
 
   // Allow future providers
   [key: string]: any;
+}
+
+/**
+ * Core provider interface that all tool providers must implement
+ * Defines the contract for session management, agent loading, and stream handling
+ */
+export interface IToolProvider extends EventEmitter {
+  readonly id: ToolType;
+  readonly name: string;
+  readonly displayName: string;
+
+  // Lifecycle
+  initialize(config: ProviderConfig): Promise<void>;
+  shutdown(): Promise<void>;
+
+  // Session Management
+  createSession(options: SessionOptions): Promise<ToolSession>;
+  resumeSession(context: ResumeContext): Promise<ToolSession>;
+  continueSession(sessionId: string, input: string): AsyncIterable<StreamEvent>;
+
+  // Agent Management
+  loadAgents(agentsPath: string): Promise<Agent[]>;
+
+  // Stream Handling
+  sendInput(sessionId: string, input: string): Promise<void>;
+  interrupt(sessionId: string): Promise<void>;
+  closeSession(sessionId: string): Promise<void>;
+  getSessionStatus(sessionId: string): Promise<string>;
+  getSessionMetrics(sessionId: string): Promise<any | null>;
 }
 
 /**

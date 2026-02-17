@@ -20,7 +20,13 @@
 
 ## 🌟 Overview
 
-Agentic Kanban Board is a powerful web-based management system designed for developers working with Claude Code CLI. It provides an intuitive interface to manage multiple AI coding sessions simultaneously, with advanced features including workflow automation, agent-based prompting, and intelligent project organization.
+Agentic Kanban Board is a powerful web-based management system designed for developers working with AI coding tools. It provides an intuitive interface to manage multiple AI coding sessions simultaneously across multiple tools (Claude Code, OpenCode, Cursor IDE, KiloCode), with advanced features including workflow automation, agent-based prompting, and intelligent project organization.
+
+**Multi-Tool Architecture:** This project supports four AI coding tool providers through a unified provider interface:
+- **Claude Code** - CLI-based session management
+- **OpenCode** - SDK-based integration with event-driven architecture
+- **Cursor IDE** - MCP (Model Context Protocol) integration
+- **KiloCode** - CLI-based JSON streaming support
 
 ![Session List Management](assets/SessionList.png)
 *Main dashboard showcasing multiple active sessions with status tracking and management interface*
@@ -64,7 +70,8 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 ## ✨ Key Features
 
 ### 🎯 Core Session Management
-- **Multi-Session Support** - Run and manage multiple Claude Code instances concurrently
+- **Multi-Session Support** - Run and manage multiple AI coding tool instances concurrently
+- **Multi-Tool Support** - Switch between Claude, OpenCode, Cursor, and KiloCode seamlessly
 - **Real-time Chat Interface** - WebSocket-powered seamless conversation experience
 - **Smart Status Tracking** - Automatic monitoring of session states (idle, processing, completed, error)
 - **Session Recovery** - Resume previous conversations with full context preservation
@@ -72,10 +79,11 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 
 
 ### 🤖 Advanced AI Workflow
-- **Agent Integration** - Dynamic loading of Claude agents from `.claude/agents` directory
+- **Agent Integration** - Dynamic loading of tool-specific agents (Claude: `.claude/agents`, OpenCode: plugins, Cursor: MCP servers, KiloCode: `.kilocode/agents`)
 - **Workflow Stages** - Pre-configured development stages (code review, debugging, feature development)
 - **Smart Message Enhancement** - Automatic agent instruction injection for consistent behavior
 - **Custom Prompt Templates** - Quick-start templates for common development tasks
+- **Provider Interface Pattern** - Unified abstraction layer for all AI coding tools
 
 
 ### 📊 Project Organization
@@ -96,10 +104,28 @@ Claude Code CLI is excellent for single-focus coding sessions. However, when man
 
 - **Operating System**: Windows 10/11
 - **Node.js**: Version 18.0.0 or higher
-- **Claude Code CLI**: Latest version installed globally
-  ```bash
-  npm install -g @anthropic-ai/claude-code
-  ```
+- **At least one AI coding tool** (choose from below):
+
+**Claude Code** (Required for basic functionality):
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+**OpenCode** (Optional - SDK-based):
+- No CLI installation required
+- Requires API key configuration
+
+**Cursor IDE** (Optional - MCP integration):
+```bash
+npm install -g @kilocode/cli
+```
+
+**KiloCode** (Optional - CLI-based):
+```bash
+npm install -g @kilocode/cli
+```
+
+See [Multi-Tool Setup Guide](docs/MULTI_TOOL_SETUP_GUIDE.md) for detailed installation and configuration instructions.
 
 ### Installation
 
@@ -224,7 +250,7 @@ VITE_SOCKET_URL=http://localhost:3001
    - Configure path in application settings
    - Create `.md` files for each agent with instructions
 
-2. **Agent File Structure**
+2. **Agent File Structure (Claude)**
    ```
    ~/.claude/agents/
    ├── code-reviewer.md     # Code review specialist
@@ -232,6 +258,19 @@ VITE_SOCKET_URL=http://localhost:3001
    ├── architect.md         # System design advisor
    └── documenter.md        # Documentation writer
    ```
+
+3. **Multi-Tool Agent Configuration**
+
+Different tools use different agent systems:
+
+| Tool | Agent Location | Configuration Format |
+|-------|---------------|---------------------|
+| Claude Code | `~/.claude/agents/` | Markdown files (`.md`) |
+| OpenCode | `~/.config/opencode/` | Plugin system |
+| Cursor IDE | `~/.cursor/mcp.json` | MCP server configurations |
+| KiloCode | `~/.kilocode/agents/` | Markdown files (`.md`) |
+
+For detailed setup instructions for each tool, see [Multi-Tool Setup Guide](docs/MULTI_TOOL_SETUP_GUIDE.md).
 
 ### Workflow Stages
 
@@ -284,9 +323,35 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Getting Help
 
-- 📚 **Documentation**: Check this README and [GitHub Wiki](https://github.com/calebrosario/Agentic-Kanban-Board/wiki) for comprehensive guides
+- 📚 **Documentation**:
+  - [Multi-Tool Architecture Plan](docs/MULTI_TOOL_ARCHITECTURE_PLAN.md) - Technical architecture details
+  - [Multi-Tool Setup Guide](docs/MULTI_TOOL_SETUP_GUIDE.md) - Setup and configuration for all tools
+  - [GitHub Wiki](https://github.com/calebrosario/Agentic-Kanban-Board/wiki) - Comprehensive guides
 - 🐛 **Bug Reports**: Open an issue on GitHub
 - 💡 **Feature Requests**: Discuss in GitHub Discussions
+
+## 🔧 Multi-Tool Architecture
+
+This project implements the **Provider Interface Pattern** to support multiple AI coding tools through a unified abstraction layer.
+
+### Supported Tools
+
+| Tool | Integration Type | Status | Features |
+|-------|----------------|--------|----------|
+| **Claude Code** | CLI (stdio) | ✅ Available | Session management, agents, file operations, bash |
+| **OpenCode** | SDK (HTTP/WebSocket) | ✅ Available | Event-driven, plugin system, file watcher, permissions |
+| **Cursor IDE** | MCP (JSON-RPC 2.0) | ✅ Available | MCP server integration, tool registration, stdio transport |
+| **KiloCode** | CLI (JSON streaming) | ✅ Available | JSON streaming, multiple modes, agent loading |
+
+### Architecture Highlights
+
+- **IToolProvider Interface**: Contract for all tool providers
+- **ProviderFactory**: Dynamic provider registration and instantiation
+- **SessionService**: Orchestrates multi-tool sessions with caching
+- **Event System**: Unified event handling across all providers
+- **Performance**: Agent caching (5-min TTL), connection pooling
+
+For implementation details, see [Multi-Tool Architecture Plan](docs/MULTI_TOOL_ARCHITECTURE_PLAN.md).
 
 ---
 

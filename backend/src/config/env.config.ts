@@ -17,6 +17,15 @@ export interface OpenCodeConfig {
   enabled: boolean;
 }
 
+/**
+ * Cursor-specific configuration (MCP-based)
+ */
+export interface CursorProviderConfig {
+  mcpCommand?: string;
+  mcpArgs?: string[];
+  timeout?: number;
+}
+
 export interface SecurityConfig {
   allowedDirs: string[];
 }
@@ -33,6 +42,7 @@ export interface EnvConfig {
   auth: AuthConfig;
   claude: ClaudeConfig;
   opencode: OpenCodeConfig;
+  cursor: CursorProviderConfig;
   logLevel: 'error' | 'warn' | 'info' | 'debug';
   security: SecurityConfig;
   process: ProcessConfig;
@@ -65,6 +75,13 @@ export const getEnvConfig = (): EnvConfig => {
       configPath: process.env.OPENCODE_CONFIG || '~/.config/opencode/opencode.json',
       model: process.env.OPENCODE_MODEL || 'anthropic/claude-sonnet-4-20250514',
       enabled: process.env.OH_MY_OPENCODE_ENABLED !== 'false'
+    },
+
+    // Cursor 設定 (MCP-based)
+    cursor: {
+      mcpCommand: process.env.CURSOR_MCP_COMMAND,
+      mcpArgs: process.env.CURSOR_MCP_ARGS ? JSON.parse(process.env.CURSOR_MCP_ARGS) : undefined,
+      timeout: parseInt(process.env.CURSOR_TIMEOUT || '300000', 10)
     },
     
     // 日誌設定
