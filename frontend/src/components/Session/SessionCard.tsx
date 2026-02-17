@@ -26,9 +26,9 @@ interface SessionCardProps {
   onDragStart?: (index: number) => void;
   onDragEnd?: () => void;
   isDragging?: boolean;
-  // New: Keep in Work Item context
-  // New: Current Work Item ID
-  // New: Disable navigation links
+  preserveWorkItemContext?: boolean;
+  workItemId?: string;
+  disableNavigation?: boolean;
 }
 
 export const SessionCard: React.FC<SessionCardProps> = ({

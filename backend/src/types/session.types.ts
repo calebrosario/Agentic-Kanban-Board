@@ -1,3 +1,5 @@
+import { ToolType } from './provider.types';
+
 export interface Session {
   sessionId: string;
   name: string;
@@ -43,6 +45,8 @@ export interface Session {
     color?: string;
     type: string;
   }>;
+  // Multi-Tool Support
+  provider?: ToolType; // Which tool provider this session uses
 }
 
 export enum SessionStatus {
@@ -63,6 +67,7 @@ export interface CreateSessionRequest {
   dangerouslySkipPermissions?: boolean;
   workflow_stage_id?: string;
   work_item_id?: string;
+  provider?: ToolType; // Which tool provider to use (defaults to CLAUDE)
 }
 
 export interface SessionResponse {

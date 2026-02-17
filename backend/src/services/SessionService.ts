@@ -3,6 +3,7 @@ import { MessageRepository } from "../repositories/MessageRepository";
 import { SessionRepository } from "../repositories/SessionRepository";
 import { io } from "../server";
 import { CreateSessionRequest, Session, SessionStatus } from "../types/session.types";
+import { ToolType } from "../types/provider.types";
 import { logger } from "../utils/logger";
 import { agentPromptService } from "./AgentPromptService";
 import { ProcessManager } from "./ProcessManager";
@@ -18,6 +19,9 @@ export class SessionService {
   private workflowStageCache = new Map<string, { stage: any; loadedAt: Date }>();
   private devMdCache = new Map<string, { content: string; loadedAt: Date }>();
   private cacheCleanupInterval?: NodeJS.Timeout;
+
+  // Track which provider each session uses
+  private sessionProviders = new Map<string, ToolType>();
 
   constructor(processManager?: ProcessManager) {
     // 使用傳入的 ProcessManager 實例，或者建立新的（向後相容）
@@ -321,7 +325,11 @@ export class SessionService {
       messageCount: 0, // 初始對話計數為 0
       createdAt: new Date(),
       updatedAt: new Date(),
+      provider: request.provider || ToolType.CLAUDE, // Default to Claude if not specified
     };
+
+    // Track the provider for this session
+    this.sessionProviders.set(sessionId, session.provider || ToolType.CLAUDE);
 
     // 儲存 Session
     await this.sessionRepository.save(session);

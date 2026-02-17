@@ -3,9 +3,10 @@ import { X, MessageSquare, Code, ShieldOff, Workflow, Briefcase } from 'lucide-r
 import { useSessions } from '../../hooks/useSessions';
 import { useSettings } from '../../hooks/useSettings';
 import { useTaskTemplates } from '../../hooks/useTaskTemplates';
-import { CreateSessionRequest, Session } from '../../types/session.types';
+import { CreateSessionRequest, Session, ToolType } from '../../types/session.types';
 import { workflowStageService, WorkflowStage } from '../../services/workflowStageService';
 import { useWorkItemStore } from '../../stores/workItemStore';
+import { ProviderSelector } from '../Common/ProviderSelector';
 import toast from 'react-hot-toast';
 import { useI18nContext } from '../../contexts/I18nContext';
 
@@ -33,6 +34,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
     dangerouslySkipPermissions: false,
     workflow_stage_id: '',
     work_item_id: defaultWorkItemId || '',
+    provider: ToolType.CLAUDE,
     ...prefillData,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,11 +97,15 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         return;
       }
     }
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
+  };
+
+  const handleProviderChange = (provider: ToolType) => {
+    setFormData(prev => ({ ...prev, provider }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,6 +137,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         dangerouslySkipPermissions: formData.dangerouslySkipPermissions,
         workflow_stage_id: formData.workflow_stage_id || undefined,
         work_item_id: formData.work_item_id || undefined,
+        provider: formData.provider || ToolType.CLAUDE,
       };
 
       const newSession = await createSession(request);
@@ -147,6 +154,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
         dangerouslySkipPermissions: false,
         workflow_stage_id: '',
         work_item_id: defaultWorkItemId || '',
+        provider: ToolType.CLAUDE,
       });
       setSelectedStage(null);
 
@@ -214,6 +222,15 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                     <Code className="w-4 h-4 text-blue-600" />
                     {t('session.create.basicSettings')}
                   </h3>
+
+                  {/* AI Tool Provider Selection */}
+                  <div className="mb-4">
+                    <ProviderSelector
+                      value={formData.provider}
+                      onChange={handleProviderChange}
+                      disabled={isSubmitting}
+                    />
+                  </div>
 
                   {/* Session 名稱 */}
                   <div className="space-y-3">

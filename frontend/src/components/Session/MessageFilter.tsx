@@ -4,18 +4,6 @@ import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { Message } from '../../types/session.types';
 import { useI18nContext } from '../../contexts/I18nContext';
 
-// 訊息類型配置
-const MESSAGE_TYPE_CONFIG: Record<Message['type'], { label: string; color: string; defaultVisible: boolean }> = {
-  user: { label: t('session.filter.types.user'), color: 'text-blue-600', defaultVisible: true },
-  claude: { label: t('session.filter.types.assistant'), color: 'text-green-600', defaultVisible: true },
-  assistant: { label: 'Assistant Messages', color: 'text-purple-600', defaultVisible: true },
-  system: { label: t('session.filter.types.system'), color: 'text-gray-600', defaultVisible: true },
-  tool_use: { label: t('session.filter.types.toolUse'), color: 'text-orange-600', defaultVisible: false },
-  thinking: { label: t('session.filter.types.thinking'), color: 'text-indigo-600', defaultVisible: false },
-  output: { label: t('session.filter.types.output'), color: 'text-cyan-600', defaultVisible: true },
-  error: { label: t('session.filter.types.error'), color: 'text-red-600', defaultVisible: true },
-};
-
 interface MessageFilterProps {
   hiddenTypes: Set<Message['type']>;
   onFilterChange: (types: Set<Message['type']>) => void;
@@ -23,6 +11,18 @@ interface MessageFilterProps {
 
 export const MessageFilter: React.FC<MessageFilterProps> = ({ hiddenTypes, onFilterChange }) => {
   const { t } = useI18nContext();
+
+  // 訊息類型配置
+  const MESSAGE_TYPE_CONFIG: Record<Message['type'], { label: string; color: string; defaultVisible: boolean }> = {
+    user: { label: t('session.filter.types.user'), color: 'text-blue-600', defaultVisible: true },
+    claude: { label: t('session.filter.types.assistant'), color: 'text-green-600', defaultVisible: true },
+    assistant: { label: 'Assistant Messages', color: 'text-purple-600', defaultVisible: true },
+    system: { label: t('session.filter.types.system'), color: 'text-gray-600', defaultVisible: true },
+    tool_use: { label: t('session.filter.types.toolUse'), color: 'text-orange-600', defaultVisible: false },
+    thinking: { label: t('session.filter.types.thinking'), color: 'text-indigo-600', defaultVisible: false },
+    output: { label: t('session.filter.types.output'), color: 'text-cyan-600', defaultVisible: true },
+    error: { label: t('session.filter.types.error'), color: 'text-red-600', defaultVisible: true },
+  };
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [buttonRect, setButtonRect] = React.useState<DOMRect | null>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);

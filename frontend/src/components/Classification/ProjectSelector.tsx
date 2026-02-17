@@ -24,6 +24,18 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
   const [saving, setSaving] = useState(false);
 
   // Load all projects
+  const loadProjects = async () => {
+    try {
+      setLoading(true);
+      const fetchedProjects = await projectApi.getAllProjects();
+      setProjects(fetchedProjects);
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadProjects();
   }, []);
