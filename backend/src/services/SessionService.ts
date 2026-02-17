@@ -12,6 +12,13 @@ export class SessionService {
   private sessionRepository: SessionRepository;
   private messageRepository: MessageRepository;
 
+  private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+  private agentCache = new Map<string, { agents: any[]; loadedAt: Date }>();
+  private workflowStageCache = new Map<string, { stage: any; loadedAt: Date }>();
+  private devMdCache = new Map<string, { content: string; loadedAt: Date }>();
+  private cacheCleanupInterval?: NodeJS.Timeout;
+
   constructor(processManager?: ProcessManager) {
     // 使用傳入的 ProcessManager 實例，或者建立新的（向後相容）
     if (processManager) {
@@ -26,10 +33,95 @@ export class SessionService {
 
     this.sessionRepository = new SessionRepository();
     this.messageRepository = new MessageRepository();
+
+    this.startCacheCleanup();
   }
 
   async initialize(): Promise<void> {
     await this.processManager.initialize();
+  }
+
+  private startCacheCleanup(): void {
+    this.cacheCleanupInterval = setInterval(() => {
+      this.cleanExpiredCache();
+    }, this.CACHE_TTL_MS);
+  }
+
+  private stopCacheCleanup(): void {
+    if (this.cacheCleanupInterval) {
+      clearInterval(this.cacheCleanupInterval);
+      this.cacheCleanupInterval = undefined;
+    }
+  }
+
+  private cleanExpiredCache(): void {
+    const now = Date.now();
+
+    for (const [key, cached] of this.agentCache.entries()) {
+      if (now - cached.loadedAt.getTime() > this.CACHE_TTL_MS) {
+        this.agentCache.delete(key);
+      }
+    }
+
+    for (const [key, cached] of this.workflowStageCache.entries()) {
+      if (now - cached.loadedAt.getTime() > this.CACHE_TTL_MS) {
+        this.workflowStageCache.delete(key);
+      }
+    }
+
+    for (const [key, cached] of this.devMdCache.entries()) {
+      if (now - cached.loadedAt.getTime() > this.CACHE_TTL_MS) {
+        this.devMdCache.delete(key);
+      }
+    }
+  }
+
+  private getCachedAgents(path: string): any[] | null {
+    const cached = this.agentCache.get(path);
+    if (!cached) return null;
+
+    if (Date.now() - cached.loadedAt.getTime() > this.CACHE_TTL_MS) {
+      this.agentCache.delete(path);
+      return null;
+    }
+
+    return cached.agents;
+  }
+
+  private setCachedAgents(path: string, agents: any[]): void {
+    this.agentCache.set(path, { agents, loadedAt: new Date() });
+  }
+
+  private getCachedWorkflowStage(stageId: string): any | null {
+    const cached = this.workflowStageCache.get(stageId);
+    if (!cached) return null;
+
+    if (Date.now() - cached.loadedAt.getTime() > this.CACHE_TTL_MS) {
+      this.workflowStageCache.delete(stageId);
+      return null;
+    }
+
+    return cached.stage;
+  }
+
+  private setCachedWorkflowStage(stageId: string, stage: any): void {
+    this.workflowStageCache.set(stageId, { stage, loadedAt: new Date() });
+  }
+
+  private getCachedDevMd(path: string): string | null {
+    const cached = this.devMdCache.get(path);
+    if (!cached) return null;
+
+    if (Date.now() - cached.loadedAt.getTime() > this.CACHE_TTL_MS) {
+      this.devMdCache.delete(path);
+      return null;
+    }
+
+    return cached.content;
+  }
+
+  private setCachedDevMd(path: string, content: string): void {
+    this.devMdCache.set(path, { content, loadedAt: new Date() });
   }
 
   private setupProcessEventListeners(): void {

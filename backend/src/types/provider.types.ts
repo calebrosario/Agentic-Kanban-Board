@@ -74,8 +74,8 @@ export interface StreamEvent {
   // Optional metadata for tool calls
   metadata?: {
     toolName?: string;
-    toolInput?: any;
-    toolOutput?: any;
+    toolInput?: unknown;
+    toolOutput?: unknown;
     toolId?: string;
     fileOperation?: 'read' | 'write' | 'edit' | 'delete' | 'list' | 'search';
     filePath?: string;
@@ -90,7 +90,7 @@ export interface StreamEvent {
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
   };
 }
 
@@ -154,14 +154,15 @@ export interface ToolSession {
   isActive: boolean;
 
   // Provider-specific session data
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 
   // Methods
   sendInput(input: string): Promise<void>;
   interrupt(): Promise<void>;
   close(): Promise<void>;
-  on(event: string, callback: (...args: any[]) => void): void;
-  off(event: string, callback?: (...args: any[]) => void): void;
+  on(event: string, callback: (...args: unknown[]) => void): void;
+  off(event: string, callback?: (...args: unknown[]) => void): void;
+  removeAllListeners(): void;
 }
 
 /**

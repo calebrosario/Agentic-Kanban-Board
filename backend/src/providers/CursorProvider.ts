@@ -2,7 +2,21 @@ import { EventEmitter } from 'events';
 import { spawn, ChildProcess } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs/promises';
-import { existsSync } from 'fs';
+import { existsSync as fsExistsSync } from 'fs';
+
+import {
+  ToolType,
+  IToolProvider,
+  StreamEvent,
+  StreamEventType,
+  SessionOptions,
+  ResumeContext,
+  Agent,
+  ToolSession,
+  ToolCapabilities,
+  CursorProviderConfig,
+  ProviderConfig
+} from '../types/provider.types';
 
 /**
  * Cursor MCP server process handle
@@ -121,11 +135,12 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
         setImmediate(async () => {
           try {
             await this.sendInput(sessionId, options.task!);
-          } catch (error: any) {
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
             console.error(`Failed to execute initial task for ${sessionId}:`, error);
             this.emit('error', {
               sessionId,
-              error: error.message || 'Failed to execute initial task',
+              error: errorMessage || 'Failed to execute initial task',
               timestamp: new Date(),
               source: 'cursor_provider'
             });
@@ -141,22 +156,28 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
         sendInput: (input: string) => this.sendInput(sessionId, input),
         interrupt: () => this.interrupt(sessionId),
         close: () => this.closeSession(sessionId),
-        on: (event: string, callback: (...args: any[]) => void) => {
+        on: (event: string, callback: (...args: unknown[]) => void) => {
           if (this.ALLOWED_EVENTS.includes(event) || event === 'error') {
-            this.on(event, callback as (...args: any[]) => void);
+            this.on(event, callback as (...args: unknown[]) => void);
           }
         },
-        off: (event: string, callback?: (...args: any[]) => void) => {
+        off: (event: string, callback?: (...args: unknown[]) => void) => {
           if (this.ALLOWED_EVENTS.includes(event) || event === 'error') {
             if (callback) {
-              this.off(event, callback as (...args: any[]) => void);
+              this.off(event, callback as (...args: unknown[]) => void);
             }
+          }
+        },
+        removeAllListeners: () => {
+          for (const event of [...this.ALLOWED_EVENTS, 'error']) {
+            this.removeAllListeners(event);
           }
         }
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Failed to create Cursor session:`, error);
-      throw new Error(`Failed to create Cursor session: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to create Cursor session: ${errorMessage}`);
     }
   }
 
@@ -193,22 +214,28 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
         sendInput: (input: string) => this.sendInput(sessionId, input),
         interrupt: () => this.interrupt(sessionId),
         close: () => this.closeSession(sessionId),
-        on: (event: string, callback: (...args: any[]) => void) => {
+        on: (event: string, callback: (...args: unknown[]) => void) => {
           if (allowedEvents.includes(event) || event === 'error') {
-            this.on(event, callback as (...args: any[]) => void);
+            this.on(event, callback as (...args: unknown[]) => void);
           }
         },
-        off: (event: string, callback?: (...args: any[]) => void) => {
-          if (allowedEvents.includes(event) || event === 'error') {
+        off: (event: string, callback?: (...args: unknown[]) => void) => {
+          if (this.ALLOWED_EVENTS.includes(event) || event === 'error') {
             if (callback) {
-              this.off(event, callback as (...args: any[]) => void);
+              this.off(event, callback as (...args: unknown[]) => void);
             }
+          }
+        },
+        removeAllListeners: () => {
+          for (const event of [...this.ALLOWED_EVENTS, 'error']) {
+            this.removeAllListeners(event);
           }
         }
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Failed to resume Cursor session:`, error);
-      throw new Error(`Failed to resume Cursor session: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to resume Cursor session: ${errorMessage}`);
     }
   }
 
@@ -236,7 +263,7 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
     const agents: Agent[] = [];
 
     try {
-      const dirExists = fs.existsSync(agentsPath);
+      const dirExists = fsExistsSync(agentsPath);
       if (!dirExists) {
         console.warn(`MCP servers directory does not exist: ${agentsPath}, using default agents`);
         return this.getDefaultAgents();
@@ -277,7 +304,7 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
       console.log(`Successfully loaded ${agents.length} MCP servers`);
 
       return agents;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Failed to load MCP servers from ${agentsPath}:`, error);
       return this.getDefaultAgents();
     }
@@ -423,7 +450,7 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
   /**
    * Get session metrics (not available via MCP)
    */
-  async getSessionMetrics(sessionId: string): Promise<any | null> {
+  async getSessionMetrics(sessionId: string): Promise<Record<string, unknown> | null> {
     // MCP protocol doesn't provide metrics
     return null;
   }
@@ -543,12 +570,12 @@ export class CursorProvider extends EventEmitter implements IToolProvider {
                   timestamp: new Date()
                 });
               } else if (response.method === 'status') {
-                if (response.params?.status) {
-                  const processInfo = this.processes.get(sessionId);
-                  if (processInfo) {
-                    processInfo.status = response.params.status as any;
-                    processInfo.lastActivityTime = new Date();
-                  }
+                 if (response.params?.status) {
+                   const processInfo = this.processes.get(sessionId);
+                   if (processInfo) {
+                     processInfo.status = response.params.status as 'idle' | 'processing' | 'error' | 'completed';
+                     processInfo.lastActivityTime = new Date();
+                   }
                   this.emit('statusUpdate', {
                     sessionId,
                     status: response.params.status

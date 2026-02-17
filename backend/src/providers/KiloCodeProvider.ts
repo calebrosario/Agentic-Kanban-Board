@@ -1,7 +1,7 @@
 import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {
   ToolType,
   IToolProvider,
@@ -70,6 +70,7 @@ const ALLOWED_EVENTS = [
 const DEFAULT_TIMEOUT_MS = 3600000; // 1 hour
 const INTERRUPT_TIMEOUT_MS = 5000; // 5 seconds
 const CLOSE_TIMEOUT_MS = 10000; // 10 seconds
+const RESPONSE_TIMEOUT_MS = 3000; // 3 seconds for initial response
 
 /**
  * KiloCodeProvider - Implements AI coding support via KiloCode CLI
@@ -208,16 +209,21 @@ export class KiloCodeProvider extends EventEmitter implements IToolProvider {
       sendInput: (input: string) => this.sendInput(sessionId, input),
       interrupt: () => this.interrupt(sessionId),
       close: () => this.closeSession(sessionId),
-      on: (event: string, callback: (...args: any[]) => void) => {
+      on: (event: string, callback: (...args: unknown[]) => void) => {
         if (!ALLOWED_EVENTS.includes(event)) {
           throw new Error(`Event "${event}" is not allowed for this session`);
         }
         return this.on(event, callback);
       },
-      off: (event: string, callback?: (...args: any[]) => void): void => {
+      off: (event: string, callback?: (...args: unknown[]) => void): void => {
         if (callback) {
           this.off(event, callback);
         } else {
+          this.removeAllListeners(event);
+        }
+      },
+      removeAllListeners: () => {
+        for (const event of ALLOWED_EVENTS) {
           this.removeAllListeners(event);
         }
       }
@@ -278,16 +284,21 @@ export class KiloCodeProvider extends EventEmitter implements IToolProvider {
       sendInput: (input: string) => this.sendInput(sessionId, input),
       interrupt: () => this.interrupt(sessionId),
       close: () => this.closeSession(sessionId),
-      on: (event: string, callback: (...args: any[]) => void) => {
+      on: (event: string, callback: (...args: unknown[]) => void) => {
         if (!ALLOWED_EVENTS.includes(event)) {
           throw new Error(`Event "${event}" is not allowed for this session`);
         }
         return this.on(event, callback);
       },
-      off: (event: string, callback?: (...args: any[]) => void) => {
+      off: (event: string, callback?: (...args: unknown[]) => void): void => {
         if (callback) {
           this.off(event, callback);
         } else {
+          this.removeAllListeners(event);
+        }
+      },
+      removeAllListeners: () => {
+        for (const event of ALLOWED_EVENTS) {
           this.removeAllListeners(event);
         }
       }
@@ -323,7 +334,7 @@ export class KiloCodeProvider extends EventEmitter implements IToolProvider {
           timestamp: new Date()
         });
       }
-    }, 3000);
+    }, RESPONSE_TIMEOUT_MS);
 
     eventEmitter.once('delta', (event) => {
       clearTimeout(timeout);

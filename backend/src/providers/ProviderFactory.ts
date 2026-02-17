@@ -69,29 +69,16 @@ class ProviderFactory {
     return this.registry.has(toolType);
   }
 
-/**
- * Register all available providers
- */
-export function registerProviders(): void {
-  ProviderFactory.register(
-    ToolType.CLAUDE,
-    () => new ClaudeProvider(true)
-  );
-
-  ProviderFactory.register(
-    ToolType.OPENCODE,
-    () => new OpenCodeProvider()
-  );
-
-  // CursorProvider can be imported dynamically when needed
-  ProviderFactory.register(
-    ToolType.CURSOR,
-    () => {
-      const { CursorProvider } = require('./CursorProvider');
-      return new CursorProvider();
+  /**
+   * Clear all provider instances
+   * Useful for testing or hot reloading
+   */
+  static clearInstances(): void {
+    for (const instance of this.instances.values()) {
+      if (instance.removeAllListeners) {
+        instance.removeAllListeners();
+      }
     }
-  );
-}
     this.instances.clear();
   }
 
@@ -104,6 +91,44 @@ export function registerProviders(): void {
   static getInstance(toolType: ToolType): IToolProvider | undefined {
     return this.instances.get(toolType);
   }
+}
+
+/**
+ * Register all available providers
+ * Should be called at application startup
+ */
+export function registerProviders(): void {
+  // ClaudeProvider - static import
+  const { ClaudeProvider } = require('./ClaudeProvider');
+  ProviderFactory.register(
+    ToolType.CLAUDE,
+    () => new ClaudeProvider(true)
+  );
+
+  // OpenCodeProvider - static import
+  const { OpenCodeProvider } = require('./OpenCodeProvider');
+  ProviderFactory.register(
+    ToolType.OPENCODE,
+    () => new OpenCodeProvider()
+  );
+
+  // CursorProvider - dynamic import to avoid circular dependencies
+  ProviderFactory.register(
+    ToolType.CURSOR,
+    () => {
+      const { CursorProvider } = require('./CursorProvider');
+      return new CursorProvider();
+    }
+  );
+
+  // KiloCodeProvider - dynamic import to avoid circular dependencies
+  ProviderFactory.register(
+    ToolType.KILOCODE,
+    () => {
+      const { KiloCodeProvider } = require('./KiloCodeProvider');
+      return new KiloCodeProvider();
+    }
+  );
 }
 
 export default ProviderFactory;
