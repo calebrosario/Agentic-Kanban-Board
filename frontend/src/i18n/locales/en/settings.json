@@ -18,7 +18,7 @@
       "labelPlaceholder": "Path label",
       "icon": "Icon",
       "path": "Path",
-      "pathPlaceholder": "C:\\Users\\User",
+      "pathPlaceholder": "/Users/username",
       "folder": "Folder",
       "code": "Code",
       "home": "Home"

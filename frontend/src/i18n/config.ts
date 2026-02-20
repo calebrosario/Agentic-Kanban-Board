@@ -65,7 +65,12 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
+    lng: 'en',
     debug: false,
+    detection: {
+      order: ['navigator'],  // Only use browser language, ignore localStorage
+      caches: [],  // Don't cache language preference
+    },
     interpolation: {
       escapeValue: false,
     },
