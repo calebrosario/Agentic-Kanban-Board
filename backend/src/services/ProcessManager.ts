@@ -812,13 +812,13 @@ export class ProcessManager extends EventEmitter {
           claudeSessionId = json.session_id;
           logger.info(`Claude session ID: ${claudeSessionId}`);
           
-          // 更新資料庫中的 claude_session_id
+          // 更新資料庫中的 tool_session_id
           if (claudeSessionId) {
             try {
-              await this.sessionRepository.updateClaudeSessionId(sessionId, claudeSessionId);
-              logger.info(`Updated Claude session ID for session ${sessionId}: ${claudeSessionId}`);
+              await this.sessionRepository.updateToolSessionId(sessionId, claudeSessionId);
+              logger.info(`Updated tool session ID for session ${sessionId}: ${claudeSessionId}`);
             } catch (error) {
-              logger.error(`Failed to update Claude session ID:`, error);
+              logger.error(`Failed to update tool session ID:`, error);
             }
           }
         }
@@ -952,13 +952,13 @@ export class ProcessManager extends EventEmitter {
       if (!session) {
         return null;
       }
-      
+
       return {
         sessionId: session.sessionId,
         workingDir: session.workingDir,
         continueChat: session.continueChat || false,
         previousSessionId: session.previousSessionId,
-        claudeSessionId: session.claudeSessionId,
+        toolSessionId: session.toolSessionId,
         dangerouslySkipPermissions: session.dangerouslySkipPermissions || false
       };
     } catch (error) {

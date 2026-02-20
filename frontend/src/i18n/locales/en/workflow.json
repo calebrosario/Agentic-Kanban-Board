@@ -1,5 +1,6 @@
 {
   "title": "Workflow Stages",
+  "subtitle": "Configure specialized AI workflow stages",
   "stages": "Stages",
   "agentPrompts": {
     "title": "Agent Prompt Library",
@@ -31,7 +32,7 @@
       "notConfigured": "Agent path not yet configured",
       "configured": "Currently configured:",
       "path": "~/.claude/agents",
-      "placeholder": "e.g., C:\\Users\\YourName\\.claude\\agents",
+      "placeholder": "e.g., /Users/username/.claude/agents",
       "pathHint": "Directory containing agent prompt files (.md)",
       "save": "Save",
       "cancel": "Cancel"
@@ -160,7 +161,8 @@
   },
   "errors": {
     "nameRequired": "Stage name is required",
-    "agentNotFound": "Agent file not found",
+    "agentNotFound": 'Agent file not found: "{name}". Please check your .claude path settings or choose a different agent.',
+    "agentValidationFailed": "Agent validation failed",
     "saveFailed": "Failed to save workflow stage"
   }
 }

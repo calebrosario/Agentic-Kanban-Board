@@ -25,7 +25,7 @@
     "tags": "Tags",
     "tagsPlaceholder": "Add tags for organization",
     "workspacePath": "Working Directory",
-    "workspacePathPlaceholder": "e.g., C:\\Users\\YourName\\Projects\\MyProject",
+    "workspacePathPlaceholder": "e.g., /Users/username/projects/myproject",
     "workspacePathHint": "Set the default working directory for this Work Item. Sessions created will automatically use this path.",
     "infoHint": "Work Items are containers for organizing related Sessions. You can link to this Work Item when creating a Session, or link existing Sessions later.",
     "submit": "Create"

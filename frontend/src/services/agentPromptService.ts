@@ -17,24 +17,24 @@ export interface ConfigStatus {
 }
 
 export const agentPromptService = {
-  // Get配置狀態
+  // Get configuration status
   async getConfig(): Promise<ConfigStatus> {
     const response = await axiosInstance.get<ConfigStatus>('/agent-prompts/config');
     return response.data;
   },
 
-  // 設定路徑
+  // Set path
   async setConfig(path: string): Promise<void> {
     await axiosInstance.put('/agent-prompts/config', { path });
   },
 
-  // 列出所有 Agent
+  // List all Agents
   async listAgents(): Promise<AgentListItem[]> {
     const response = await axiosInstance.get<AgentListItem[]>('/agent-prompts');
     return response.data;
   },
 
-  // Get單一 Agent 內容
+  // Get single Agent content
   async getAgentContent(agentName: string): Promise<AgentDetail | null> {
     try {
       const response = await axiosInstance.get<AgentDetail>(`/agent-prompts/${agentName}`);

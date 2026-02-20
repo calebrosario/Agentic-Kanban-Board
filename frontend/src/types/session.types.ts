@@ -1,3 +1,10 @@
+export enum ToolType {
+  CLAUDE = 'claude',
+  OPENCODE = 'opencode',
+  CURSOR = 'cursor',
+  KILOCODE = 'kilocode'
+}
+
 export interface Session {
   sessionId: string;
   name: string;
@@ -41,6 +48,8 @@ export interface Session {
     color?: string;
     type: string;
   }>;
+  // Multi-Tool Support
+  provider?: ToolType;
 }
 
 export enum SessionStatus {
@@ -60,6 +69,7 @@ export interface CreateSessionRequest {
   dangerouslySkipPermissions?: boolean;
   workflow_stage_id?: string;
   work_item_id?: string;
+  provider?: ToolType;
 }
 
 export interface Message {

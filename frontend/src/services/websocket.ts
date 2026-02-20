@@ -8,28 +8,28 @@ export interface WebSocketMessage {
   timestamp: Date;
   messageId?: string;
   metadata?: {
-    // 工具使用相關
+    // Tool usage related
     toolName?: string;
     toolInput?: any;
     toolOutput?: any;
     toolStatus?: 'start' | 'complete' | 'error';
     
-    // 思考過程
+    // Thinking process
     isThinking?: boolean;
     thinkingDepth?: number;
     
-    // File操作
+    // File operations
     fileOperation?: 'read' | 'write' | 'edit' | 'delete';
     filePath?: string;
     fileContent?: string;
     lineNumbers?: { start: number; end: number };
     
-    // 串流相關
+    // Streaming related
     isPartial?: boolean;
     sequenceId?: string;
     isComplete?: boolean;
     
-    // 原始資料
+    // Raw data
     raw?: any;
   };
 }
@@ -48,7 +48,7 @@ export interface WebSocketError {
 }
 
 export interface WebSocketEvents {
-  // 收到的事件
+  // Received events
   message: (data: WebSocketMessage) => void;
   output: (data: WebSocketMessage) => void;
   assistant: (data: WebSocketMessage) => void;
@@ -67,7 +67,7 @@ export interface WebSocketEvents {
   disconnect: () => void;
   connect_error: (error: Error) => void;
   
-  // Send的事件
+  // Send events
   subscribe: (sessionId: string) => void;
   unsubscribe: (sessionId: string) => void;
 }
@@ -80,13 +80,13 @@ class WebSocketService {
 
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // If已經連接，直接Return
+      // If already connected, return directly
       if (this.socket?.connected) {
         resolve();
         return;
       }
 
-      // If正在連接中，等待連接完成
+      // If connecting, wait for connection to complete
       if (this.isConnecting) {
         const checkConnection = () => {
           if (this.socket?.connected) {
@@ -99,14 +99,14 @@ class WebSocketService {
         return;
       }
 
-      // 清理舊的連接
+      // Clean up old connection
       if (this.socket) {
         this.socket.disconnect();
       }
 
       this.isConnecting = true;
-      // 在開發環境中，使用代理，所以連接到根路徑
-      // 在生產環境中，直接連接到 WebSocket URL
+      // In dev environment, use proxy so connect to root path
+      // In production environment, connect directly to WebSocket URL
       const wsUrl = config.NODE_ENV === 'development' ? '/' : config.WS_URL;
       this.socket = io(wsUrl, {
         transports: ['websocket', 'polling'],
@@ -118,7 +118,7 @@ class WebSocketService {
         console.log('WebSocket connected:', this.socket?.id);
         this.isConnecting = false;
         
-        // 重新訂閱之前的 sessions
+        // Re-subscribe to previous sessions
         this.subscribers.forEach(sessionId => {
           this.socket?.emit('subscribe', sessionId);
         });
@@ -138,7 +138,7 @@ class WebSocketService {
         this.notifyListeners('disconnect');
       });
 
-      // 設定事件監聽器
+        // Set up event listeners
       this.setupEventListeners();
     });
   }
@@ -146,7 +146,7 @@ class WebSocketService {
   private setupEventListeners(): void {
     if (!this.socket) return;
 
-    // 安全轉換時間戳的函數
+      // Safe timestamp conversion function
     const safeTimestamp = (timestamp: any): Date => {
       try {
         if (!timestamp) return new Date();
@@ -159,11 +159,11 @@ class WebSocketService {
       }
     };
 
-    // 處理通用 message 事件
+    // Handle general message event
     this.socket.on('message', (data) => {
-      console.log('=== WebSocket 接收 message 事件 ===', data);
+      console.log('=== WebSocket received message event ===', data);
       
-      // Check資料完整性
+      // Check data integrity
       if (!data || typeof data !== 'object') {
         console.warn('Invalid message data received:', data);
         return;
@@ -177,17 +177,17 @@ class WebSocketService {
         metadata: data.metadata
       };
       
-      console.log('處理後的 message 資料:', messageData);
+      console.log('Processed message data:', messageData);
       
-      // 統一觸發 message 事件，不再根據 type 分發
+      // Trigger unified message event, no longer distribute by type
       this.notifyListeners('message', messageData);
     });
 
-    // 註釋掉特定類型的事件處理，避免重複
+    // Commented out specific type event handlers to avoid duplicates
     // （因為後端同時Send message 和特定類型事件，我們只需要處理 message）
     /*
     this.socket.on('assistant', (data) => {
-      console.log('=== WebSocket 接收 assistant 事件 ===', data);
+      console.log('=== WebSocket received assistant event ===', data);
       
       if (!data || typeof data !== 'object') {
         console.warn('Invalid assistant data received:', data);
@@ -202,14 +202,14 @@ class WebSocketService {
         metadata: data.metadata
       };
       
-      console.log('處理後的 assistant 資料:', messageData);
+      console.log('Processed assistant data:', messageData);
       this.notifyListeners('assistant', messageData);
     });
     */
 
     /*
     this.socket.on('user', (data) => {
-      console.log('=== WebSocket 接收 user 事件 ===', data);
+      console.log('=== WebSocket received user event ===', data);
       
       if (!data || typeof data !== 'object') {
         console.warn('Invalid user data received:', data);
@@ -224,14 +224,14 @@ class WebSocketService {
         metadata: data.metadata
       };
       
-      console.log('處理後的 user 資料:', messageData);
+      console.log('Processed user data:', messageData);
       this.notifyListeners('user', messageData);
     });
     */
 
     /*
     this.socket.on('system', (data) => {
-      console.log('=== WebSocket 接收 system 事件 ===', data);
+      console.log('=== WebSocket received system event ===', data);
       
       if (!data || typeof data !== 'object') {
         console.warn('Invalid system data received:', data);
@@ -246,14 +246,14 @@ class WebSocketService {
         metadata: data.metadata
       };
       
-      console.log('處理後的 system 資料:', messageData);
+      console.log('Processed system data:', messageData);
       this.notifyListeners('system', messageData);
     });
     */
 
     // output 事件可能需要單獨處理，因為它可能不會通過 message 事件Send
     this.socket.on('output', (data) => {
-      console.log('=== WebSocket 接收 output 事件 ===', data);
+      console.log('=== WebSocket received output event ===', data);
       
       if (!data || typeof data !== 'object') {
         console.warn('Invalid output data received:', data);
@@ -268,8 +268,8 @@ class WebSocketService {
         metadata: data.metadata
       };
       
-      console.log('處理後的 output 資料:', messageData);
-      // 統一觸發 message 事件
+      console.log('Processed output data:', messageData);
+      // Trigger unified message event
       this.notifyListeners('message', messageData);
     });
 

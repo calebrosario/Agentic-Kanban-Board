@@ -26,6 +26,24 @@ export interface CursorProviderConfig {
   timeout?: number;
 }
 
+/**
+ * KiloCode-specific configuration
+ */
+export interface KiloCodeProviderConfig {
+  executable?: string;
+  timeout?: number;
+}
+
+/**
+ * Codex-specific configuration
+ */
+export interface CodexProviderConfig {
+  apiKey?: string;
+  baseUrl?: string;
+  model?: string;
+  timeout?: number;
+}
+
 export interface SecurityConfig {
   allowedDirs: string[];
 }
@@ -43,6 +61,8 @@ export interface EnvConfig {
   claude: ClaudeConfig;
   opencode: OpenCodeConfig;
   cursor: CursorProviderConfig;
+  kilocode?: KiloCodeProviderConfig;
+  codex?: CodexProviderConfig;
   logLevel: 'error' | 'warn' | 'info' | 'debug';
   security: SecurityConfig;
   process: ProcessConfig;
@@ -83,7 +103,21 @@ export const getEnvConfig = (): EnvConfig => {
       mcpArgs: process.env.CURSOR_MCP_ARGS ? JSON.parse(process.env.CURSOR_MCP_ARGS) : undefined,
       timeout: parseInt(process.env.CURSOR_TIMEOUT || '300000', 10)
     },
-    
+
+    // KiloCode 設定
+    kilocode: {
+      executable: process.env.KILOCODE_EXECUTABLE || 'kilocode',
+      timeout: parseInt(process.env.KILOCODE_TIMEOUT || '300000', 10)
+    },
+
+    // Codex 設定
+    codex: {
+      apiKey: process.env.CODEX_API_KEY,
+      baseUrl: process.env.CODEX_BASE_URL,
+      model: process.env.CODEX_MODEL,
+      timeout: parseInt(process.env.CODEX_TIMEOUT || '300000', 10)
+    },
+
     // 日誌設定
     logLevel: (process.env.LOG_LEVEL as EnvConfig['logLevel']) || 'info',
     

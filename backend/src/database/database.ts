@@ -128,6 +128,26 @@ export class Database {
           }
         });
 
+        // Add provider column if it doesn't exist (migration for multi-tool support)
+        this.db.run(`
+          ALTER TABLE sessions ADD COLUMN provider TEXT DEFAULT 'claude'
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add provider column:', err.message);
+          }
+        });
+
+        // Add provider column if it doesn't exist (migration)
+        this.db.run(`
+          ALTER TABLE sessions ADD COLUMN provider TEXT DEFAULT 'claude'
+        `, (err) => {
+          // Ignore error if column already exists
+          if (err && !err.message.includes('duplicate column name')) {
+            console.warn('Failed to add provider column:', err.message);
+          }
+        });
+
         // Create messages table
         this.db.run(`
           CREATE TABLE IF NOT EXISTS messages (

@@ -7,7 +7,7 @@ export const useTaskTemplates = () => {
   const [templates, setTemplates] = useState<TaskTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 載入所有模板
+  // Load all templates
   const loadTemplates = async () => {
     try {
       setIsLoading(true);
@@ -15,71 +15,71 @@ export const useTaskTemplates = () => {
       setTemplates(data);
     } catch (error) {
       console.error('Failed to load task templates:', error);
-      toast.error('無法載入任務模板');
+      toast.error('Unable to load task templates');
       setTemplates([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Get啟用的模板
+  // Get active templates
   const getActiveTemplates = () => templates.filter(t => t.is_active);
 
-  // 新增模板
+  // Create template
   const createTemplate = async (data: CreateTaskTemplateRequest): Promise<boolean> => {
     try {
       const created = await taskTemplateApi.createTemplate(data);
       setTemplates([...templates, created]);
 
-      // 觸發自定義事件
+      // Trigger custom event
       window.dispatchEvent(new Event('templates-updated'));
 
-      toast.success('已新增任務模板');
+      toast.success('Task template created');
       return true;
     } catch (error) {
       console.error('Failed to create task template:', error);
-      toast.error('新增任務模板失敗');
+      toast.error('Failed to create task template');
       return false;
     }
   };
 
-  // Update模板
+  // Update template
   const updateTemplate = async (id: string, data: UpdateTaskTemplateRequest): Promise<boolean> => {
     try {
       const updated = await taskTemplateApi.updateTemplate(id, data);
       setTemplates(templates.map(t => t.id === id ? updated : t));
 
-      // 觸發自定義事件
+      // Trigger custom event
       window.dispatchEvent(new Event('templates-updated'));
 
-      toast.success('已Update任務模板');
+      toast.success('Task template updated');
       return true;
     } catch (error) {
       console.error('Failed to update task template:', error);
-      toast.error('Update任務模板失敗');
+      toast.error('Failed to update task template');
       return false;
     }
   };
 
-  // 刪除模板
+  // Delete template
   const deleteTemplate = async (id: string): Promise<boolean> => {
     try {
       await taskTemplateApi.deleteTemplate(id);
       setTemplates(templates.filter(t => t.id !== id));
 
-      // 觸發自定義事件
+      // Trigger custom event
       window.dispatchEvent(new Event('templates-updated'));
 
-      toast.success('已刪除任務模板');
+      toast.success('Task template deleted');
       return true;
     } catch (error) {
       console.error('Failed to delete task template:', error);
-      toast.error('刪除任務模板失敗');
+      toast.error('Failed to delete task template');
       return false;
     }
   };
 
-  // 重新排序
+  // Reorder templates
   const reorderTemplates = async (newOrder: TaskTemplate[]): Promise<boolean> => {
     try {
       const orders: ReorderTaskTemplatesRequest[] = newOrder.map((t, index) => ({
@@ -90,41 +90,41 @@ export const useTaskTemplates = () => {
       await taskTemplateApi.reorderTemplates(orders);
       setTemplates(newOrder);
 
-      // 觸發自定義事件
+      // Trigger custom event
       window.dispatchEvent(new Event('templates-updated'));
 
       return true;
     } catch (error) {
       console.error('Failed to reorder task templates:', error);
-      toast.error('重新排序失敗');
+      toast.error('Failed to reorder templates');
       return false;
     }
   };
 
-  // Reset為預設
+  // Reset to default
   const resetToDefault = async (): Promise<boolean> => {
     try {
       const defaultTemplates = await taskTemplateApi.resetToDefault();
       setTemplates(defaultTemplates);
 
-      // 觸發自定義事件
+      // Trigger custom event
       window.dispatchEvent(new Event('templates-updated'));
 
-      toast.success('已Reset為預設模板');
+      toast.success('Reset to default templates');
       return true;
     } catch (error) {
       console.error('Failed to reset templates:', error);
-      toast.error('Reset模板失敗');
+      toast.error('Failed to reset templates');
       return false;
     }
   };
 
-  // Initialize載入
+  // Initialize loading
   useEffect(() => {
     loadTemplates();
   }, []);
 
-  // 監聽自定義事件，用於同一標籤頁內的同步
+  // Listen to custom events for synchronization across tabs
   useEffect(() => {
     const handleTemplatesUpdated = () => {
       loadTemplates();

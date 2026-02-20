@@ -26,6 +26,18 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   const [saving, setSaving] = useState(false);
 
   // Load tags
+  const loadTags = async () => {
+    try {
+      setLoading(true);
+      const fetchedTags = await tagApi.getAllTags();
+      setTags(fetchedTags);
+    } catch (error) {
+      console.error('Failed to load tags:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadTags();
   }, [tagType]);

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { Layout } from './components/Layout/Layout';
 import { SplitView } from './components/Layout/SplitView';
-import { CreateSessionModal } from './components/Session/CreateSessionModal';
 import { ErrorBoundary } from './components/Common/ErrorBoundary';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useNotifications } from './hooks/useNotifications';
@@ -14,14 +13,14 @@ import { LoginPage } from './components/Auth/LoginPage';
 import { WorkflowStages } from './pages/WorkflowStages';
 import { WorkItemListPage } from './pages/WorkItemListPage';
 import { WorkItemDetailPage } from './pages/WorkItemDetailPage';
-import { AgentPromptsPage } from './pages/AgentPromptsPage';
-import { AgentPromptDetailPage } from './pages/AgentPromptDetailPage';
+import AgentPromptsPage from './pages/AgentPromptsPage';
+import AgentPromptDetailPage from './pages/AgentPromptDetailPage';
 import { GlassDemo } from './pages/GlassDemo';
 import { I18nProvider } from './contexts/I18nContext';
 import { useI18nContext } from './contexts/I18nContext';
 
 function App() {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [, setIsCreateModalOpen] = useState(false);
   const { isConnected, connectionError } = useWebSocket();
   const { t } = useI18nContext();
   

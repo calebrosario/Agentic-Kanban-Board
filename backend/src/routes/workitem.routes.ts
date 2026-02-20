@@ -1,12 +1,8 @@
 import { Router } from 'express';
 import { WorkItemController } from '../controllers/WorkItemController';
-import { authMiddleware } from '../middleware/auth.middleware';
 
 const router = Router();
 const workItemController = new WorkItemController();
-
-// Apply auth middleware to all routes
-router.use(authMiddleware);
 
 // Work item CRUD operations
 router.post('/', (req, res) => workItemController.create(req, res));

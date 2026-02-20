@@ -28,7 +28,7 @@
     "basicSettings": "Basic Settings",
     "workingDirHint": "Select from common paths or type directly",
     "selectCommonPath": "-- Select Common Path --",
-    "workingDirPlaceholder": "e.g., C:\\Projects\\MyApp",
+    "workingDirPlaceholder": "e.g., /Users/username/projects/myapp",
     "workItemAssociation": "Work Item Association",
     "autoLinked": "(auto-linked)",
     "optional": "(optional)",
