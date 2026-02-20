@@ -8,22 +8,22 @@ export const useNotifications = () => {
 
   const getStatusMessage = useCallback((status: string): string => {
     const statusMap: Record<string, { message: string; icon: string }> = {
-      'processing': { message: '開始Handle', icon: '🔄' },
-      'idle': { message: 'Handle完成', icon: '✅' },
-      'completed': { message: '已完成', icon: '🎉' },
-      'error': { message: '發生錯誤', icon: '❌' },
-      'interrupted': { message: '已中斷', icon: '⚠️' }
+      'processing': { message: 'Starting', icon: '🔄' },
+      'idle': { message: 'Handle complete', icon: '✅' },
+      'completed': { message: 'Completed', icon: '🎉' },
+      'error': { message: 'Error occurred', icon: '❌' },
+      'interrupted': { message: 'Interrupted', icon: '⚠️' }
     };
 
     const statusInfo = statusMap[status.toLowerCase()];
-    if (!statusInfo) return `狀態Update: ${status}`;
+    if (!statusInfo) return `Status update: ${status}`;
 
     return `${statusInfo.icon} Session ${statusInfo.message}`;
   }, []);
 
   useEffect(() => {
     const handleGlobalStatusUpdate = (data: { sessionId: string; status: string }) => {
-      // 將小寫狀態轉換為大寫的 enum 值
+      // Map lowercase status to SessionStatus enum
       const statusMap: Record<string, SessionStatus> = {
         'processing': SessionStatus.PROCESSING,
         'idle': SessionStatus.IDLE,
@@ -35,13 +35,13 @@ export const useNotifications = () => {
       const mappedStatus = statusMap[data.status.toLowerCase()];
       if (!mappedStatus) return;
 
-      // 只在重要狀態變更時顯示通知
-      if (mappedStatus === SessionStatus.IDLE || 
+      // Only show notifications on important status changes
+      if (mappedStatus === SessionStatus.IDLE ||
           mappedStatus === SessionStatus.ERROR ||
           mappedStatus === SessionStatus.COMPLETED) {
         const message = getStatusMessage(data.status);
-        
-        // 根據狀態類型顯示不同的通知
+
+        // Show different notifications based on status type
         if (mappedStatus === SessionStatus.ERROR) {
           toast.error(message);
         } else {
@@ -55,11 +55,11 @@ export const useNotifications = () => {
 
     const handleGlobalProcessExit = (data: { sessionId: string; code: number | null }) => {
       if (data.code !== 0) {
-        toast.error(`❌ Session 執行失敗 (代碼: ${data.code || '未知'})`);
+        toast.error(`❌ Session execution failed (code: ${data.code || 'unknown'})`);
       }
     };
 
-    // 監聽全域事件
+    // Listen to global events
     addEventListener('global_status_update', handleGlobalStatusUpdate);
     addEventListener('global_process_exit', handleGlobalProcessExit);
 

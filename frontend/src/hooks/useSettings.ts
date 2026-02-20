@@ -8,7 +8,7 @@ export const useSettings = () => {
   const [commonPaths, setCommonPaths] = useState<CommonPath[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 載入設定
+  // Load settings
   const loadSettings = async () => {
     try {
       setIsLoading(true);
@@ -16,56 +16,56 @@ export const useSettings = () => {
       setCommonPaths(paths);
     } catch (error) {
       console.error('Failed to load common paths:', error);
-      toast.error('無法載入常用路徑');
-      // 使用空陣列作為後備
+      toast.error('Unable to load common paths');
+      // Use empty array as fallback
       setCommonPaths([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 儲存設定（批量Update）
+  // Save settings (batch update)
   const saveSettings = async (newPaths: CommonPath[]): Promise<boolean> => {
     try {
-      // 如果是重新排序，使用 reorder API
+      // Use reorder API if it's a reorder operation
       const reorderData = newPaths.map((path, index) => ({
         id: path.id,
         sort_order: index + 1
       }));
-      
+
       await commonPathApi.reorderPaths(reorderData);
       setCommonPaths(newPaths);
-      
-      // 觸發自定義事件以通知其他元件
+
+      // Trigger custom event to notify other components
       window.dispatchEvent(new Event('settings-updated'));
-      
+
       return true;
     } catch (error) {
       console.error('Failed to save settings:', error);
-      toast.error('儲存設定失敗');
+      toast.error('Failed to save settings');
       return false;
     }
   };
 
-  // Reset為預設設定
+  // Reset to default settings
   const resetToDefault = async (): Promise<boolean> => {
     try {
       const paths = await commonPathApi.resetToDefault();
       setCommonPaths(paths);
-      
-      // 觸發自定義事件以通知其他元件
+
+      // Trigger custom event to notify other components
       window.dispatchEvent(new Event('settings-updated'));
-      
-      toast.success('已Reset為預設設定');
+
+      toast.success('Reset to default settings');
       return true;
     } catch (error) {
       console.error('Failed to reset settings:', error);
-      toast.error('Reset設定失敗');
+      toast.error('Failed to reset settings');
       return false;
     }
   };
 
-  // 新增常用路徑
+  // Add common path
   const addCommonPath = async (path: Omit<CommonPath, 'id'>): Promise<boolean> => {
     try {
       const created = await commonPathApi.createPath({
@@ -74,81 +74,81 @@ export const useSettings = () => {
         icon: path.icon,
         sort_order: commonPaths.length + 1
       });
-      
+
       setCommonPaths([...commonPaths, created]);
-      
-      // 觸發自定義事件
+
+      // Trigger custom event
       window.dispatchEvent(new Event('settings-updated'));
-      
-      toast.success('已新增常用路徑');
+
+      toast.success('Common path added');
       return true;
     } catch (error) {
       console.error('Failed to add common path:', error);
-      toast.error('新增常用路徑失敗');
+      toast.error('Failed to add common path');
       return false;
     }
   };
 
-  // Update常用路徑
+  // Update common path
   const updateCommonPath = async (id: string, updates: Partial<CommonPath>): Promise<boolean> => {
     try {
       const updated = await commonPathApi.updatePath(id, updates);
-      
-      setCommonPaths(commonPaths.map(path => 
+
+      setCommonPaths(commonPaths.map(path =>
         path.id === id ? updated : path
       ));
-      
-      // 觸發自定義事件
+
+      // Trigger custom event
       window.dispatchEvent(new Event('settings-updated'));
-      
-      toast.success('已Update常用路徑');
+
+      toast.success('Common path updated');
       return true;
     } catch (error) {
       console.error('Failed to update common path:', error);
-      toast.error('Update常用路徑失敗');
+      toast.error('Failed to update common path');
       return false;
     }
   };
 
-  // 刪除常用路徑
+  // Delete common path
   const deleteCommonPath = async (id: string): Promise<boolean> => {
     try {
       await commonPathApi.deletePath(id);
-      
+
       setCommonPaths(commonPaths.filter(path => path.id !== id));
-      
-      // 觸發自定義事件
+
+      // Trigger custom event
       window.dispatchEvent(new Event('settings-updated'));
-      
-      toast.success('已刪除常用路徑');
+
+      toast.success('Common path deleted');
       return true;
     } catch (error) {
       console.error('Failed to delete common path:', error);
-      toast.error('刪除常用路徑失敗');
+      toast.error('Failed to delete common path');
       return false;
     }
   };
 
-  // 取得設定資訊
+  // Get settings info
   const getSettingsInfo = () => {
     return {
       hasCustomSettings: commonPaths.length > 0,
-      lastUpdated: null, // 可以從 commonPaths 中取得最新的 updated_at
+      lastUpdated: null, // Can get the latest updated_at from commonPaths
       pathCount: commonPaths.length,
     };
   };
 
-  // Initialize載入
+  // Initialize loading
   useEffect(() => {
     loadSettings();
   }, []);
 
-  // 監聽自定義事件，用於同一標籤頁內的同步
+  // Listen to custom events for synchronization within same tag pages
   useEffect(() => {
     const handleCustomStorageChange = () => {
       loadSettings();
     };
-    
+
     window.addEventListener('settings-updated', handleCustomStorageChange);
 
     return () => {
