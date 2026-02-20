@@ -33,13 +33,13 @@ export const WorkItemListPage: React.FC = () => {
   const [editingWorkItem, setEditingWorkItem] = useState<WorkItem | null>(null);
 
   useEffect(() => {
-    // 初始載入
+    // Initial load
     loadData();
     fetchStages();
   }, []);
 
   useEffect(() => {
-    // 當篩選條件改變時重新載入
+    // Reload when filter conditions change
     loadData();
   }, [statusFilter]);
 
@@ -59,7 +59,7 @@ export const WorkItemListPage: React.FC = () => {
       });
       await fetchStats();
 
-      // 顯示成功提示
+      // Show success notification
       const statusText: Record<string, string> = {
         'planning': t('workitem.status.planningSet'),
         'in_progress': t('workitem.status.inProgressStarted'),
@@ -103,14 +103,14 @@ export const WorkItemListPage: React.FC = () => {
     toast.success(t('workitem.toasts.updated'));
   };
 
-  // 搜尋過濾和排序
+  // Search filtering and sorting
   const filteredWorkItems = workItems
     .filter(item =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
-      // 當篩選為「全部」時，按狀態排序：規劃中 -> 進行中 -> 已完成 -> 已取消
+      // When filter is 'All', sort by status：規劃中 -> 進行中 -> 已完成 -> 已取消
       if (statusFilter === 'all') {
         const statusOrder = {
           'planning': 1,
@@ -120,7 +120,7 @@ export const WorkItemListPage: React.FC = () => {
         };
         return statusOrder[a.status] - statusOrder[b.status];
       }
-      // 其他情況按創建時間排序（最新的在前）
+      // Otherwise sort by creation time (newest first)
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 

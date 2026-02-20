@@ -1,15 +1,15 @@
 import { Session, SessionStatus } from '../types/session.types';
 
-export type SortType = 
-  | 'created_desc'  // 最新創建優先
-  | 'created_asc'   // 最舊創建優先
-  | 'updated_desc'  // 最近更新優先
-  | 'updated_asc'   // 最久未更新優先
-  | 'name_asc'      // 名稱 A-Z
-  | 'name_desc'     // 名稱 Z-A
-  | 'status'        // 狀態分組（進行中優先）
-  | 'messages_desc' // 訊息數量多優先
-  | 'messages_asc'; // 訊息數量少優先
+export type SortType =
+  | 'created_desc'  // Newest first
+  | 'created_asc'   // Oldest first
+  | 'updated_desc'  // Recently updated first
+  | 'updated_asc'   // Least recently updated first
+  | 'name_asc'      // Name A-Z
+  | 'name_desc'     // Name Z-A
+  | 'status'        // Status grouping (in progress first)
+  | 'messages_desc' // Most messages first
+  | 'messages_asc'; // Fewest messages first
 
 export const sortSessions = (sessions: Session[], sortType: SortType): Session[] => {
   const sorted = [...sessions];
@@ -46,7 +46,7 @@ export const sortSessions = (sessions: Session[], sortType: SortType): Session[]
       );
       
     case 'status':
-      // 狀態優先級：processing > idle > completed > error > interrupted
+      // Status priority: processing > idle > completed > error > interrupted
       const statusPriority: Record<SessionStatus, number> = {
         [SessionStatus.PROCESSING]: 1,
         [SessionStatus.IDLE]: 2,
@@ -63,7 +63,7 @@ export const sortSessions = (sessions: Session[], sortType: SortType): Session[]
           return priorityA - priorityB;
         }
         
-        // If狀態相同，按更新Time排序
+        // If status is the same, sort by update time
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
       });
       
@@ -83,12 +83,12 @@ export const sortSessions = (sessions: Session[], sortType: SortType): Session[]
 };
 
 export const getSortOptions = () => [
-  { value: 'updated_desc', label: '最近更新' },
-  { value: 'created_desc', label: '最新創建' },
-  { value: 'created_asc', label: '最舊創建' },
-  { value: 'name_asc', label: '名稱 A-Z' },
-  { value: 'name_desc', label: '名稱 Z-A' },
-  { value: 'status', label: '狀態優先' },
-  { value: 'messages_desc', label: '訊息數多' },
-  { value: 'messages_asc', label: '訊息數少' }
+  { value: 'updated_desc', label: 'Recently Updated' },
+  { value: 'created_desc', label: 'Newest First' },
+  { value: 'created_asc', label: 'Oldest First' },
+  { value: 'name_asc', label: 'Name A-Z' },
+  { value: 'name_desc', label: 'Name Z-A' },
+  { value: 'status', label: 'Status Priority' },
+  { value: 'messages_desc', label: 'Most Messages' },
+  { value: 'messages_asc', label: 'Fewest Messages' }
 ];

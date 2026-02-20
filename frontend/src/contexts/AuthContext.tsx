@@ -9,13 +9,13 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// Token 驗證快取
+  // Token validation cache
 interface TokenCache {
   isValid: boolean;
   timestamp: number;
 }
 
-const TOKEN_CACHE_DURATION = 5 * 60 * 1000; // 5分鐘快取
+  const TOKEN_CACHE_DURATION = 5 * 60 * 1000; // 5 minute cache
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     }
 
-    // 檢查 token 是否過期
+     // Check if token expired
     if (Date.now() > parseInt(tokenExpiry)) {
       localStorage.removeItem('token');
       localStorage.removeItem('tokenExpiry');
@@ -52,22 +52,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     }
 
-    // 檢查快取
+     // Check cache
     const now = Date.now();
     if (tokenCacheRef.current && 
         now - tokenCacheRef.current.timestamp < TOKEN_CACHE_DURATION) {
-      // 使用快取結果，避免重複 API 請求
+       // Use cached result, avoid duplicate API requests
       const isValid = tokenCacheRef.current.isValid;
       setIsAuthenticated(isValid);
       setLoading(false);
       return isValid;
     }
 
-    try {
-      // 驗證 token 是否有效
+     try {
+       // Verify token validity
       const response = await axiosInstance.get('/auth/verify');
       if (response.data.success) {
-        // 更新快取
+        // Update cache
         tokenCacheRef.current = {
           isValid: true,
           timestamp: now
@@ -76,8 +76,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
         return true;
       }
-    } catch (error) {
-      // Token 無效
+     } catch (error) {
+       // Token invalid
       localStorage.removeItem('token');
       localStorage.removeItem('tokenExpiry');
       // 清除快取
@@ -105,13 +105,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
-  // 設定 axios 攔截器來處理 401 錯誤
+  // Set up axios interceptor to handle 401 errors
   useEffect(() => {
     const interceptor = axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // 清除 token 快取
+          // Clear token cache
           tokenCacheRef.current = null;
           logout();
         }

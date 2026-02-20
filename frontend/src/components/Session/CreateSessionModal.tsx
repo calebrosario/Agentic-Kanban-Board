@@ -46,7 +46,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
   const { workItems, fetchWorkItems } = useWorkItemStore();
   const { activeTemplates } = useTaskTemplates();
   
-  // Remove unused continuableSessions (now using --continue parameter)
+   // Use --continue parameter instead
 
   // Load workflow stages and Work Items
   useEffect(() => {
@@ -236,7 +236,7 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({
                   <div className="space-y-3">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">
-                        Session 名稱 *
+                        {t('session.create.nameRequired')}
                       </label>
                       <input
                         type="text"
