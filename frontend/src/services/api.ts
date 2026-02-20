@@ -10,7 +10,7 @@ import {
   ProjectStats 
 } from '../types/classification.types';
 
-// 使用共用的 axiosInstance
+// Use shared axiosInstance
 const api = axiosInstance;
 
 // Common Path Types
@@ -102,7 +102,7 @@ export const sessionApi = {
     };
   },
 
-  // Send訊息
+  // Send message
   async sendMessage(sessionId: string, content: string): Promise<Message> {
     const response = await api.post(`/sessions/${sessionId}/messages`, { content });
     const msg = response.data;
@@ -119,7 +119,7 @@ export const sessionApi = {
     };
   },
 
-  // 獲取訊息
+  // Get messages
   async getMessages(sessionId: string, page: number = 1, limit: number = 50): Promise<{
     messages: Message[];
     pagination: {
@@ -150,13 +150,13 @@ export const sessionApi = {
     };
   },
 
-  // 獲取系統統計
+  // Get system statistics
   async getSystemStats(): Promise<SystemStats> {
     const response = await api.get<SystemStats>('/sessions/system/stats');
     return response.data;
   },
 
-  // 重新排序 Sessions
+  // Reorder Sessions
   async reorderSessions(status: string, sessionIds: string[]): Promise<void> {
     await api.put('/sessions/reorder', { status, sessionIds });
   },
@@ -164,41 +164,41 @@ export const sessionApi = {
 
 // Common Paths API
 export const commonPathApi = {
-  // 獲取所有常用路徑
+  // Get all common paths
   async getAllPaths(): Promise<CommonPath[]> {
     const response = await api.get<{ success: boolean; data: CommonPath[] }>('/common-paths');
     return response.data.data;
   },
 
-  // 獲取單個路徑
+  // Get single path
   async getPath(id: string): Promise<CommonPath> {
     const response = await api.get<{ success: boolean; data: CommonPath }>(`/common-paths/${id}`);
     return response.data.data;
   },
 
-  // 創建新路徑
+  // Create new path
   async createPath(path: Omit<CommonPath, 'id' | 'created_at' | 'updated_at'>): Promise<CommonPath> {
     const response = await api.post<{ success: boolean; data: CommonPath }>('/common-paths', path);
     return response.data.data;
   },
 
-  // 更新路徑
+  // Update path
   async updatePath(id: string, updates: Partial<Omit<CommonPath, 'id' | 'created_at'>>): Promise<CommonPath> {
     const response = await api.put<{ success: boolean; data: CommonPath }>(`/common-paths/${id}`, updates);
     return response.data.data;
   },
 
-  // Delete路徑
+  // Delete path
   async deletePath(id: string): Promise<void> {
     await api.delete(`/common-paths/${id}`);
   },
 
-  // 重新排序路徑
+  // Reorder paths
   async reorderPaths(paths: { id: string; sort_order: number }[]): Promise<void> {
     await api.post('/common-paths/reorder', { paths });
   },
 
-  // 重置為預設值
+  // Reset to default values
   async resetToDefault(): Promise<CommonPath[]> {
     const response = await api.post<{ success: boolean; data: CommonPath[] }>('/common-paths/reset');
     return response.data.data;
@@ -207,54 +207,54 @@ export const commonPathApi = {
 
 // Projects API
 export const projectApi = {
-  // 獲取所有專案
+  // Get all projects
   async getAllProjects(): Promise<Project[]> {
     const response = await api.get<{ success: boolean; data: Project[] }>('/projects');
     return response.data.data;
   },
 
-  // 獲取活躍專案
+  // Get active projects
   async getActiveProjects(): Promise<Project[]> {
     const response = await api.get<{ success: boolean; data: Project[] }>('/projects/active');
     return response.data.data;
   },
 
-  // 獲取單個專案
+  // Get single project
   async getProject(projectId: string): Promise<Project> {
     const response = await api.get<{ success: boolean; data: Project }>(`/projects/${projectId}`);
     return response.data.data;
   },
 
-  // 創建新專案
+  // Create new project
   async createProject(project: CreateProjectRequest): Promise<Project> {
     const response = await api.post<{ success: boolean; data: Project }>('/projects', project);
     return response.data.data;
   },
 
-  // 更新專案
+  // Update project
   async updateProject(projectId: string, updates: UpdateProjectRequest): Promise<Project> {
     const response = await api.put<{ success: boolean; data: Project }>(`/projects/${projectId}`, updates);
     return response.data.data;
   },
 
-  // Delete專案
+  // Delete project
   async deleteProject(projectId: string): Promise<void> {
     await api.delete(`/projects/${projectId}`);
   },
 
-  // 獲取專案統計
+  // Get project statistics
   async getProjectStats(projectId: string): Promise<ProjectStats> {
     const response = await api.get<{ success: boolean; data: ProjectStats }>(`/projects/${projectId}/stats`);
     return response.data.data;
   },
 
-  // 獲取對話的專案列表
+  // Get projects for session
   async getProjectsBySessionId(sessionId: string): Promise<Project[]> {
     const response = await api.get<{ success: boolean; data: Project[] }>(`/projects/sessions/${sessionId}/projects`);
     return response.data.data;
   },
 
-  // 更新對話的專案（替換所有）
+  // Update session projects (replace all)
   async updateSessionProjects(sessionId: string, projectIds: string[]): Promise<void> {
     await api.put(`/projects/sessions/${sessionId}/projects`, { projectIds });
   },
@@ -262,19 +262,19 @@ export const projectApi = {
 
 // Tags API
 export const tagApi = {
-  // 獲取所有標籤
+  // Get all tags
   async getAllTags(): Promise<Tag[]> {
     const response = await api.get<{ success: boolean; data: Tag[] }>('/tags');
     return response.data.data;
   },
 
-  // 按類型獲取標籤
+  // Get tags by type
   async getTagsByType(type: 'general' | 'activity' | 'topic' | 'department'): Promise<Tag[]> {
     const response = await api.get<{ success: boolean; data: Tag[] }>(`/tags/type/${type}`);
     return response.data.data;
   },
 
-  // 獲取熱門標籤
+  // Get popular tags
   async getPopularTags(limit: number = 10): Promise<Tag[]> {
     const response = await api.get<{ success: boolean; data: Tag[] }>('/tags/popular', {
       params: { limit }
@@ -282,41 +282,41 @@ export const tagApi = {
     return response.data.data;
   },
 
-  // 獲取單個標籤
+  // Get single tag
   async getTag(tagId: string): Promise<Tag> {
     const response = await api.get<{ success: boolean; data: Tag }>(`/tags/${tagId}`);
     return response.data.data;
   },
 
-  // 創建新標籤
+  // Create new tag
   async createTag(tag: CreateTagRequest): Promise<Tag> {
     const response = await api.post<{ success: boolean; data: Tag }>('/tags', tag);
     return response.data.data;
   },
 
-  // 更新標籤
+  // Update tag
   async updateTag(tagId: string, updates: UpdateTagRequest): Promise<Tag> {
     const response = await api.put<{ success: boolean; data: Tag }>(`/tags/${tagId}`, updates);
     return response.data.data;
   },
 
-  // Delete標籤
+  // Delete tag
   async deleteTag(tagId: string): Promise<void> {
     await api.delete(`/tags/${tagId}`);
   },
 
-  // 獲取對話的標籤列表
+  // Get tags for session
   async getTagsBySessionId(sessionId: string): Promise<Tag[]> {
     const response = await api.get<{ success: boolean; data: Tag[] }>(`/tags/sessions/${sessionId}/tags`);
     return response.data.data;
   },
 
-  // 更新對話的標籤（替換所有）
+  // Update session tags (replace all)
   async updateSessionTags(sessionId: string, tagIds: string[]): Promise<void> {
     await api.put(`/tags/sessions/${sessionId}/tags`, { tagIds });
   },
 
-  // 按名稱分配標籤（會自動創建不存在的標籤）
+  // Assign tags by name (auto-creates non-existent tags)
   async assignTagsByNames(sessionId: string, tagNames: string[], type?: 'general' | 'activity' | 'topic' | 'department'): Promise<void> {
     await api.post(`/tags/sessions/${sessionId}/tags/by-names`, { tagNames, type });
   },
@@ -326,25 +326,25 @@ export const tagApi = {
 import { TaskTemplate, CreateTaskTemplateRequest, UpdateTaskTemplateRequest, ReorderTaskTemplatesRequest } from '../types/taskTemplate.types';
 
 export const taskTemplateApi = {
-  // 獲取所有任務模板
+  // Get all task templates
   async getAllTemplates(): Promise<TaskTemplate[]> {
     const response = await api.get<{ success: boolean; data: TaskTemplate[] }>('/task-templates');
     return response.data.data;
   },
 
-  // 獲取單個任務模板
+  // Get single task template
   async getTemplate(id: string): Promise<TaskTemplate> {
     const response = await api.get<{ success: boolean; data: TaskTemplate }>(`/task-templates/${id}`);
     return response.data.data;
   },
 
-  // 創建新任務模板
+  // Create new task template
   async createTemplate(data: CreateTaskTemplateRequest): Promise<TaskTemplate> {
     const response = await api.post<{ success: boolean; data: TaskTemplate }>('/task-templates', data);
     return response.data.data;
   },
 
-  // 更新任務模板
+  // Update task template
   async updateTemplate(id: string, data: UpdateTaskTemplateRequest): Promise<TaskTemplate> {
     const response = await api.put<{ success: boolean; data: TaskTemplate }>(`/task-templates/${id}`, data);
     return response.data.data;

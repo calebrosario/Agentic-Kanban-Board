@@ -5,7 +5,7 @@ export interface WorkflowStage {
   name: string;
   description?: string;
   system_prompt: string;
-  agent_ref?: string; // 參照的 Agent 檔名
+  agent_ref?: string; // Referenced Agent file name
   suggested_tasks?: string[];
   color: string;
   icon: string;
