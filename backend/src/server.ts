@@ -153,44 +153,24 @@ async function startServer() {
 
     logger.info('ProcessManager initialized successfully');
 
-    // 現在動態載入 routes，這樣 SessionController 就能獲得正確的 ProcessManager 實例
     const { sessionRouter } = await import('./routes/session.routes');
-    
-    // Auth routes (不需要認證)
-    const authRouter = (await import('./routes/auth.routes')).default;
-    app.use('/api/auth', authRouter);
-    
-    // Common paths routes (需要認證)
     const commonPathRouter = (await import('./routes/commonPath.routes')).default;
-    
-    // Project routes (需要認證)
     const projectRouter = (await import('./routes/project.routes')).default;
-    
-    // Tag routes (需要認證)
     const tagRouter = (await import('./routes/tag.routes')).default;
-    
-    // Workflow Stage routes (需要認證)
     const workflowStageRouter = (await import('./routes/workflowStage.routes')).default;
-    
-    // Work Item routes (需要認證)
     const { workItemRouter } = await import('./routes/workitem.routes');
-    
-    // Agent Prompts routes (需要認證)
     const agentPromptsRouter = (await import('./routes/agentPrompts')).default;
-
-    // Task Template routes (需要認證)
     const taskTemplateRouter = (await import('./routes/taskTemplate.routes')).default;
 
-    // Session routes (需要認證)
-    const { authMiddleware } = await import('./middleware/auth.middleware');
-    app.use('/api/sessions', authMiddleware, sessionRouter);
-    app.use('/api/common-paths', authMiddleware, commonPathRouter);
-    app.use('/api/projects', authMiddleware, projectRouter);
-    app.use('/api/tags', authMiddleware, tagRouter);
-    app.use('/api/workflow-stages', authMiddleware, workflowStageRouter);
-    app.use('/api/work-items', authMiddleware, workItemRouter);
-    app.use('/api/agent-prompts', authMiddleware, agentPromptsRouter);
-    app.use('/api/task-templates', authMiddleware, taskTemplateRouter);
+  app.use('/api/sessions', sessionRouter);
+  app.use('/api/common-paths', commonPathRouter);
+  app.use('/api/projects', projectRouter);
+  app.use('/api/tags', tagRouter);
+  app.use('/api/workflow-stages', workflowStageRouter);
+  app.use('/api/work-items', workItemRouter);
+  app.use('/api/beads', beadsRouter);
+  app.use('/api/agent-prompts', agentPromptsRouter);
+  app.use('/api/task-templates', taskTemplateRouter);
     
     logger.info('Routes initialized successfully');
 

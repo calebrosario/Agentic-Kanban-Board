@@ -14,6 +14,7 @@ export interface Session {
   lastUserMessage?: string; // 最後用戶發送的訊息
   messageCount?: number; // 對話次數
   sortOrder?: number; // 排序順序
+  usesBeads?: boolean; // Whether this session uses beads task management
   createdAt: Date;
   updatedAt: Date;
   completedAt?: Date;
