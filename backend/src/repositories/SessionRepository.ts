@@ -16,6 +16,7 @@ interface SessionRow {
   last_user_message?: string;
   message_count?: number;
   sort_order?: number;
+  uses_beads?: number;
   workflow_stage_id?: string;
   work_item_id?: string;
   error?: string;
@@ -48,6 +49,7 @@ export class SessionRepository {
       lastUserMessage: row.last_user_message,
       messageCount: row.message_count || 0,
       sortOrder: row.sort_order,
+      usesBeads: Boolean(row.uses_beads),
       workflow_stage_id: row.workflow_stage_id,
       work_item_id: row.work_item_id,
       error: row.error,
@@ -70,9 +72,11 @@ export class SessionRepository {
       session.previousSessionId,
       session.toolSessionId,
       session.processId,
-      session.dangerouslySkipPermissions ? 1 : 0,
+      session.dangerouslySkipPermissions ?1 : 0,
       session.lastUserMessage,
       session.messageCount || 0,
+      session.sortOrder,
+      session.usesBeads ? 1 : 0,
       session.workflow_stage_id,
       session.work_item_id,
       session.error,
@@ -89,7 +93,8 @@ export class SessionRepository {
       INSERT INTO sessions (
         session_id, name, working_dir, task, status, continue_chat,
         previous_session_id, tool_session_id, process_id, dangerously_skip_permissions,
-        last_user_message, message_count, workflow_stage_id, work_item_id,
+        last_user_message, message_count, sort_order, uses_beads,
+        workflow_stage_id, work_item_id,
         error, provider, created_at, updated_at, completed_at, deleted_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
@@ -101,7 +106,7 @@ export class SessionRepository {
   }
   
   async update(session: Session): Promise<void> {
-    // Get the old session to record status change
+    // Get old session to record status change
     const oldSession = await this.findById(session.sessionId);
     const oldStatus = oldSession?.status;
     
@@ -111,7 +116,8 @@ export class SessionRepository {
       UPDATE sessions SET
         name = ?, working_dir = ?, task = ?, status = ?, continue_chat = ?,
         previous_session_id = ?, tool_session_id = ?, process_id = ?, dangerously_skip_permissions = ?,
-        last_user_message = ?, message_count = ?, workflow_stage_id = ?, work_item_id = ?,
+        last_user_message = ?, message_count = ?, sort_order = ?, uses_beads = ?,
+        workflow_stage_id = ?, work_item_id = ?,
         error = ?, provider = ?, updated_at = ?, completed_at = ?, deleted_at = ?
       WHERE session_id = ?
     `;
@@ -128,6 +134,8 @@ export class SessionRepository {
       session.dangerouslySkipPermissions ? 1 : 0,
       session.lastUserMessage,
       session.messageCount || 0,
+      session.sortOrder,
+      session.usesBeads ? 1 : 0,
       session.workflow_stage_id,
       session.work_item_id,
       session.error,
@@ -144,6 +152,7 @@ export class SessionRepository {
     if (oldStatus && oldStatus !== session.status) {
       await this.recordStatusHistory(session.sessionId, oldStatus, session.status, 'updated');
     }
+  }
   }
   
   async findById(sessionId: string): Promise<Session | null> {

@@ -19,6 +19,7 @@ export interface Session {
   lastUserMessage?: string;
   messageCount?: number;
   sortOrder?: number;
+  usesBeads?: boolean;
   error?: string;
   createdAt: Date;
   updatedAt: Date;
